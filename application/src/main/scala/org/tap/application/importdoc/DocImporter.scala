@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2016 Georgios Andreadakis
+ * Copyright (c) 2017 Georgios Andreadakis
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,12 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-group 'org.textanalyserplatform.application'
-version '1.0.0-SNAPSHOT'
+package org.tap.application.importdoc
 
-apply plugin: "java"
+import scala.io.Source
 
-dependencies {
+/**
+  * Responsible for the import of documents.
+  *
+  * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
+  */
+class DocImporter(val context: ApplicationContext) {
 
-    compile project(':domain')
+  def importFile(source: Source): Unit = {
+  }
 }

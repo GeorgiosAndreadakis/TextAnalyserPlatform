@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2016 Georgios Andreadakis
+ * Copyright (c) 2017 Georgios Andreadakis
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,15 +21,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.tap.domain;
+package org.tap.accepttest
 
-import org.tap.domain.Document;
+import cucumber.api.CucumberOptions
+import cucumber.api.junit.Cucumber
+import org.junit.runner.RunWith
 
-/**
- * Defines the repository for documenzs.
- *
- * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
- */
-public interface DocumentRepository {
-    void save(Document document);
+@RunWith(classOf[Cucumber])
+@CucumberOptions(
+  glue=Array("org.tap.accepttest"),
+  features = Array("acceptancetests/src/test/resources"),
+  plugin = Array("pretty", "html:target/cucumber-report")
+)
+class RunTests {
+
 }

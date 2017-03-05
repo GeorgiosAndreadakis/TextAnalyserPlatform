@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2016 Georgios Andreadakis
+ * Copyright (c) 2017 Georgios Andreadakis
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,33 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.tap.accepttest.importdoc.util;
-
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+package org.tap.domain
 
 /**
- * Utility class for file handling based on the class {@link Path} from NIO 2.
- *
- * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
- */
-public class FileHandlingUtil {
+  * Defines a repository for documents.
+  *
+  * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
+  */
+trait DocumentRepository {
 
-    public static Path readFromClasspath(String name) throws URISyntaxException {
-        URL systemResource = ClassLoader.getSystemResource(name);
-        if (systemResource == null) {
-
-            String msg = "Could not find resource '" + name + "' in classpath";
-            System.err.println(msg);
-            ClasspathUtil.showClasspath();
-
-            throw new IllegalStateException(msg);
-        }
-        //System.out.println("Accessing system resource: " + systemResource);
-        //System.out.println("Accessing system resource by URI: " + systemResource.toURI());
-        return Paths.get(systemResource.toURI());
-    }
-
+  def save(document: Document)
 }

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2016 Georgios Andreadakis
+ * Copyright (c) 2017 Georgios Andreadakis
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,7 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-group 'org.textanalyserplatform.domain'
-version '1.0.0-SNAPSHOT'
+package org.tap.domain
 
-apply plugin: "java"
+/**
+  * Models a document.
+  *
+  * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
+  */
+class Document {
+
+}

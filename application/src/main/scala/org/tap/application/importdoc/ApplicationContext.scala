@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2016 Georgios Andreadakis
+ * Copyright (c) 2017 Georgios Andreadakis
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,20 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.tap.application.importdoc;
+package org.tap.application.importdoc
 
-import org.tap.domain.DocumentRepository;
+import org.tap.domain.DocumentRepository
 
 /**
- * Defines the dependent implementations.
- *
- * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
- */
-public class ApplicationContext {
-
-    private final DocumentRepository documentRepository;
-
-    public ApplicationContext(DocumentRepository documentRepository) {
-        this.documentRepository = documentRepository;
-    }
+  * Factory for dependent implementations.
+  *
+  * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
+  */
+class ApplicationContext(var docRepo: DocumentRepository) {
 }

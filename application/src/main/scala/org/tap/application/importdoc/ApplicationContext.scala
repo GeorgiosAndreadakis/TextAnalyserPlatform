@@ -30,5 +30,5 @@ import org.tap.domain.DocumentRepository
   *
   * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
   */
-class ApplicationContext(var docRepo: DocumentRepository) {
+class ApplicationContext(val docRepo: DocumentRepository) {
 }

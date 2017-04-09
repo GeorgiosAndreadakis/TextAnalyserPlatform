@@ -18,7 +18,7 @@ package org.tap.accepttest.importdoc
 import cucumber.api.scala.{EN, ScalaDsl}
 import org.scalatest.Matchers
 import org.tap.application.importdoc.{ApplicationContext, DocImporter}
-import org.tap.domain.{Document, DocumentRepository}
+import org.tap.domain.Document
 
 import scala.io.Source
 
@@ -38,10 +38,8 @@ class SimpleTextPassageInWordFileStepDefs extends ScalaDsl with EN with Matchers
 
   When("""^the user starts the import for the given file$"""){ () =>
 
-    val context = new ApplicationContext(new DocumentRepository {
-      override def save(document: Document) = {
-        saveCalled = true
-      }
+    val context = new ApplicationContext((document: Document) => {
+      saveCalled = true
     })
     val importer = new DocImporter(context)
     importer.importFile(source)

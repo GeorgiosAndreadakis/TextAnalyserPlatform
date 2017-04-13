@@ -18,7 +18,7 @@ package org.tap.accepttest.importdoc
 import cucumber.api.scala.{EN, ScalaDsl}
 import org.scalatest.Matchers
 import org.tap.application.importdoc.{ApplicationContext, DocImporter}
-import org.tap.domain.Document
+import org.tap.domain.{Document, DocumentRepository}
 
 import scala.io.Source
 
@@ -30,7 +30,9 @@ import scala.io.Source
 class SimpleTextPassageInWordFileStepDefs extends ScalaDsl with EN with Matchers {
 
   private val source = Source.fromInputStream(getClass.getClassLoader.getResourceAsStream("simple-text-passage.docx"))
-  private var saveCalled = false
+  private val repo = new DocumentRepositoryTest
+  val context = new ApplicationContext(repo)
+  val importer = new DocImporter(context)
 
   Given("""^a word file which contains a single text passage$"""){ () =>
     // source already set
@@ -38,17 +40,20 @@ class SimpleTextPassageInWordFileStepDefs extends ScalaDsl with EN with Matchers
 
   When("""^the user starts the import for the given file$"""){ () =>
 
-    val context = new ApplicationContext((document: Document) => {
-      saveCalled = true
-    })
-    val importer = new DocImporter(context)
     importer.importFile(source)
   }
 
   Then("""^the file will be imported and the text is in the system available$"""){ () =>
     //// Write code here that turns the phrase above into concrete actions
     source should not be null
-    saveCalled shouldBe true
+    repo.saveCalled shouldBe true
   }
 
+}
+
+class DocumentRepositoryTest extends DocumentRepository {
+  var saveCalled = false
+  override def save(document: Document): Unit = {
+    saveCalled = true
+  }
 }

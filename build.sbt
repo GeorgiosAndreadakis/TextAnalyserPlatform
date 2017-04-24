@@ -1,7 +1,7 @@
 import sbt.Keys.libraryDependencies
 
-organization := "org.textanalyserplatform"
-name := "Text Analyser Platform"
+organization := "org.textanalyzerplatform"
+name := "Text Analyzer Platform"
 version := "0.1.0-SNAPSHOT"
 scalaVersion := "2.11.8"
 
@@ -11,8 +11,8 @@ resolvers += "Sonatype Releases" at "https://oss.sonatype.org/content/repositori
 testOptions += Tests.Argument(TestFrameworks.JUnit, "-q", "-v")
 
 lazy val commonSettings = Seq(
-  organization := "org.textanalyserplatform",
-  name := "Text Analyser Platform",
+  organization := "org.textanalyzerplatform",
+  name := "Text Analyzer Platform",
   version := "0.1.0-SNAPSHOT",
   scalaVersion := "2.11.8"
 )

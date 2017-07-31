@@ -13,24 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.tap.application.importdoc
+package org.tap.application.importdoc.parser
 
 import java.io.InputStream
 
-import org.tap.application.importdoc.parser.DocumentParserTika
-
-import scala.io.Source
+import org.tap.domain.Document
 
 /**
-  * Responsible for the import of documents.
-  *
-  * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
+  * Performs the parsing of a text inut stream with the help of the Apache Tika library.
   */
-class DocImporter(val context: ApplicationContext) {
+class DocumentParserTika() {
 
-  def importFile(inputStream: InputStream): Unit = {
-    val parser = new DocumentParserTika
-    val doc = parser.parse(inputStream)
-    context.docRepo.save(doc)
+  def parse(inputStream: InputStream): Document = {
+    new Document
   }
 }

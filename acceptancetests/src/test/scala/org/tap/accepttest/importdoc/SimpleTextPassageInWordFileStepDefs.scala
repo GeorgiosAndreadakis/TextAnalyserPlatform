@@ -29,7 +29,7 @@ import scala.io.Source
   */
 class SimpleTextPassageInWordFileStepDefs extends ScalaDsl with EN with Matchers {
 
-  private val source = Source.fromInputStream(getClass.getClassLoader.getResourceAsStream("simple-text-passage.docx"))
+  private val source = getClass.getClassLoader.getResourceAsStream("simple-text-passage.docx")
   private val repo = new DocumentRepositoryTest
   val context = new ApplicationContext(repo)
   val importer = new DocImporter(context)
@@ -40,7 +40,6 @@ class SimpleTextPassageInWordFileStepDefs extends ScalaDsl with EN with Matchers
   }
 
   When("""^the user starts the import for the given file$"""){ () =>
-
     importer.importFile(source)
   }
 

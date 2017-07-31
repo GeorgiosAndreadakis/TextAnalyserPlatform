@@ -3,7 +3,7 @@ import sbt.Keys.libraryDependencies
 organization := "org.textanalyzerplatform"
 name := "Text Analyzer Platform"
 version := "0.1.0-SNAPSHOT"
-scalaVersion := "2.11.8"
+scalaVersion := "2.11.11"
 
 resolvers += "Maven Central" at "http://central.maven.org/maven2"
 resolvers += "Sonatype Releases" at "https://oss.sonatype.org/content/repositories/releases"
@@ -48,6 +48,9 @@ lazy val acceptancetests = (
 lazy val application = (
   ScalaTestProject("application")
     settings (
+      libraryDependencies += "org.apache.poi" % "poi-ooxml-schemas" % "3.16",
+      libraryDependencies += "stax" % "stax-api" % "1.0.1",
+      libraryDependencies += "org.apache.tika" % "tika-parsers" % "1.15"
     )
   ) dependsOn domain
 

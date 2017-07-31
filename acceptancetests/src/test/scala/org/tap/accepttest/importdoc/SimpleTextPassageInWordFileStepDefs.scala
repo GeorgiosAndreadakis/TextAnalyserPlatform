@@ -36,6 +36,7 @@ class SimpleTextPassageInWordFileStepDefs extends ScalaDsl with EN with Matchers
 
   Given("""^a word file which contains a single text passage$"""){ () =>
     // source already set
+    source should not be null
   }
 
   When("""^the user starts the import for the given file$"""){ () =>
@@ -45,7 +46,6 @@ class SimpleTextPassageInWordFileStepDefs extends ScalaDsl with EN with Matchers
 
   Then("""^the file will be imported and the text is in the system available$"""){ () =>
     //// Write code here that turns the phrase above into concrete actions
-    source should not be null
     repo.saveCalled shouldBe true
   }
 

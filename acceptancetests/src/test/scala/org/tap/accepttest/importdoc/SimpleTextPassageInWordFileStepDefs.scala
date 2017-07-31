@@ -23,7 +23,7 @@ import org.tap.domain.{Document, DocumentRepository}
 import scala.io.Source
 
 /**
-  * Implementation for the Cucumber step definitions for the story import text file with a single passage.
+  * The Cucumber step definitions for the story "import text file with a single passage".
   *
   * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
   */

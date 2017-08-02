@@ -13,22 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.tap.application.importdoc
+package org.tap.application.importdoc.parser
 
-import java.io.InputStream
+import org.tap.domain.Document
 
-import org.tap.application.importdoc.parser.DocumentParserTika
+/** Builds a document instance for a given {@link ParseResult}. */
+case class DocumentBuilder(parseResult: ParseResult) {
 
-/**
-  * Responsible for the import of documents.
-  *
-  * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
-  */
-class DocImporter(val context: ApplicationContext) {
-
-  def importFile(inputStream: InputStream): Unit = {
-    val parser = new DocumentParserTika
-    val doc = parser.parse(inputStream)
-    context.docRepo.save(doc)
+  def buildDocument: Document = {
+    val doc: Document = new Document
+    doc
   }
+
 }

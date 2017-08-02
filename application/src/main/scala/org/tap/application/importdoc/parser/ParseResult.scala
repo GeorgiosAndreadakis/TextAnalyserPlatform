@@ -13,22 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.tap.application.importdoc
-
-import java.io.InputStream
-
-import org.tap.application.importdoc.parser.DocumentParserTika
+package org.tap.application.importdoc.parser
 
 /**
-  * Responsible for the import of documents.
-  *
-  * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
+  * Holds a collection of all parse events.
   */
-class DocImporter(val context: ApplicationContext) {
+case class ParseResult(events: List[ParseEvent]) {
 
-  def importFile(inputStream: InputStream): Unit = {
-    val parser = new DocumentParserTika
-    val doc = parser.parse(inputStream)
-    context.docRepo.save(doc)
-  }
+}
+
+/** Models one of the parsing events thrown by the Content Handler. */
+sealed trait ParseEvent {
 }

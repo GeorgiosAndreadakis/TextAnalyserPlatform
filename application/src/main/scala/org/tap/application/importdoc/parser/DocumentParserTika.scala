@@ -17,14 +17,28 @@ package org.tap.application.importdoc.parser
 
 import java.io.InputStream
 
+import org.apache.tika.metadata.Metadata
+import org.apache.tika.parser.{AutoDetectParser, ParseContext}
 import org.tap.domain.Document
 
 /**
-  * Performs the parsing of a text inut stream with the help of the Apache Tika library.
+  * Performs the parsing of a text input stream with the help of the Apache Tika library.
   */
 class DocumentParserTika() {
 
   def parse(inputStream: InputStream): Document = {
-    new Document
+
+    val parser = new AutoDetectParser
+    val handler = TapContentHandler(new ParseResultCollector)
+    val metadata = new Metadata
+    val parseContext = new ParseContext
+
+    parser.parse(inputStream, handler, metadata)
+    val parseResult = handler.result.buildResult
+    buildDocument(parseResult)
+  }
+
+  private def buildDocument(parseResult: ParseResult): Document = {
+    DocumentBuilder(parseResult).buildDocument
   }
 }

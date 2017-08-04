@@ -18,9 +18,7 @@ package org.tap.accepttest.importdoc
 import cucumber.api.scala.{EN, ScalaDsl}
 import org.scalatest.Matchers
 import org.tap.application.importdoc.{ApplicationContext, DocImporter}
-import org.tap.domain.{Document, DocumentRepository}
-
-import scala.io.Source
+import org.tap.domain.{Document, DocumentRepository, Paragraph}
 
 /**
   * The Cucumber step definitions for the story "import text file with a single passage".
@@ -29,7 +27,7 @@ import scala.io.Source
   */
 class SimpleTextPassageInWordFileStepDefs extends ScalaDsl with EN with Matchers {
 
-  private val source = getClass.getClassLoader.getResourceAsStream("simple-text-passage.docx")
+  private val source = getClass.getClassLoader.getResourceAsStream("importdoc/simple-text-passage.docx")
   private val repo = new DocumentRepositoryTest
   val context = new ApplicationContext(repo)
   val importer = new DocImporter(context)
@@ -44,15 +42,22 @@ class SimpleTextPassageInWordFileStepDefs extends ScalaDsl with EN with Matchers
   }
 
   Then("""^the file will be imported and the text is in the system available$"""){ () =>
-    //// Write code here that turns the phrase above into concrete actions
     repo.saveCalled shouldBe true
+    repo.documentContainsParagraphStartingWith("The central concept of a document store") shouldBe true
   }
-
 }
 
 class DocumentRepositoryTest extends DocumentRepository {
   var saveCalled = false
+  private var doc: Document = _
   override def save(document: Document): Unit = {
     saveCalled = true
+    doc = document
+  }
+  def documentContainsParagraphStartingWith(text: String): Boolean = {
+    doc.filter(_.isInstanceOf[Paragraph]).exists(elem => {
+      val p = elem.asInstanceOf[Paragraph]
+      p.text.startsWith(text)
+    })
   }
 }

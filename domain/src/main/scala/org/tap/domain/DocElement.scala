@@ -13,28 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.tap.application.importdoc.parser
-
-import org.xml.sax.Attributes
+package org.tap.domain
 
 /**
-  * Holds a collection of all parse events.
+  * Models an element of a document.
   *
   * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
   */
-case class ParseResult(events: List[ParseEvent]) {
-
+sealed abstract class DocElement() {
 }
 
 /**
-  * Models one of the parsing events thrown by the Content Handler.
+  * Models a paragraph of an document.
   *
   * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
   */
-sealed trait ParseEvent {
+case class Paragraph(text: String) extends DocElement {
 }
-case class StartElementEvent(uri: String, localName: String, qName: String, atts: Attributes) extends ParseEvent
-case class EndElementEvent(uri: String, localName: String, qName: String) extends ParseEvent
-case class CharactersEvent(ch: String, start: Int, lenght: Int) extends ParseEvent
-case class StartDocumentEvent() extends ParseEvent
-case class EndDocumentEvent() extends ParseEvent

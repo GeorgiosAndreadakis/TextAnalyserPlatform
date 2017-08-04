@@ -33,17 +33,24 @@ class ParseResultCollector {
   }
 
   def addCharacters(ch: Array[Char], start: Int, length: Int): Unit = {
-  }
-  def addEndOfDocument(): Unit = {
-  }
-  def addEndOfElement(uri: String, localName: String, qName: String): Unit = {
-  }
-  def addEndOfPrefixMapping(prefix: String): Unit = {
-  }
-  def addStartOfDocument(): Unit = {
+    buf += CharactersEvent(new String(ch), start, length)
   }
   def addStartOfElement(uri: String, localName: String, qName: String, atts: Attributes): Unit = {
+    buf += StartElementEvent(uri, localName, qName, atts)
   }
+  def addEndOfElement(uri: String, localName: String, qName: String): Unit = {
+    buf += EndElementEvent(uri, localName, qName)
+  }
+
+  def addStartOfDocument(): Unit = {
+    buf += StartDocumentEvent()
+  }
+  def addEndOfDocument(): Unit = {
+    buf += EndDocumentEvent()
+  }
+
   def addStartOfPrefixMapping(prefix: String, uri: String): Unit = {
+  }
+  def addEndOfPrefixMapping(prefix: String): Unit = {
   }
 }

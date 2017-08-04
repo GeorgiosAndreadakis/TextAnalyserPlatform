@@ -15,11 +15,18 @@
  */
 package org.tap.domain
 
+import scala.collection.mutable.ListBuffer
+
 /**
   * Models a document.
   *
   * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
   */
-class Document {
+class Document extends Iterable[DocElement]  {
 
+  private val elementList = new ListBuffer[DocElement]
+
+  def addElement(element: DocElement): Unit = elementList += element
+
+  override def iterator:Iterator[DocElement] = elementList.toList.iterator
 }

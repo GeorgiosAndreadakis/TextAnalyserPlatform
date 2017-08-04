@@ -24,9 +24,38 @@ import org.tap.domain.Document
   */
 case class DocumentBuilder(parseResult: ParseResult) {
 
+  var doc: Document = _
+  private var currentElementBuilder: ElementBuilder = _
+
   def buildDocument: Document = {
-    val doc: Document = new Document
+
+    if (!parseResult.events.head.isInstanceOf[StartDocumentEvent]) {
+      throw new IllegalStateException("Missing the #StartDocumentEvent !")
+    }
+
+    doc = new Document
+    currentElementBuilder = DummyBuilder()
+
+    // iterate over the events
+    parseResult.events.foreach {
+      case charactersEvent  : CharactersEvent   => currentElementBuilder.charactersEventReceived(charactersEvent)
+      case startElementEvent: StartElementEvent => startElementMatched(startElementEvent)
+      case endElementEvent  : EndElementEvent   => endElementMatched(endElementEvent)
+      case _: ParseEvent => // ignore other events
+    }
+
     doc
   }
 
+  def startElementMatched(event: StartElementEvent): Unit = event.qName match {
+    case "p" => currentElementBuilder = ParagraphBuilder(event)
+    case _ =>
+  }
+
+  def endElementMatched(event: EndElementEvent): Unit = event.qName match {
+    case "p" =>
+      doc.addElement(currentElementBuilder.endElementEventReceived())
+      currentElementBuilder = DummyBuilder()
+    case _ =>
+  }
 }

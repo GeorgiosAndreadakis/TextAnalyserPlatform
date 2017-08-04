@@ -17,7 +17,11 @@ package org.tap.application.importdoc.parser
 
 import org.tap.domain.Document
 
-/** Builds a document instance for a given {@link ParseResult}. */
+/**
+  * Builds a document instance for a given {@link ParseResult}.
+  *
+  * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
+  */
 case class DocumentBuilder(parseResult: ParseResult) {
 
   def buildDocument: Document = {

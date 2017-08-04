@@ -19,6 +19,11 @@ import cucumber.api.CucumberOptions
 import cucumber.api.junit.Cucumber
 import org.junit.runner.RunWith
 
+/**
+  * JUnit-Runner for Cucumber.
+  *
+  * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
+  */
 @RunWith(classOf[Cucumber])
 @CucumberOptions(
   glue=Array("org.tap.accepttest"),

@@ -17,11 +17,17 @@ package org.tap.application.importdoc.parser
 
 /**
   * Holds a collection of all parse events.
+  *
+  * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
   */
 case class ParseResult(events: List[ParseEvent]) {
 
 }
 
-/** Models one of the parsing events thrown by the Content Handler. */
+/**
+  * Models one of the parsing events thrown by the Content Handler.
+  *
+  * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
+  */
 sealed trait ParseEvent {
 }

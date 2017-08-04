@@ -23,6 +23,8 @@ import org.xml.sax.{Attributes, ContentHandler, Locator}
   *   The relevant HTML SAX events are pipelined to the ParseResultCollector.
   *   At the end a parse result is built.
   * </p>
+  *
+  * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
   */
 case class TapContentHandler(result: ParseResultCollector) extends ContentHandler {
 

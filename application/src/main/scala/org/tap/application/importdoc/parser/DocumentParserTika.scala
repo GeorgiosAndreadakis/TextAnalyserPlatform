@@ -23,6 +23,8 @@ import org.tap.domain.Document
 
 /**
   * Performs the parsing of a text input stream with the help of the Apache Tika library.
+  *
+  * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
   */
 class DocumentParserTika() {
 

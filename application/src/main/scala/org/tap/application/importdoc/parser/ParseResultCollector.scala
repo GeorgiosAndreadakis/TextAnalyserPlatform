@@ -19,7 +19,11 @@ import org.xml.sax.Attributes
 
 import scala.collection.mutable.ListBuffer
 
-/** Collects the SAX events and builds a parse result. */
+/**
+  * Collects the SAX events and builds a parse result.
+  *
+  * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
+  */
 class ParseResultCollector {
 
   val buf = new ListBuffer[ParseEvent]

@@ -18,7 +18,7 @@ package org.tap.application.importdoc.parser
 import java.io.InputStream
 
 import org.apache.tika.metadata.Metadata
-import org.apache.tika.parser.{AutoDetectParser, ParseContext}
+import org.apache.tika.parser.AutoDetectParser
 import org.tap.domain.Document
 
 /**
@@ -33,8 +33,6 @@ class DocumentParserTika() {
     val parser = new AutoDetectParser
     val handler = TapContentHandler(new ParseResultCollector)
     val metadata = new Metadata
-    val parseContext = new ParseContext
-
     parser.parse(inputStream, handler, metadata)
     val parseResult = handler.result.buildResult
     buildDocument(parseResult)

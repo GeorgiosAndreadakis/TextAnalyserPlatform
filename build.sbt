@@ -25,7 +25,7 @@ lazy val defaultLibs = Seq(
 )
 
 
-def ScalaTestProject(name: String): Project = {
+def NewProject(name: String): Project = {
   Project(name, file(name))
 }
 
@@ -36,7 +36,7 @@ lazy val root = (project in file("."))
   )
 
 lazy val acceptancetests = (
-  ScalaTestProject("acceptancetests")
+  NewProject("acceptancetests")
     settings(
     libraryDependencies ++= defaultLibs,
     libraryDependencies += "info.cukes" %% "cucumber-scala" % "1.2.5" % Test,
@@ -46,7 +46,7 @@ lazy val acceptancetests = (
   ) dependsOn application
 
 lazy val application = (
-  ScalaTestProject("application")
+  NewProject("application")
     settings (
       libraryDependencies += "org.apache.poi" % "poi-ooxml-schemas" % "3.16",
       libraryDependencies += "stax" % "stax-api" % "1.0.1",
@@ -55,7 +55,7 @@ lazy val application = (
   ) dependsOn domain
 
 lazy val domain = (
-  ScalaTestProject("domain")
+  NewProject("domain")
     settings (
     )
   )

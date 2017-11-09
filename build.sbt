@@ -13,8 +13,7 @@ testOptions += Tests.Argument(TestFrameworks.JUnit, "-q", "-v")
 lazy val commonSettings = Seq(
   organization := "org.textanalyzerplatform",
   name := "Text Analyzer Platform",
-  version := "0.1.0-SNAPSHOT",
-  scalaVersion := "2.11.8"
+  version := "0.1.0-SNAPSHOT"
 )
 
 lazy val defaultLibs = Seq(

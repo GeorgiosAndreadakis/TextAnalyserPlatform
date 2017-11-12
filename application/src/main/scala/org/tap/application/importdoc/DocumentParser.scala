@@ -13,32 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.tap.application.importdoc.parser
+package org.tap.application.importdoc
 
 import java.io.InputStream
 
-import org.apache.tika.metadata.Metadata
-import org.apache.tika.parser.AutoDetectParser
 import org.tap.domain.Document
 
 /**
-  * Performs the parsing of a text input stream with the help of the Apache Tika library.
+  * Parses an input stream and builds a document.
   *
   * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
   */
-class DocumentParserTika() {
-
-  def parse(inputStream: InputStream): Document = {
-
-    val parser = new AutoDetectParser
-    val handler = TapContentHandler(new ParseResultCollector)
-    val metadata = new Metadata
-    parser.parse(inputStream, handler, metadata)
-    val parseResult = handler.result.buildResult
-    buildDocument(parseResult)
-  }
-
-  private def buildDocument(parseResult: ParseResult): Document = {
-    DocumentBuilder(parseResult).buildDocument
-  }
+trait DocumentParser {
+  def parse(inputStream: InputStream): Document
 }

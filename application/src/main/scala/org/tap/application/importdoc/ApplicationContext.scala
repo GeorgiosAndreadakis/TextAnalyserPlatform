@@ -22,5 +22,5 @@ import org.tap.domain.DocumentRepository
   *
   * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
   */
-class ApplicationContext(val docRepo: DocumentRepository) {
+class ApplicationContext(val docRepo: DocumentRepository, val parser: DocumentParser) {
 }

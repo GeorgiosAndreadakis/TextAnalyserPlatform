@@ -17,8 +17,6 @@ package org.tap.application.importdoc
 
 import java.io.InputStream
 
-import org.tap.application.importdoc.parser.DocumentParserTika
-
 /**
   * Responsible for the import of documents.
   *
@@ -27,7 +25,7 @@ import org.tap.application.importdoc.parser.DocumentParserTika
 class DocImporter(val context: ApplicationContext) {
 
   def importFile(inputStream: InputStream): Unit = {
-    val parser = new DocumentParserTika
+    val parser = context.parser
     val doc = parser.parse(inputStream)
     context.docRepo.save(doc)
   }

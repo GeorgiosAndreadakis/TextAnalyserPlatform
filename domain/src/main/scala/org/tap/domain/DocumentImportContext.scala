@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.tap.application.importdoc
-
-import org.tap.domain.DocumentRepository
+package org.tap.domain
 
 /**
-  * Factory for dependent implementations.
+  * Defines the collaborators for the document import.
   *
   * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
   */
-class ApplicationContext(val docRepo: DocumentRepository, val parser: DocumentParser) {
+trait DocumentImportContext {
+  def repository: DocumentRepository
+  def parser: DocumentParser
 }

@@ -19,8 +19,8 @@ import java.io.InputStream
 
 import cucumber.api.scala.{EN, ScalaDsl}
 import org.scalatest.Matchers
-import org.tap.application.importdoc.{ApplicationContext, DocImporter, DocumentParser}
-import org.tap.domain.{Document, DocumentRepository}
+import org.tap.application.importdoc.DocImporter
+import org.tap.domain.{Document, DocumentParser, DocumentRepository}
 
 /**
   * The Cucumber step definitions for the story "import text file with a single passage".
@@ -30,10 +30,9 @@ import org.tap.domain.{Document, DocumentRepository}
 class SimpleTextPassageInWordFileStepDefs extends ScalaDsl with EN with Matchers {
 
   private val source = getClass.getClassLoader.getResourceAsStream("importdoc/simple-text-passage.docx")
-  private val repo = new DocumentRepositoryTest
-  private val parser = new DocumentParserTest
-  val context = new ApplicationContext(repo, parser)
-  val importer = new DocImporter(context)
+  private val parser: DocumentParser = new DocumentParserTest
+  private val docRepo: DocumentRepositoryTest = new DocumentRepositoryTest
+  private val importer = new DocImporter(docRepo, parser)
 
   Given("""^a word file which contains a single text passage$"""){ () =>
     // source already set
@@ -45,8 +44,10 @@ class SimpleTextPassageInWordFileStepDefs extends ScalaDsl with EN with Matchers
   }
 
   Then("""^the file will be imported and the text is in the system available$"""){ () =>
-    withClue("Save was called: ") {repo.saveCalled shouldBe true}
-    withClue("Document should not be null") {repo.doc should not be null}
+    withClue("Save was called: ") {
+      docRepo.saveCalled shouldBe true
+    }
+    withClue("Document should not be null") {docRepo.doc should not be null}
   }
 }
 
@@ -60,5 +61,5 @@ class DocumentRepositoryTest extends DocumentRepository {
 }
 
 class DocumentParserTest extends DocumentParser {
-  override def parse(inputStream: InputStream) = null
+  override def parse(inputStream: InputStream): Document = null
 }

@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.tap.application.importdoc
+package org.tap.domain
 
 import java.io.InputStream
-
-import org.tap.domain.Document
 
 /**
   * Parses an input stream and builds a document.

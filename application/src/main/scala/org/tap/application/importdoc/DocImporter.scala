@@ -17,7 +17,8 @@ package org.tap.application.importdoc
 
 import java.io.InputStream
 
-import org.tap.domain.{DocumentImportContext, DocumentImportService, DocumentParser, DocumentRepository}
+import org.tap.domain.docimport.{DocumentImportContext, DocumentImportService, DocumentParser}
+import org.tap.domain.DocumentRepository
 
 /**
   * Application service responsible for the import of documents.

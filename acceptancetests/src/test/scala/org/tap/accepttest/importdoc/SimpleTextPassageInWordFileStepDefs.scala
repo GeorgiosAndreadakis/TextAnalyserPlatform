@@ -20,7 +20,8 @@ import java.io.InputStream
 import cucumber.api.scala.{EN, ScalaDsl}
 import org.scalatest.Matchers
 import org.tap.application.importdoc.DocImporter
-import org.tap.domain.{Document, DocumentParser, DocumentRepository}
+import org.tap.domain.docimport.DocumentParser
+import org.tap.domain.{Document, DocumentRepository}
 
 /**
   * The Cucumber step definitions for the story "import text file with a single passage".
@@ -36,7 +37,9 @@ class SimpleTextPassageInWordFileStepDefs extends ScalaDsl with EN with Matchers
 
   Given("""^a word file which contains a single text passage$"""){ () =>
     // source already set
-    withClue("Document source should not be null") {source should not be null}
+    withClue("Document source should not be null") {
+      source should not be null
+    }
   }
 
   When("""^the user starts the import for the given file$"""){ () =>
@@ -47,7 +50,9 @@ class SimpleTextPassageInWordFileStepDefs extends ScalaDsl with EN with Matchers
     withClue("Save was called: ") {
       docRepo.saveCalled shouldBe true
     }
-    withClue("Document should not be null") {docRepo.doc should not be null}
+    withClue("Document should not be null") {
+      docRepo.doc should not be null
+    }
   }
 }
 

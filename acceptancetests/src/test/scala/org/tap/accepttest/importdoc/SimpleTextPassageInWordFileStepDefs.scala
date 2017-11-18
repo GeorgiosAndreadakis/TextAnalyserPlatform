@@ -30,20 +30,16 @@ import org.tap.domain.{Document, DocumentRepository}
   */
 class SimpleTextPassageInWordFileStepDefs extends ScalaDsl with EN with Matchers {
 
-  private val source = getClass.getClassLoader.getResourceAsStream("importdoc/simple-text-passage.docx")
-  private val parser: DocumentParser = new DocumentParserTest
-  private val docRepo: DocumentRepositoryTest = new DocumentRepositoryTest
-  private val importer = new DocImporter(docRepo, parser)
+  private var source: InputStream = _
+  private val parser: DocumentParser = new DocumentParserMock
+  private val docRepo: DocumentRepositoryMock = new DocumentRepositoryMock
 
   Given("""^a word file which contains a single text passage$"""){ () =>
-    // source already set
-    withClue("Document source should not be null") {
-      source should not be null
-    }
+    source = getClass.getClassLoader.getResourceAsStream("importdoc/simple-text-passage.docx")
   }
 
   When("""^the user starts the import for the given file$"""){ () =>
-    importer.importFile(source)
+    new DocImporter(docRepo, parser).importFile(source)
   }
 
   Then("""^the file will be imported and the text is in the system available$"""){ () =>
@@ -56,7 +52,7 @@ class SimpleTextPassageInWordFileStepDefs extends ScalaDsl with EN with Matchers
   }
 }
 
-class DocumentRepositoryTest extends DocumentRepository {
+class DocumentRepositoryMock extends DocumentRepository {
   var saveCalled = false
   var doc: Document = _
   override def save(document: Document): Unit = {
@@ -65,6 +61,6 @@ class DocumentRepositoryTest extends DocumentRepository {
   }
 }
 
-class DocumentParserTest extends DocumentParser {
+class DocumentParserMock extends DocumentParser {
   override def parse(inputStream: InputStream): Document = null
 }

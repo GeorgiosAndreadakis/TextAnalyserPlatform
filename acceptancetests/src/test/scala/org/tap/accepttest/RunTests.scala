@@ -21,8 +21,6 @@ import org.junit.runner.RunWith
 
 /**
   * JUnit-Runner for Cucumber.
-  *
-  * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
   */
 @RunWith(classOf[Cucumber])
 @CucumberOptions(

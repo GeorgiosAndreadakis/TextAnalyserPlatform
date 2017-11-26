@@ -21,8 +21,6 @@ import org.tap.domain.Document
 
 /**
   * Parses an input stream and builds a document.
-  *
-  * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
   */
 trait DocumentParser {
   def parse(inputStream: InputStream): Document

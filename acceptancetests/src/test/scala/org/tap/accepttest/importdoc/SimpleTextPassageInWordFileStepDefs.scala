@@ -21,7 +21,8 @@ import cucumber.api.scala.{EN, ScalaDsl}
 import org.scalatest.Matchers
 import org.tap.application.importdoc.DocImporter
 import org.tap.domain.docimport.DocumentParser
-import org.tap.domain.{Document, DocumentRepository}
+import org.tap.domain.{Document, DocumentRepository, Paragraph}
+import org.tap.framework.parser.DocumentParserTika
 
 /**
   * The Cucumber step definitions for the story "import text file with a single passage".
@@ -31,11 +32,14 @@ import org.tap.domain.{Document, DocumentRepository}
 class SimpleTextPassageInWordFileStepDefs extends ScalaDsl with EN with Matchers {
 
   private var source: InputStream = _
-  private val parser: DocumentParser = new DocumentParserMock
+  private val parser: DocumentParser = new DocumentParserTika
   private val docRepo: DocumentRepositoryMock = new DocumentRepositoryMock
 
   Given("""^a word file which contains a single text passage$"""){ () =>
     source = getClass.getClassLoader.getResourceAsStream("importdoc/simple-text-passage.docx")
+    withClue("Source may not be null") {
+      source should not be null
+    }
   }
 
   When("""^the user starts the import for the given file$"""){ () =>
@@ -49,6 +53,11 @@ class SimpleTextPassageInWordFileStepDefs extends ScalaDsl with EN with Matchers
     withClue("Document should not be null") {
       docRepo.doc should not be null
     }
+
+    withClue("Document misses a paragraph containing defined text") {
+      val text = "Documents are addressed in the database via a unique key that represents that document."
+      docRepo.documentContainsParagraphStartingWith(text) shouldBe true
+    }
   }
 }
 
@@ -59,8 +68,14 @@ class DocumentRepositoryMock extends DocumentRepository {
     saveCalled = true
     doc = document
   }
+  def documentContainsParagraphStartingWith(text: String): Boolean = {
+    doc.filter(_.isInstanceOf[Paragraph]).exists(elem => {
+      val p = elem.asInstanceOf[Paragraph]
+      p.text.contains(text)
+    })
+  }
 }
 
 class DocumentParserMock extends DocumentParser {
-  override def parse(inputStream: InputStream): Document = null
+  override def parse(inputStream: InputStream): Document = new Document
 }

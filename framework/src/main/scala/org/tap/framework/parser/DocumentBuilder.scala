@@ -20,7 +20,7 @@ import org.tap.domain.Document
 /**
   * Builds a document instance for a given {@link ParseResult}.
   */
-case class DocumentBuilder(parseResult: ParseResult) {
+case class DocumentBuilder(parseResult: ParseEventCollector) {
 
   var doc: Document = _
   private var currentElementBuilder: ElementBuilder = _

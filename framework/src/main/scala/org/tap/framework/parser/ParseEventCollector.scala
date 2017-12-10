@@ -17,10 +17,30 @@ package org.tap.framework.parser
 
 import org.xml.sax.Attributes
 
+import scala.collection.mutable.ListBuffer
+
 /**
-  * Holds a collection of all parse events.
+  * Collects the SAX events and builds a parse result.
   */
-case class ParseResult(events: List[ParseEvent]) {
+case class ParseEventCollector() {
+
+  val events = new ListBuffer[ParseEvent]
+
+  def buildResult: List[ParseEvent] = {
+    events.toList
+  }
+
+  def addCharacters(ch: Array[Char], start: Int, length: Int): Unit = {
+    events += CharactersEvent(new String(ch), start, length)
+  }
+
+  def addStartOfElement(uri: String, localName: String, qName: String, atts: Attributes): Unit = {
+    events += StartElementEvent(uri, localName, qName, atts)
+  }
+
+  def addEndOfElement(uri: String, localName: String, qName: String): Unit = {
+    events += EndElementEvent(uri, localName, qName)
+  }
 }
 
 /**
@@ -33,3 +53,4 @@ case class EndElementEvent(uri: String, localName: String, qName: String) extend
 case class CharactersEvent(ch: String, start: Int, lenght: Int) extends ParseEvent
 //case class StartDocumentEvent() extends ParseEvent
 //case class EndDocumentEvent() extends ParseEvent
+

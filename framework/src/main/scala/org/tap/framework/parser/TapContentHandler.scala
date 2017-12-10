@@ -24,18 +24,22 @@ import org.xml.sax.{Attributes, ContentHandler, Locator}
   *   At the end a parse result is built.
   * </p>
   */
-case class TapContentHandler(result: ParseResultCollector) extends ContentHandler {
+case class TapContentHandler(eventCollector: ParseEventCollector) extends ContentHandler {
+
+  def parseResult: ParseEventCollector = {
+    eventCollector
+  }
 
   override def characters(ch: Array[Char], start: Int, length: Int): Unit = {
-    result.addCharacters(ch, start, length)
+    eventCollector.addCharacters(ch, start, length)
   }
 
   override def endElement(uri: String, localName: String, qName: String): Unit = {
-    result.addEndOfElement(uri, localName, qName)
+    eventCollector.addEndOfElement(uri, localName, qName)
   }
 
   override def startElement(uri: String, localName: String, qName: String, atts: Attributes): Unit = {
-    result.addStartOfElement(uri, localName, qName, atts)
+    eventCollector.addStartOfElement(uri, localName, qName, atts)
   }
 
   override def endPrefixMapping(prefix: String): Unit = {

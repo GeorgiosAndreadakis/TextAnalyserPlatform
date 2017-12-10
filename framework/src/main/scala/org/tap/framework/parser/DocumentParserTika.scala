@@ -27,17 +27,16 @@ import org.tap.domain.docimport.DocumentParser
   */
 class DocumentParserTika extends DocumentParser {
 
-  override def parse(inputStream: InputStream) = {
+  override def parse(inputStream: InputStream): Document = {
 
     val parser = new AutoDetectParser
-    val handler = TapContentHandler(new ParseResultCollector)
+    val handler = TapContentHandler(new ParseEventCollector)
     val metadata = new Metadata
     parser.parse(inputStream, handler, metadata)
-    val parseResult = handler.result.buildResult
-    buildDocument(parseResult)
+    buildDocument(handler.parseResult)
   }
 
-  private def buildDocument(parseResult: ParseResult): Document = {
+  private def buildDocument(parseResult: ParseEventCollector): Document = {
     DocumentBuilder(parseResult).buildDocument
   }
 }

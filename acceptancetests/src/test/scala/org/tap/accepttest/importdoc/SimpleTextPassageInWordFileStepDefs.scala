@@ -22,7 +22,7 @@ import org.scalatest.Matchers
 import org.tap.application.importdoc.DocImporter
 import org.tap.domain.docimport.DocumentParser
 import org.tap.domain.{Document, DocumentRepository, Paragraph}
-import org.tap.framework.parser.DocumentParserTika
+import org.tap.framework.parser.tika.DocumentParserTika
 
 /**
   * The Cucumber step definitions for the story "import text file with a single passage".

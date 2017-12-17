@@ -1,4 +1,4 @@
-package org.tap.framework.parser.helpers
+package org.tap.framework.parser.tika.helpers
 
 import org.scalatest.FunSuite
 import org.xml.sax.Attributes

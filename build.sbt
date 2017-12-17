@@ -42,7 +42,7 @@ lazy val framework =
       libraryDependencies ++= defaultLibs,
       libraryDependencies += "org.apache.poi" % "poi-ooxml-schemas" % "3.17",
       libraryDependencies += "stax" % "stax-api" % "1.0.1",
-      libraryDependencies += "org.apache.tika" % "tika-parsers" % "1.16"
+      libraryDependencies += "org.apache.tika" % "tika-parsers" % "1.17"
     )
     .dependsOn(application)
 

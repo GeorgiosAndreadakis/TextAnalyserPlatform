@@ -34,6 +34,27 @@ case class EventAttributesAdapter(attributes: Attributes) {
   def getValue: String = attributes.getValue(1)
   def getKey: String = attributes.getValue(0)
 
+  def csvPresentation: String = {
+    val builder = StringBuilder.newBuilder
+    for (i: Int <- 0 until 2) {
+      builder.append("(")
+      builder.append(attributes.getLocalName(i))
+      builder.append(",")
+      builder.append(attributes.getValue(i))
+      builder.append(",")
+      builder.append(attributes.getQName(i))
+      builder.append(",")
+      builder.append(attributes.getType(i))
+      builder.append(",")
+      val uri = attributes.getURI(i)
+      val uriStr = if (uri == null || uri.isEmpty) "<empty>" else uri
+      builder.append(uriStr)
+      builder.append(")")
+      //if (i==0) builder.append(";")
+    }
+    builder.toString()
+  }
+
   def basicPresentation: String = {
     val builder = StringBuilder.newBuilder
     for (i: Int <- 0 until 2) {

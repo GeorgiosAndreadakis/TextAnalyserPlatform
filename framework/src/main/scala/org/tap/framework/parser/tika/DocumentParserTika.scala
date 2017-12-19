@@ -15,7 +15,7 @@
  */
 package org.tap.framework.parser.tika
 
-import java.io.InputStream
+import java.io.{InputStream, PrintWriter}
 
 import org.apache.tika.metadata.Metadata
 import org.apache.tika.parser.AutoDetectParser
@@ -33,10 +33,15 @@ class DocumentParserTika extends DocumentParser {
     val handler = TapContentHandler(new ParseEventCollector)
     val metadata = new Metadata
     parser.parse(inputStream, handler, metadata)
+    writeToFile(handler.csvContent)
     buildDocument(handler.parseResult)
   }
 
   private def buildDocument(parseResult: ParseEventCollector): Document = {
     DocumentBuilder(parseResult).buildDocument
+  }
+
+  private def writeToFile(content: String): Unit = {
+    new PrintWriter("csvprotocol.csv") { write(content); close }
   }
 }

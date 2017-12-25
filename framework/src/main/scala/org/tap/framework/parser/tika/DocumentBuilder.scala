@@ -29,15 +29,12 @@ case class DocumentBuilder(parseResult: ParseEventCollector) {
 
     doc = new Document
     currentElementBuilder = DummyBuilder()
-
-    // iterate over the events
     parseResult.events.foreach {
       case charactersEvent  : CharactersEvent   => currentElementBuilder.charactersEventReceived(charactersEvent)
       case startElementEvent: StartElementEvent => startElementMatched(startElementEvent)
       case endElementEvent  : EndElementEvent   => endElementMatched(endElementEvent)
       case _: ParseEvent => // ignore other events
     }
-
     doc
   }
 
@@ -47,9 +44,8 @@ case class DocumentBuilder(parseResult: ParseEventCollector) {
   }
 
   def endElementMatched(event: EndElementEvent): Unit = event.qName match {
-    case "p" =>
-      doc.addElement(currentElementBuilder.endElementEventReceived())
-      currentElementBuilder = DummyBuilder()
+    case "p" => doc.addElement(currentElementBuilder.endElementEventReceived())
+                currentElementBuilder = DummyBuilder()
     case _ =>
   }
 }

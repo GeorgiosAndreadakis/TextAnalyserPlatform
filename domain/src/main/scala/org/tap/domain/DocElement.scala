@@ -15,18 +15,34 @@
  */
 package org.tap.domain
 
+import java.util.UUID
+
+import scala.collection.mutable.ListBuffer
+
 /**
   * Models an element of a document.
   *
   * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
   */
 sealed abstract class DocElement() {
+  val id: String = UUID.randomUUID().toString
 }
 
 /**
   * Models a paragraph of an document.
-  *
   * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
   */
 case class Paragraph(text: String) extends DocElement {
+}
+
+
+/**
+  * An document element which acts as an container for other elements.
+  * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
+  */
+class ElementContainer() extends DocElement() with Iterable[DocElement] {
+
+  val children = new ListBuffer[DocElement]
+
+  override def iterator:Iterator[DocElement] = children.iterator
 }

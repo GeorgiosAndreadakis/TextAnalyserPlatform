@@ -13,15 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package scala.org.tap.accepttest.importdoc
+package org.tap.accepttest.importdoc
 
-import java.io.InputStream
+import java.nio.file.Paths
 
 import cucumber.api.scala.{EN, ScalaDsl}
 import org.scalatest.Matchers
 import org.tap.application.importdoc.DocImporter
 import org.tap.domain.docimport.DocumentParser
-import org.tap.domain.{Document, DocumentRepository, Paragraph}
+import org.tap.domain.{Document, DocumentRepository, DocumentSource, Paragraph}
+import org.tap.framework.DocumentPathSource
 import org.tap.framework.parser.tika.DocumentParserTika
 
 /**
@@ -31,13 +32,13 @@ import org.tap.framework.parser.tika.DocumentParserTika
   */
 class SimpleTextPassageInWordFileStepDefs extends ScalaDsl with EN with Matchers {
 
-  private var source: InputStream = _
+  private var source: DocumentPathSource = _
   private val parser: DocumentParser = new DocumentParserTika
   private val docRepo: DocumentRepositoryMock = new DocumentRepositoryMock
 
   Given("""^a word file which contains a single text passage$"""){ () =>
     val path = "importdoc/simple-text-passage.docx"
-    source = getClass.getClassLoader.getResourceAsStream(path)
+    source = new DocumentPathSource(Paths.get(path))
     withClue(s"Source in path '$path' not found: ") {
       source should not be null
     }
@@ -78,5 +79,5 @@ class DocumentRepositoryMock extends DocumentRepository {
 }
 
 class DocumentParserMock extends DocumentParser {
-  override def parse(inputStream: InputStream): Document = new Document
+  override def parse(source: DocumentSource): Document = new Document
 }

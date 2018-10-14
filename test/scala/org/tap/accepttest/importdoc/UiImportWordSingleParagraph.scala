@@ -16,6 +16,7 @@
 package scala.org.tap.accepttest.importdoc
 
 import cucumber.api.scala.{EN, ScalaDsl}
+import org.openqa.selenium.By
 import org.scalatest.Matchers
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -46,6 +47,8 @@ class UiImportWordSingleParagraph extends ScalaDsl
   Then("""^the file will be imported, the text will be available in the system and the ui shows the single passage$"""){ () =>
 
     browser.window().title() shouldBe "The Text Analyzer Platform"
+    browser.find(By.id("fileref")).get(0) should not be null
+    browser.find(By.id("uploadSubmit")).get(0) should not be null
 
     // cleanup
     server.stop()

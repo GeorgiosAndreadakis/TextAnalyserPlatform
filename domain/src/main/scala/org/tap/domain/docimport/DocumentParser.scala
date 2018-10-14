@@ -15,13 +15,11 @@
  */
 package org.tap.domain.docimport
 
-import java.io.InputStream
-
-import org.tap.domain.Document
+import org.tap.domain.{Document, DocumentSource}
 
 /**
   * Parses an input stream and builds a document.
   */
 trait DocumentParser {
-  def parse(inputStream: InputStream): Document
+  def parse(source: DocumentSource): Document
 }

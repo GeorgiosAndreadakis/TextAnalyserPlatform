@@ -1,3 +1,5 @@
+
+@(filename: String, doc: DocumentViewModel)
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -35,24 +37,20 @@
                 'class -> "col-sm-9 form-inline form-horizontal") {
                     <div class="form-group">
                         <div class="custom-file col-sm-6">
-                            <input type="file" class="custom-file-input" id="fileref">
-                            <label class="custom-file-label" for="fileref">Choose file</label>
+                            <input type="file" class="custom-file-input" name="fileToImport" id="fileref" >
+                            <label class="custom-file-label" for="fileref">Choose file ...</label>
                         </div>
                         <div class="custom-file col-sm-2">
                             <button type="submit" id="uploadSubmit" class="btn btn-primary">Start Import</button>
                         </div>
-                        <blockquote class="blockquote">
-                            <footer class="blockquote-footer">Supported formats: only Word files with a single paragraph.</footer>
-                        </blockquote>
+                        <small>Supported formats: only Word files with a single paragraph.</small>
                     </div>
                 }
             </div>
             <div class="row">
                 <div class="col-sm-12">
                     <h2>Structure of the Imported Document</h2>
-                    <p class="lead">
-                        <span class=""></span>.
-                    </p>
+                    <h4>File imported:  @filename</h4>
                 </div>
             </div>
         </div>
@@ -60,5 +58,14 @@
         <script src="@routes.Assets.at("javascripts/jquery-3.3.1.slim.min.js")"></script>
         <script src="@routes.Assets.at("javascripts/popper.min.js")"></script>
         <script src="@routes.Assets.at("javascripts/bootstrap.min.js")"></script>
+        <script>
+                $('#fileref').on('change',function(e){
+                    //get the file name
+                    var fileName = e.target.files[0].name;
+                    //var fileName = $(this).val();
+                    //replace the "Choose a file" label
+                    $(this).next('.custom-file-label').html(fileName);
+                })
+        </script>
     </body>
 </html>

@@ -15,8 +15,13 @@
  */
 package controllers
 
+import java.nio.file.{Files, Paths}
+
 import com.google.inject.Inject
-import org.tap.domain.Document
+import models.DocumentViewModel
+import org.tap.framework.DocumentPathSource
+import org.tap.framework.filesystem.FileHandling.FileReference
+import org.tap.framework.parser.tika.DocumentParserTika
 import play.api.mvc.{BaseController, ControllerComponents}
 
 class FileUploadController @Inject() (val controllerComponents: ControllerComponents) extends BaseController {
@@ -24,22 +29,20 @@ class FileUploadController @Inject() (val controllerComponents: ControllerCompon
   def upload = Action(parse.multipartFormData) { request =>
     request.body.file("fileToImport").map { fileToImport =>
       val filename = fileToImport.filename
-      val doc = new Document
-      //val physicalFilename = System.currentTimeMillis() + "__" + fileToImport.filename
-      /*if (Option(physicalFilename).exists(_.trim.nonEmpty)) {
+      val physicalFilename = System.currentTimeMillis() + "__" + fileToImport.filename
+      if (Option(physicalFilename).exists(_.trim.nonEmpty)) {
         val tmpFolder = FileReference.findTempFolder().toFile.getAbsolutePath
         val path = Paths.get(s"$tmpFolder/$physicalFilename")
         fileToImport.ref.moveTo(path.toFile, replace = true)
-        fileToImport.ref.clean()
+        fileToImport.ref.deleteOnExit()
         val pathSource = new DocumentPathSource(path)
-        val doc = (new DocumentParser).parse(pathSource)
+        val doc = (new DocumentParserTika).parse(pathSource)
 
         Files.deleteIfExists(path)
         Ok(views.html.index(filename, DocumentViewModel(doc)))
       } else {
         Redirect(routes.FileUploadController.error(s"Missing file named '$filename'"))
-      }*/
-      Redirect(routes.FileUploadController.error(s"Missing file named '$filename'"))
+      }
     }.get
   }
 

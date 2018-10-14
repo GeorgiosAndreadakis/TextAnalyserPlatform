@@ -13,20 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.tap.domain.docimport
+package org.tap.domain
 
-import org.tap.domain.DocumentSource
+import java.io.InputStream
 
-/**
-  * A domain service for importing documents using the collaborators given by the import context.
-  *
-  * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
-  */
-trait DocumentImportService {
-  this: DocumentImportContext =>
-
-  def importFromSource(source: DocumentSource): Unit = {
-    val doc = parser.parse(source)
-    repository.save(doc)
-  }
+/** Informations about the source of a document to be parsed. */
+trait DocumentSource {
+  def inputStream: InputStream
+  def name: String
 }

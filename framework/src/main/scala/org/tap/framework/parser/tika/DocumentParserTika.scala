@@ -15,23 +15,24 @@
  */
 package org.tap.framework.parser.tika
 
-import java.io.{InputStream, PrintWriter}
+import java.io.PrintWriter
 
 import org.apache.tika.metadata.Metadata
 import org.apache.tika.parser.AutoDetectParser
-import org.tap.domain.Document
 import org.tap.domain.docimport.DocumentParser
+import org.tap.domain.{Document, DocumentSource}
 
 /**
   * Implementation of the document parser with Apache Tika.
   */
 class DocumentParserTika extends DocumentParser {
 
-  override def parse(inputStream: InputStream): Document = {
+  override def parse(source: DocumentSource): Document = {
 
     val parser = new AutoDetectParser
     val handler = TapContentHandler(new ParseEventCollector)
     val metadata = new Metadata
+    val inputStream = source.inputStream
     parser.parse(inputStream, handler, metadata)
     writeToFile(handler.csvContent)
     buildDocument(handler.parseResult)

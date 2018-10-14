@@ -1,7 +1,6 @@
 package org.tap.framework.parser.tika.helpers
 
 import org.scalatest.FunSuite
-import org.xml.sax.Attributes
 import org.xml.sax.helpers.AttributesImpl
 
 /** Unit test for EventAttributesAdapter. */

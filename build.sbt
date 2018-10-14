@@ -1,16 +1,18 @@
-import sbt.Keys.{libraryDependencies, name}
+import sbt.Keys.libraryDependencies
 
 resolvers += "Maven Central" at "http://central.maven.org/maven2"
 resolvers += "Sonatype Releases" at "https://oss.sonatype.org/content/repositories/releases"
 
-testOptions += Tests.Argument(TestFrameworks.JUnit, "-q", "-v")
+name := """Text Analyzer Platform"""
+organization := "org.tap"
+version := "1.0-SNAPSHOT"
 
 lazy val commonSettings = Seq(
-  version := "0.1.0-SNAPSHOT",
-  scalaVersion := "2.11.11"
+  scalaVersion := "2.11.12"
 )
 
 lazy val defaultLibs = Seq(
+  "ch.qos.logback" % "logback-classic" % "1.2.3",
   "junit" % "junit" % "4.12" % Test,
   "com.novocode" % "junit-interface" % "0.11" % Test,
   "org.scalactic" %% "scalactic" % "3.0.1" % Test,
@@ -18,19 +20,25 @@ lazy val defaultLibs = Seq(
 )
 
 lazy val root = (project in file("."))
-  .aggregate(acceptancetests, framework, application, domain)
+  .enablePlugins(PlayScala)
+  .aggregate(domain,application,framework,acceptancetests)
+  .dependsOn(framework)
   .settings(
-    organization := "org.textanalyzerplatform",
-    name := "Text Analyzer Platform",
-    commonSettings
+    commonSettings,
+    libraryDependencies += guice,
+    libraryDependencies += "org.projectlombok" % "lombok" % "1.16.10" % Test,
+    libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % Test,
+    libraryDependencies += "info.cukes" %% "cucumber-scala" % "1.2.5" % Test,
+    libraryDependencies += "info.cukes" % "cucumber-junit" % "1.2.5" % Test
   )
+
 
 lazy val acceptancetests =
   project
     .settings(
       commonSettings,
       libraryDependencies ++= defaultLibs,
-      libraryDependencies += "info.cukes" % "cucumber-scala_2.11" % "1.2.5" % Test,
+      libraryDependencies += "info.cukes" %% "cucumber-scala" % "1.2.5" % Test,
       libraryDependencies += "info.cukes" % "cucumber-junit" % "1.2.5" % Test
     )
     .dependsOn(framework)
@@ -40,9 +48,13 @@ lazy val framework =
     .settings(
       commonSettings,
       libraryDependencies ++= defaultLibs,
+      libraryDependencies += "org.xerial" % "sqlite-jdbc" % "3.19.3",
       libraryDependencies += "org.apache.poi" % "poi-ooxml-schemas" % "3.17",
       libraryDependencies += "stax" % "stax-api" % "1.0.1",
-      libraryDependencies += "org.apache.tika" % "tika-parsers" % "1.17"
+      libraryDependencies += "com.github.jai-imageio" % "jai-imageio-core" % "1.3.1",
+      libraryDependencies += "com.levigo.jbig2" % "levigo-jbig2-imageio" % "2.0",
+      libraryDependencies += "com.github.jai-imageio" % "jai-imageio-jpeg2000" % "1.3.0",
+      libraryDependencies += "org.apache.tika" % "tika-parsers" % "1.17" excludeAll ExclusionRule(organization = "org.slf4j")
     )
     .dependsOn(application)
 
@@ -60,3 +72,10 @@ lazy val domain =
       commonSettings,
       libraryDependencies ++= defaultLibs
     )
+
+
+// Adds additional packages into Twirl
+//TwirlKeys.templateImports += "org.ac.controllers._"
+
+// Adds additional packages into conf/routes
+// play.sbt.routes.RoutesKeys.routesImport += "org.ac.binders._"

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>The Text Analyzer Platform</title>
+        <link rel="stylesheet" href="@routes.Assets.at("stylesheets/bootstrap.min.css")">
+        <link rel="stylesheet" href="@routes.Assets.at("stylesheets/main.css")">
+    </head>
+    <body>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h1>Welcome to the Text Analyzer Platform</h1>
+                    <!--h1 class="align-self-center">Welcome to the Text Analyzer Platform</h1-->
+                    <p class="lead">
+                        The Text Analyzer Platform allows users to gather documents, extract the information in a text
+                        and enhance their knowledge.<br/>
+                        The project is in an early incubating phase.<br/>
+                        So behavior and layout of the application will probably change from release to release.
+                    </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <h2>Upload text file</h2>
+                    <p class="lead">Please select a text file and press the import button.</p>
+                </div>
+            </div>
+            <div class="row">
+                @helper.form(
+                action = routes.FileUploadController.upload,
+                'enctype -> "multipart/form-data",
+                'class -> "col-sm-9 form-inline form-horizontal") {
+                    <div class="form-group">
+                        <div class="custom-file col-sm-6">
+                            <input type="file" class="custom-file-input" id="fileref">
+                            <label class="custom-file-label" for="fileref">Choose file</label>
+                        </div>
+                        <div class="custom-file col-sm-2">
+                            <button type="submit" id="uploadSubmit" class="btn btn-primary">Start Import</button>
+                        </div>
+                        <blockquote class="blockquote">
+                            <footer class="blockquote-footer">Supported formats: only Word files with a single paragraph.</footer>
+                        </blockquote>
+                    </div>
+                }
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <h2>Structure of the Imported Document</h2>
+                    <p class="lead">
+                        <span class=""></span>.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <script src="@routes.Assets.at("javascripts/jquery-3.3.1.slim.min.js")"></script>
+        <script src="@routes.Assets.at("javascripts/popper.min.js")"></script>
+        <script src="@routes.Assets.at("javascripts/bootstrap.min.js")"></script>
+    </body>
+</html>

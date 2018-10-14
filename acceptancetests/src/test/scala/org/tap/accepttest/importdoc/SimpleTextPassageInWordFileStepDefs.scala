@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.tap.accepttest.importdoc
+package scala.org.tap.accepttest.importdoc
 
 import java.io.InputStream
 
@@ -36,8 +36,9 @@ class SimpleTextPassageInWordFileStepDefs extends ScalaDsl with EN with Matchers
   private val docRepo: DocumentRepositoryMock = new DocumentRepositoryMock
 
   Given("""^a word file which contains a single text passage$"""){ () =>
-    source = getClass.getClassLoader.getResourceAsStream("importdoc/simple-text-passage.docx")
-    withClue("Source may not be null") {
+    val path = "importdoc/simple-text-passage.docx"
+    source = getClass.getClassLoader.getResourceAsStream(path)
+    withClue(s"Source in path '$path' not found: ") {
       source should not be null
     }
   }

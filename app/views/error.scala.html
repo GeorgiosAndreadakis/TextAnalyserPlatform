@@ -1,0 +1,21 @@
+@(msg: String)
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="@routes.Assets.at("stylesheets/main.css")">
+        @* Here's where we render the page title `String`. *@
+        <title>Error</title>
+    </head>
+    <body>
+        @* And here's where we render the `Html` object containing
+        * the page content. *@
+        <div class="container">
+            <h1>Application Error</h1>
+            <p>@msg</p>
+        </div>
+    </body>
+</html>

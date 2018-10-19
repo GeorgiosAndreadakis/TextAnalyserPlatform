@@ -22,7 +22,7 @@ lazy val defaultLibs = Seq(
 lazy val root = (project in file("."))
   .enablePlugins(PlayScala)
   .aggregate(domain,application,framework,acceptancetests)
-  .dependsOn(framework)
+  .dependsOn(framework,acceptancetests,application,domain)
   .settings(
     commonSettings,
     libraryDependencies += guice,

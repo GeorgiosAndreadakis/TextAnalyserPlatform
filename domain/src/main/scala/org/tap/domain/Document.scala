@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Georgios Andreadakis
+ * Copyright (c) 2018 Georgios Andreadakis
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,9 +24,23 @@ import scala.collection.mutable.ListBuffer
   */
 class Document extends Iterable[DocElement]  {
 
-  private val elementList = new ListBuffer[DocElement]
+  val bodyElements = new RootContainer
+  private val depthFirstElementList = new ListBuffer[DocElement]
+  private var source: DocumentSource = _
 
-  def addElement(element: DocElement): Unit = elementList += element
+  override def iterator:Iterator[DocElement] = bodyElements.iterator
 
-  override def iterator:Iterator[DocElement] = elementList.toList.iterator
+  def setSource(source: DocumentSource): Unit = this.source = source
+
+  def allElementsInDepthFirstOrder: List[DocElement] = depthFirstElementList.toList
+
+  def elementCreated(docElement: DocElement): Unit = {
+    if (docElement.isEmptyDocElement) {
+      bodyElements.removeElement(docElement)
+    } else {
+      bodyElements.addChild(docElement)
+      depthFirstElementList += docElement
+    }
+  }
+
 }

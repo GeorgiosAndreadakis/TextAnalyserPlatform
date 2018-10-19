@@ -1,0 +1,11 @@
+@(elementContainerViewModel: ElementContainerViewModel)
+
+<div>
+    @for(elem <- elementContainerViewModel) {
+        @{
+            if (elem.isInstanceOf[ParagraphViewModel]) {
+                paragraph(elem.asInstanceOf[ParagraphViewModel])
+            }
+        }
+    }
+</div>

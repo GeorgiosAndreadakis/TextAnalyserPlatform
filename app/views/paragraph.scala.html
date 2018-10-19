@@ -1,3 +1,6 @@
+@(paragraph: ParagraphViewModel)
+
+<!--
 /*
  * Copyright (c) 2018 Georgios Andreadakis
  *
@@ -13,35 +16,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+-->
 
-@import "bootstrap.min.css";
-
-$titleColor: #2900B2;
-$headerBgColor: #4711FF;
-$menuBgColor: #5B2BFF;
-$sectionColor: #1b0d9b;
-$bodyBgColor: #FEFFFE;
-$minWidthPage: 760px;
-$maxWidthPage: 1024px;
-
-.starter-template {
-  padding: 40px 15px;
-  text-align: center;
-}
-
-body {
-  background-color: $bodyBgColor;
-  padding-top: 50px;
-}
-
-h1 {
-  color: $sectionColor;
-}
-
-h2 {
-  margin-top: 1.1em;
-}
-
-p {
-  font-size: 1.1em;
-}
+<div class="card rounded mb-0">
+    <div class="card-body">
+        <p>@paragraph.text</p>
+        @document(paragraph)
+    </div>
+</div>

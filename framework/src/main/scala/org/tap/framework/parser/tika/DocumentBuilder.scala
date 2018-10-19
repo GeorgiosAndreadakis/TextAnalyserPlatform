@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Georgios Andreadakis
+ * Copyright (c) 2018 Georgios Andreadakis
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,7 +44,7 @@ case class DocumentBuilder(parseResult: ParseEventCollector) {
   }
 
   def endElementMatched(event: EndElementEvent): Unit = event.qName match {
-    case "p" => doc.addElement(currentElementBuilder.endElementEventReceived())
+    case "p" => doc.elementCreated(currentElementBuilder.endElementEventReceived())
                 currentElementBuilder = DummyBuilder()
     case _ =>
   }

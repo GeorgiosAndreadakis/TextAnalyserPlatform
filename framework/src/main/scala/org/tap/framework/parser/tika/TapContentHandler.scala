@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Georgios Andreadakis
+ * Copyright (c) 2018 Georgios Andreadakis
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,8 +50,10 @@ case class TapContentHandler(eventCollector: ParseEventCollector) extends Conten
   }
 
   override def endElement(uri: String, localName: String, qName: String): Unit = {
-    eventCollector.addEndOfElement(uri, localName, qName)
-    if (included(localName)) logEndElement(uri, localName, qName)
+    if (included(localName)) {
+      eventCollector.addEndOfElement(uri, localName, qName)
+      logEndElement(uri, localName, qName)
+    }
   }
 
   def included(localName: String): Boolean = {
@@ -59,18 +61,20 @@ case class TapContentHandler(eventCollector: ParseEventCollector) extends Conten
   }
 
   override def startElement(uri: String, localName: String, qName: String, atts: Attributes): Unit = {
-    eventCollector.addStartOfElement(uri, localName, qName, atts)
-    if (included(localName)) logStartElement(uri, localName, qName, atts)
+    if (included(localName)) {
+      eventCollector.addStartOfElement(uri, localName, qName, atts)
+      logStartElement(uri, localName, qName, atts)
+    }
   }
 
   override def endPrefixMapping(prefix: String): Unit = {
     //result.addEndOfPrefixMapping(prefix)
-    logEndPrefixMapping(prefix)
+    //logEndPrefixMapping(prefix)
   }
 
   override def startPrefixMapping(prefix: String, uri: String): Unit = {
     //result.addStartOfPrefixMapping(prefix, uri)
-    logStartPrefixMapping(prefix, uri)
+    //logStartPrefixMapping(prefix, uri)
   }
 
   override def endDocument(): Unit = {

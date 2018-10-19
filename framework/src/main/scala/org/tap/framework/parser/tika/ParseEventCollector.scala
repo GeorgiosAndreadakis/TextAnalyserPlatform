@@ -48,9 +48,12 @@ case class ParseEventCollector() {
   */
 sealed trait ParseEvent {
 }
-case class StartElementEvent(uri: String, localName: String, qName: String, atts: Attributes) extends ParseEvent
-case class EndElementEvent(uri: String, localName: String, qName: String) extends ParseEvent
-case class CharactersEvent(ch: String, start: Int, lenght: Int) extends ParseEvent
-//case class StartDocumentEvent() extends ParseEvent
-//case class EndDocumentEvent() extends ParseEvent
-
+case class StartElementEvent(uri: String, localName: String, qName: String, atts: Attributes) extends ParseEvent {
+  override def toString: String = qName
+}
+case class EndElementEvent(uri: String, localName: String, qName: String) extends ParseEvent {
+  override def toString: String = qName
+}
+case class CharactersEvent(ch: String, start: Int, lenght: Int) extends ParseEvent {
+  override def toString: String = s"[$start,$lenght] $ch"
+}

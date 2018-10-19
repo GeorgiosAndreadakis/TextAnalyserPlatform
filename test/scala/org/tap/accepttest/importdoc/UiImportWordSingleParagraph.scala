@@ -29,32 +29,44 @@ import play.api.test.{Helpers, TestBrowser, TestServer}
   * <p>"Importing a simple Word document with a single paragraph"</p>
   * which addresses the UI.
   */
-class UiImportWordSingleParagraph extends ScalaDsl
-  with EN with Matchers {
+class UiImportWordSingleParagraph
+  extends ScalaDsl
+  with EN
+  with Matchers {
 
   val port = 9009
   val browser: TestBrowser = TestBrowser.of(Helpers.HTMLUNIT)
   val application: Application = new GuiceApplicationBuilder().build()
   val server = TestServer(port, application)
 
+
   Given("""^a started import dialog$"""){ () =>
+
     // for the execution in an IDE because HtmlUnit has some problems with JavaScript when minimised
     browser.setCustomProperty(CapabilityType.SUPPORTS_JAVASCRIPT, "false")
     server.start()
+    browser.goTo("http://localhost:" + port)
+
+    // Check elements
+    browser.window().title() shouldBe "The Text Analyzer Platform"
+    browser.find(By.id("fileref")).get(0) should not be null
+    browser.find(By.id("uploadSubmit")).get(0) should not be null
   }
 
+
   When("""^the user selects a file containing a single text passage and starts the import$"""){ () =>
-    val url = "http://localhost:" + port
-    browser.goTo(url)
+
+    browser.find(By.id("fileref")).get(0).keyboard().sendKeys("test/resources/importdoc/simple-text-passage.docx")
+    browser.find(By.id("uploadSubmit")).get(0).click()
   }
+
 
   Then("""^the file will be imported, the text will be available in the system and the ui shows the single passage$"""){ () =>
 
     browser.window().title() shouldBe "The Text Analyzer Platform"
-    browser.find(By.id("fileref")).get(0) should not be null
-    browser.find(By.id("uploadSubmit")).get(0) should not be null
+    browser.find(By.className("card-body")).textContent().contains("The central concept of a document store is the notion")
 
-    // cleanup
+    // cleanup test setup
     server.stop()
     browser.quit()
   }

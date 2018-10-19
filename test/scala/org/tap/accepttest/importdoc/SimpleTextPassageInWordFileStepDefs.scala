@@ -37,7 +37,7 @@ class SimpleTextPassageInWordFileStepDefs extends ScalaDsl with EN with Matchers
   private val docRepo: DocumentRepositoryMock = new DocumentRepositoryMock
 
   Given("""^a word file which contains a single text passage$"""){ () =>
-    val path = "importdoc/simple-text-passage.docx"
+    val path = "test/resources/importdoc/simple-text-passage.docx"
     source = new DocumentPathSource(Paths.get(path))
     withClue(s"Source in path '$path' not found: ") {
       source should not be null

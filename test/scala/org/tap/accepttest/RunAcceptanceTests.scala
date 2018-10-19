@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package scala.org.tap.accepttest
+package org.tap.accepttest
 
 import cucumber.api.CucumberOptions
 import cucumber.api.junit.Cucumber
@@ -22,9 +22,9 @@ import org.junit.runner.RunWith
 /** JUnit-Runner for the Cucumber UI Tests. */
 @RunWith(classOf[Cucumber])
 @CucumberOptions(
-  glue=Array("scala.org.tap.accepttest"),
+  glue=Array("org.tap.accepttest"),
   features = Array("test/resources/features"),
   plugin = Array("pretty", "html:target/cucumber-report")
 )
-class RunUiTests {
+class RunAcceptanceTests {
 }

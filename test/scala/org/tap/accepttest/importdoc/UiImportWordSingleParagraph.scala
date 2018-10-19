@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package scala.org.tap.accepttest.importdoc
+package org.tap.accepttest.importdoc
 
 import cucumber.api.scala.{EN, ScalaDsl}
 import org.openqa.selenium.By
+import org.openqa.selenium.remote.CapabilityType
 import org.scalatest.Matchers
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -37,11 +38,14 @@ class UiImportWordSingleParagraph extends ScalaDsl
   val server = TestServer(port, application)
 
   Given("""^a started import dialog$"""){ () =>
+    // for the execution in an IDE because HtmlUnit has some problems with JavaScript when minimised
+    browser.setCustomProperty(CapabilityType.SUPPORTS_JAVASCRIPT, "false")
     server.start()
   }
 
   When("""^the user selects a file containing a single text passage and starts the import$"""){ () =>
-    browser.goTo(s"http://localhost:$port")
+    val url = "http://localhost:" + port
+    browser.goTo(url)
   }
 
   Then("""^the file will be imported, the text will be available in the system and the ui shows the single passage$"""){ () =>

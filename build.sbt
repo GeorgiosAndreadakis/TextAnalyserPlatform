@@ -21,27 +21,20 @@ lazy val defaultLibs = Seq(
 
 lazy val root = (project in file("."))
   .enablePlugins(PlayScala)
-  .aggregate(domain,application,framework,acceptancetests)
-  .dependsOn(framework,acceptancetests,application,domain)
+  .aggregate(domain,application,framework)
+  .dependsOn(framework,application,domain)
   .settings(
     commonSettings,
+    libraryDependencies ++= defaultLibs,
     libraryDependencies += guice,
     libraryDependencies += "org.projectlombok" % "lombok" % "1.16.10" % Test,
     libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % Test,
     libraryDependencies += "info.cukes" %% "cucumber-scala" % "1.2.5" % Test,
-    libraryDependencies += "info.cukes" % "cucumber-junit" % "1.2.5" % Test
+    libraryDependencies += "info.cukes" % "cucumber-junit" % "1.2.5" % Test,
+
+    scalaSource in Test := baseDirectory.value / "test" / "scala",
+    resourceDirectory in Test := baseDirectory.value / "test" / "resources"
   )
-
-
-lazy val acceptancetests =
-  project
-    .settings(
-      commonSettings,
-      libraryDependencies ++= defaultLibs,
-      libraryDependencies += "info.cukes" %% "cucumber-scala" % "1.2.5" % Test,
-      libraryDependencies += "info.cukes" % "cucumber-junit" % "1.2.5" % Test
-    )
-    .dependsOn(framework)
 
 lazy val framework =
   project

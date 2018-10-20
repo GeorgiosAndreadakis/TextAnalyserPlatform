@@ -19,6 +19,7 @@ import cucumber.api.scala.{EN, ScalaDsl}
 import org.openqa.selenium.By
 import org.openqa.selenium.remote.CapabilityType
 import org.scalatest.Matchers
+import org.tap.accepttest.testdata.TestFileReference
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.{Helpers, TestBrowser, TestServer}
@@ -40,6 +41,11 @@ class SingleParagraphWordDocStepDefsUI
   val server = TestServer(port, application)
 
 
+  private def testreference = {
+    TestFileReference.build.find(TestFileReference.WORD_SINGLE_PARAGRAPH)
+  }
+
+
   Given("""^a started import dialog$"""){ () =>
 
     // for the execution in an IDE because HtmlUnit has some problems with JavaScript when minimised
@@ -56,7 +62,8 @@ class SingleParagraphWordDocStepDefsUI
 
   When("""^the user selects a file containing a single text passage and starts the import$"""){ () =>
 
-    browser.find(By.id("fileref")).get(0).keyboard().sendKeys("test-resources/importdoc/simple-text-passage.docx")
+    val keys = testreference.qualifiedPath
+    browser.find(By.id("fileref")).get(0).keyboard().sendKeys(keys)
     browser.find(By.id("uploadSubmit")).get(0).click()
   }
 
@@ -64,7 +71,7 @@ class SingleParagraphWordDocStepDefsUI
   Then("""^the file will be imported, the text will be available in the system and the ui shows the single passage$"""){ () =>
 
     browser.window().title() shouldBe "The Text Analyzer Platform"
-    browser.find(By.className("card-body")).textContent().contains("The central concept of a document store is the notion")
+    browser.find(By.className("card-body")).textContent().contains(testreference.expected)
 
     // cleanup test setup
     server.stop()

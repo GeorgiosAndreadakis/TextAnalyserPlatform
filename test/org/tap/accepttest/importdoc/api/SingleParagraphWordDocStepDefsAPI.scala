@@ -19,6 +19,7 @@ import java.nio.file.Paths
 
 import cucumber.api.scala.{EN, ScalaDsl}
 import org.scalatest.Matchers
+import org.tap.accepttest.testdata.TestFileReference
 import org.tap.application.importdoc.DocImporter
 import org.tap.domain.docimport.DocumentParser
 import org.tap.domain.{Document, DocumentRepository, DocumentSource, Paragraph}
@@ -36,8 +37,13 @@ class SimpleTextPassageInWordFileStepDefs extends ScalaDsl with EN with Matchers
   private val parser: DocumentParser = new DocumentParserTika
   private val docRepo: DocumentRepositoryMock = new DocumentRepositoryMock
 
+  private def testreference = {
+    TestFileReference.build.find(TestFileReference.WORD_SINGLE_PARAGRAPH)
+  }
+
+
   Given("""^a word file which contains a single text passage$"""){ () =>
-    val path = "test-resources/importdoc/simple-text-passage.docx"
+    val path = testreference.qualifiedPath
     source = new DocumentPathSource(Paths.get(path))
     withClue(s"Source in path '$path' not found: ") {
       source should not be null
@@ -57,7 +63,7 @@ class SimpleTextPassageInWordFileStepDefs extends ScalaDsl with EN with Matchers
     }
 
     withClue("Document misses a paragraph containing defined text") {
-      val text = "Documents are addressed in the database via a unique key that represents that document."
+      val text = testreference.expected
       docRepo.documentContainsParagraphStartingWith(text) shouldBe true
     }
   }

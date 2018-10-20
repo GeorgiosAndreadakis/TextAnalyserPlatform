@@ -1,4 +1,4 @@
-Feature: UI- Import single document file
+Feature: Document file with single paragraph using the import dialog
 
   Scenario: A single text passage in a Word document
     Given a started import dialog

@@ -1,4 +1,4 @@
-Feature: Import document file
+Feature: Document file with single paragraph
 
   Scenario: A single text passage in a Word document
     Given a word file which contains a single text passage

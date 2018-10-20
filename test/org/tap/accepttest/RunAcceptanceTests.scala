@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Georgios Andreadakis
+ * Copyright (c) 2018 Georgios Andreadakis
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,11 +19,11 @@ import cucumber.api.CucumberOptions
 import cucumber.api.junit.Cucumber
 import org.junit.runner.RunWith
 
-/** JUnit-Runner for the Cucumber UI Tests. */
+/** JUnit-Runner for the Cucumber acceptance tests. */
 @RunWith(classOf[Cucumber])
 @CucumberOptions(
   glue=Array("org.tap.accepttest"),
-  features = Array("test/resources/features"),
+  features = Array("test-resources/features"),
   plugin = Array("pretty", "html:target/cucumber-report")
 )
 class RunAcceptanceTests {

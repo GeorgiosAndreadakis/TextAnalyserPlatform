@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.tap.accepttest.importdoc
+package org.tap.accepttest.importdoc.ui.importdialog
 
 import cucumber.api.scala.{EN, ScalaDsl}
 import org.openqa.selenium.By
@@ -29,7 +29,7 @@ import play.api.test.{Helpers, TestBrowser, TestServer}
   * <p>"Importing a simple Word document with a single paragraph"</p>
   * which addresses the UI.
   */
-class UiImportWordSingleParagraph
+class SingleParagraphWordDocStepDefsUI
   extends ScalaDsl
   with EN
   with Matchers {
@@ -56,7 +56,7 @@ class UiImportWordSingleParagraph
 
   When("""^the user selects a file containing a single text passage and starts the import$"""){ () =>
 
-    browser.find(By.id("fileref")).get(0).keyboard().sendKeys("test/resources/importdoc/simple-text-passage.docx")
+    browser.find(By.id("fileref")).get(0).keyboard().sendKeys("test-resources/importdoc/simple-text-passage.docx")
     browser.find(By.id("uploadSubmit")).get(0).click()
   }
 

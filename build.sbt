@@ -32,8 +32,7 @@ lazy val root = (project in file("."))
     libraryDependencies += "info.cukes" %% "cucumber-scala" % "1.2.5" % Test,
     libraryDependencies += "info.cukes" % "cucumber-junit" % "1.2.5" % Test,
 
-    scalaSource in Test := baseDirectory.value / "test" / "scala",
-    resourceDirectory in Test := baseDirectory.value / "test" / "resources"
+    resourceDirectory in Test := baseDirectory.value / "test-resources"
   )
 
 lazy val framework =

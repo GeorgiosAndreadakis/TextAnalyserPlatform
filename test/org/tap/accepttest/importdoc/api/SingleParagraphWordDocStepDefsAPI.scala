@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.tap.accepttest.importdoc
+package org.tap.accepttest.importdoc.api
 
 import java.nio.file.Paths
 
@@ -37,7 +37,7 @@ class SimpleTextPassageInWordFileStepDefs extends ScalaDsl with EN with Matchers
   private val docRepo: DocumentRepositoryMock = new DocumentRepositoryMock
 
   Given("""^a word file which contains a single text passage$"""){ () =>
-    val path = "test/resources/importdoc/simple-text-passage.docx"
+    val path = "test-resources/importdoc/simple-text-passage.docx"
     source = new DocumentPathSource(Paths.get(path))
     withClue(s"Source in path '$path' not found: ") {
       source should not be null

@@ -3,8 +3,9 @@
 <div>
     @for(elem <- elementContainerViewModel) {
         @{
-            if (elem.isInstanceOf[ParagraphViewModel]) {
-                paragraph(elem.asInstanceOf[ParagraphViewModel])
+            elem match {
+                case paragraphViewModel: ParagraphViewModel => paragraph(elem.asInstanceOf[ParagraphViewModel])
+                case _ : ElementViewModel =>
             }
         }
     }

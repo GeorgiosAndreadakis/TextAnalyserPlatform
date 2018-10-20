@@ -18,6 +18,8 @@ package org.tap.accepttest.testdata
 
 /**
   * Defines references to documents files and expected values to use in the tests.
+  *
+  * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
   */
 case class TestFileReference(referenceMap: Map[String,ReferencePair]) {
   def find(key: String) : ReferencePair = {

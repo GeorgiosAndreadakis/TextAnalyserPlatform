@@ -29,6 +29,8 @@ import play.api.test.{Helpers, TestBrowser, TestServer}
   * Implements the step definitions for the acceptance test case
   * <p>"Importing a simple Word document with a single paragraph"</p>
   * which addresses the UI.
+  *
+  * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
   */
 class SingleParagraphWordDocStepDefsUI
   extends ScalaDsl

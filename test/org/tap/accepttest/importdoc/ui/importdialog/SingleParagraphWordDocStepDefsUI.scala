@@ -49,6 +49,7 @@ class SingleParagraphWordDocStepDefsUI
     browser.window().title() shouldBe "The Text Analyzer Platform"
     browser.find(By.id("fileref")).get(0) should not be null
     browser.find(By.id("uploadSubmit")).get(0) should not be null
+
   }
 
 

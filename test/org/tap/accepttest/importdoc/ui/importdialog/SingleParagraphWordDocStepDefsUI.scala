@@ -17,7 +17,6 @@ package org.tap.accepttest.importdoc.ui.importdialog
 
 import cucumber.api.scala.{EN, ScalaDsl}
 import org.openqa.selenium.By
-import org.openqa.selenium.remote.CapabilityType
 import org.scalatest.Matchers
 import org.tap.accepttest.testdata.TestFileReference
 import play.api.Application
@@ -33,9 +32,7 @@ import play.api.test.{Helpers, TestBrowser, TestServer}
   * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
   */
 class SingleParagraphWordDocStepDefsUI
-  extends ScalaDsl
-  with EN
-  with Matchers {
+  extends ScalaDsl with EN with Matchers {
 
   val port = 9009
   val browser: TestBrowser = TestBrowser.of(Helpers.HTMLUNIT)
@@ -43,15 +40,8 @@ class SingleParagraphWordDocStepDefsUI
   val server = TestServer(port, application)
 
 
-  private def testreference = {
-    TestFileReference.build.find(TestFileReference.WORD_SINGLE_PARAGRAPH)
-  }
-
-
   Given("""^a started import dialog$"""){ () =>
 
-    // for the execution in an IDE because HtmlUnit has some problems with JavaScript when minimised
-    browser.setCustomProperty(CapabilityType.SUPPORTS_JAVASCRIPT, "false")
     server.start()
     browser.goTo("http://localhost:" + port)
 
@@ -78,6 +68,11 @@ class SingleParagraphWordDocStepDefsUI
     // cleanup test setup
     server.stop()
     browser.quit()
+  }
+
+
+  private def testreference = {
+    TestFileReference.build.find(TestFileReference.WORD_SINGLE_PARAGRAPH)
   }
 
 }

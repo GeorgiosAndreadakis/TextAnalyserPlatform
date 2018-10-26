@@ -18,7 +18,11 @@ package models
 import org.tap.domain.{DocElement, Document, ElementContainer, Paragraph}
 
 
-/** The model for a document view. */
+/**
+  * The model for a document view.
+  *
+  * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
+  */
 case class DocumentViewModel(document: Document) {
   def bodyElements: ElementContainerViewModel = BodyElements(document)
 }

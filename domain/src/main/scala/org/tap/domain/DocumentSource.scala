@@ -17,7 +17,11 @@ package org.tap.domain
 
 import java.io.InputStream
 
-/** Informations about the source of a document to be parsed. */
+/**
+  * Informations about the source of a document to be parsed.
+  *
+  * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
+  */
 trait DocumentSource {
   def inputStream: InputStream
   def name: String

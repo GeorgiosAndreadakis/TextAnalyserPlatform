@@ -15,38 +15,45 @@
  */
 package controllers
 
-import java.nio.file.{Files, Paths}
+import java.nio.file.Files
 
 import com.google.inject.Inject
 import models.DocumentViewModel
 import org.tap.framework.DocumentPathSource
-import org.tap.framework.filesystem.FileHandling.FileReference
 import org.tap.framework.parser.tika.DocumentParserTika
-import play.api.mvc.{BaseController, ControllerComponents}
+import play.api.mvc.{BaseController, ControllerComponents, Result}
 
-class FileUploadController @Inject() (val controllerComponents: ControllerComponents) extends BaseController {
+
+/**
+  * Controller for the file upload page.
+  *
+  * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
+  */
+class FileUploadController @Inject() (val controllerComponents: ControllerComponents)
+  extends BaseController {
 
   def upload = Action(parse.multipartFormData) { request =>
+
     request.body.file("fileToImport").map { fileToImport =>
       val filename = fileToImport.filename
-      val physicalFilename = System.currentTimeMillis() + "__" + fileToImport.filename
-      if (Option(physicalFilename).exists(_.trim.nonEmpty)) {
-        val tmpFolder = FileReference.findTempFolder().toFile.getAbsolutePath
-        val path = Paths.get(s"$tmpFolder/$physicalFilename")
-        fileToImport.ref.moveTo(path.toFile, replace = true)
-        fileToImport.ref.deleteOnExit()
-        val pathSource = new DocumentPathSource(path)
-        val doc = (new DocumentParserTika).parse(pathSource)
-
-        Files.deleteIfExists(path)
-        Ok(views.html.index(filename, DocumentViewModel(doc)))
-      } else {
-        Redirect(routes.FileUploadController.error(s"Missing file named '$filename'"))
+      filename match {
+        case null => invalidFilename("No file specified")
+        case "" => invalidFilename(s"Missing file named '$filename'")
+        case _ =>
+          val path = fileToImport.ref.path
+          val doc = (new DocumentParserTika).parse(new DocumentPathSource(path))
+          Files.deleteIfExists(path)
+          Ok(views.html.index(filename, DocumentViewModel(doc)))
       }
     }.get
+  }
+
+  private def invalidFilename(msg: String): Result = {
+    Redirect(routes.FileUploadController.error(msg))
   }
 
   def error(msg: String) = Action {
     Ok(views.html.error(s"TAP error: $msg"))
   }
+
 }

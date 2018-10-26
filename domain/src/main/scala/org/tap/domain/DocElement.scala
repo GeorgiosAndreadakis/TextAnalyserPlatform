@@ -21,6 +21,7 @@ import scala.collection.mutable.ListBuffer
 
 /**
   * Models an element of a document.
+  *
   * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
   */
 sealed abstract class DocElement() {

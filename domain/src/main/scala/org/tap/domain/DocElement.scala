@@ -24,7 +24,7 @@ import scala.collection.mutable.ListBuffer
   *
   * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
   */
-sealed abstract class DocElement() {
+sealed abstract class DocElement {
 
   val id: String = UUID.randomUUID().toString
   var parent: ElementContainer = _
@@ -46,7 +46,7 @@ case class RootContainer() extends ElementContainer() {
   * An document element which acts as an container for other elements.
   * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
   */
-class ElementContainer() extends DocElement() with Iterable[DocElement] {
+class ElementContainer extends DocElement with Iterable[DocElement] {
 
   val children = new ListBuffer[DocElement]
 

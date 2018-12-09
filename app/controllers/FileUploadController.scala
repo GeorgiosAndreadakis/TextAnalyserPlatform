@@ -15,10 +15,12 @@
  */
 package controllers
 
-import java.nio.file.Files
+import java.nio.file.{Files, Path}
 
 import com.google.inject.Inject
 import models.DocumentViewModel
+import org.tap.application.importdoc.DocImporter
+import org.tap.domain.{Document, DocumentRepository}
 import org.tap.framework.DocumentPathSource
 import org.tap.framework.parser.tika.DocumentParserTika
 import play.api.mvc.{BaseController, ControllerComponents, Result}
@@ -32,7 +34,8 @@ import play.api.mvc.{BaseController, ControllerComponents, Result}
 class FileUploadController @Inject() (val controllerComponents: ControllerComponents)
   extends BaseController {
 
-  def upload = Action(parse.multipartFormData) { request =>
+  def upload = Action(parse.multipartFormData)
+  { request =>
 
     request.body.file("fileToImport").map { fileToImport =>
       val filename = fileToImport.filename
@@ -41,11 +44,18 @@ class FileUploadController @Inject() (val controllerComponents: ControllerCompon
         case "" => invalidFilename(s"Missing file named '$filename'")
         case _ =>
           val path = fileToImport.ref.path
-          val doc = (new DocumentParserTika).parse(new DocumentPathSource(path))
+          val doc = importFile(path)
           Files.deleteIfExists(path)
           Ok(views.html.index(filename, DocumentViewModel(doc)))
       }
     }.get
+  }
+
+  private def importFile(path: Path): Document = {
+    val repository = new DummyDocuRepository
+    val parser = new DocumentParserTika
+    val source = new DocumentPathSource(path)
+    new DocImporter(repository, parser).importFile(source)
   }
 
   private def invalidFilename(msg: String): Result = {
@@ -56,4 +66,8 @@ class FileUploadController @Inject() (val controllerComponents: ControllerCompon
     Ok(views.html.error(s"TAP error: $msg"))
   }
 
+}
+
+class DummyDocuRepository extends DocumentRepository {
+  override def save(document: Document): Unit = {}
 }

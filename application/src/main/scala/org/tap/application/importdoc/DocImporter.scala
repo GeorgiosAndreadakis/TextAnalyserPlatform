@@ -16,7 +16,7 @@
 package org.tap.application.importdoc
 
 import org.tap.domain.docimport.{DocumentImportContext, DocumentImportService, DocumentParser}
-import org.tap.domain.{DocumentRepository, DocumentSource}
+import org.tap.domain.{Document, DocumentRepository, DocumentSource}
 
 /**
   * Application service responsible for the import of documents.
@@ -25,7 +25,7 @@ import org.tap.domain.{DocumentRepository, DocumentSource}
   */
 class DocImporter(val docuRepo: DocumentRepository, val docuParser: DocumentParser) {
 
-  def importFile(source: DocumentSource): Unit = {
+  def importFile(source: DocumentSource): Document = {
     val service = new DocumentImportService with DocumentImportContext {
       override def repository: DocumentRepository = docuRepo
       override def parser: DocumentParser = docuParser
@@ -33,3 +33,4 @@ class DocImporter(val docuRepo: DocumentRepository, val docuParser: DocumentPars
     service.importFromSource(source)
   }
 }
+

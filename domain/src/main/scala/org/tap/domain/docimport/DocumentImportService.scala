@@ -15,7 +15,7 @@
  */
 package org.tap.domain.docimport
 
-import org.tap.domain.DocumentSource
+import org.tap.domain.{Document, DocumentSource}
 
 /**
   * A domain service for importing documents using the collaborators given by the import context.
@@ -25,8 +25,9 @@ import org.tap.domain.DocumentSource
 trait DocumentImportService {
   this: DocumentImportContext =>
 
-  def importFromSource(source: DocumentSource): Unit = {
+  def importFromSource(source: DocumentSource): Document = {
     val doc = parser.parse(source)
     repository.save(doc)
+    doc
   }
 }

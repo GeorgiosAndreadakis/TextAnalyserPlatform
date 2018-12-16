@@ -53,7 +53,7 @@ class SingleParagraphWordDocStepDefsUI
   }
 
 
-  When("""^the user selects a file containing a single text passage and starts the import$"""){ () =>
+  When("""^the user selects a file with a text passage and starts the import$"""){ () =>
 
     val keys = testreference.qualifiedPath
     browser.find(By.id("fileref")).get(0).keyboard().sendKeys(keys)
@@ -61,7 +61,7 @@ class SingleParagraphWordDocStepDefsUI
   }
 
 
-  Then("""^the file will be imported, the text will be available in the system and the ui shows the single passage$"""){ () =>
+  Then("""^after the import the file will be available in the system and the ui shows the document$"""){ () =>
 
     browser.window().title() shouldBe "The Text Analyzer Platform"
     browser.find(By.className("card-body")).textContent().contains(testreference.expected)

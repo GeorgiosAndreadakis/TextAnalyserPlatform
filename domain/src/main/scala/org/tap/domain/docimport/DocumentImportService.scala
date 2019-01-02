@@ -27,7 +27,10 @@ trait DocumentImportService {
 
   def importFromSource(source: DocumentSource): Document = {
     val doc = parser.parse(source)
+    doc.setSource(source)
     repository.save(doc)
+
+    //val docs = repository.allDocs
     doc
   }
 }

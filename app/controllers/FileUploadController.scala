@@ -23,6 +23,7 @@ import org.tap.application.importdoc.DocImporter
 import org.tap.domain.{Document, DocumentRepository}
 import org.tap.framework.{DocumentPathSource, DocumentStringSource}
 import org.tap.framework.parser.tika.DocumentParserTika
+import org.tap.framework.persistence.elastic.DocumentRepositoryForElastic
 import play.api.mvc.{BaseController, ControllerComponents, Result}
 
 
@@ -44,7 +45,7 @@ class FileUploadController @Inject() (val controllerComponents: ControllerCompon
         case "" => invalidFilename(s"Missing file named '$filename'")
         case _ =>
           val path = fileToImport.ref.path
-          val doc = importFile(path)
+          val doc = importFile(filename, path)
           Files.deleteIfExists(path)
           Ok(views.html.index(filename, DocumentViewModel(doc), storedDocuments))
       }
@@ -52,18 +53,22 @@ class FileUploadController @Inject() (val controllerComponents: ControllerCompon
   }
 
   private def storedDocuments:List[DocumentViewModel] = {
-    docRepository.allDocs.map( DocumentViewModel )
+    val docs = docRepository.allDocs
+    docs match {
+      case List() => docRepository.allDocs.map( DocumentViewModel )
+      case _ => docs.map( DocumentViewModel )
+    }
   }
 
-  private def importFile(path: Path): Document = {
+  private def importFile(filename: String, path: Path): Document = {
     val repository = docRepository
     val parser = new DocumentParserTika
-    val source = new DocumentPathSource(path)
+    val source = new DocumentPathSource(filename, path)
     new DocImporter(repository, parser).importFile(source)
   }
 
   private def docRepository: DocumentRepository = {
-    new DummyDocuRepository
+    new DocumentRepositoryForElastic
   }
 
   private def invalidFilename(msg: String): Result = {
@@ -74,16 +79,4 @@ class FileUploadController @Inject() (val controllerComponents: ControllerCompon
     Ok(views.html.error(s"TAP error: $msg"))
   }
 
-}
-
-class DummyDocuRepository extends DocumentRepository {
-  override def save(document: Document): Unit = {}
-
-  override def allDocs: List[Document] = {
-    val doc1 = new Document
-    doc1.setSource(new DocumentStringSource("dummy1"))
-    val doc2 = new Document
-    doc2.setSource(new DocumentStringSource("dummy2"))
-    List[Document](doc1, doc2)
-  }
 }

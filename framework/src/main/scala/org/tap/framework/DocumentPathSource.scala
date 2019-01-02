@@ -22,8 +22,8 @@ import org.tap.domain.DocumentSource
 import org.tap.framework.filesystem.FileHandling.FileAccess
 
 /** A string is the source of the document. */
-class DocumentPathSource(path: Path) extends DocumentSource {
+class DocumentPathSource(filename: String, path: Path) extends DocumentSource {
 
   override def inputStream: InputStream = FileAccess.newInputStream(path)
-  override def name: String = path.toString
+  override def name: String = filename
 }

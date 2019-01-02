@@ -17,6 +17,8 @@ package controllers
 
 import com.google.inject.Inject
 import javax.inject._
+import models.DocumentViewModel
+import org.tap.framework.persistence.elastic.DocumentRepositoryForElastic
 import play.api.mvc._
 
 @Singleton
@@ -24,7 +26,12 @@ class HomeController @Inject() (val controllerComponents: ControllerComponents)
   extends BaseController {
 
   def index = Action {
-    Ok(views.html.index("", null, List()))
+    Ok(views.html.index("", null, storedDocuments))
+  }
+
+  private def storedDocuments:List[DocumentViewModel] = {
+    val repo = new DocumentRepositoryForElastic
+    repo.allDocs.map( DocumentViewModel )
   }
 
 }

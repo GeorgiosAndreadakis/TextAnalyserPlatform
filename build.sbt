@@ -46,7 +46,8 @@ lazy val framework =
       libraryDependencies += "com.github.jai-imageio" % "jai-imageio-core" % "1.3.1",
       libraryDependencies += "com.levigo.jbig2" % "levigo-jbig2-imageio" % "2.0",
       libraryDependencies += "com.github.jai-imageio" % "jai-imageio-jpeg2000" % "1.3.0",
-      libraryDependencies += "org.apache.tika" % "tika-parsers" % "1.17" excludeAll ExclusionRule(organization = "org.slf4j")
+      libraryDependencies += "org.apache.tika" % "tika-parsers" % "1.17" excludeAll ExclusionRule(organization = "org.slf4j"),
+      libraryDependencies += "org.elasticsearch.client" % "elasticsearch-rest-high-level-client" % "6.5.4"
     )
     .dependsOn(application)
 

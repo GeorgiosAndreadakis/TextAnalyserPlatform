@@ -15,6 +15,8 @@
  */
 package org.tap.domain
 
+import java.util.UUID
+
 import scala.collection.mutable.ListBuffer
 
 /**
@@ -22,16 +24,20 @@ import scala.collection.mutable.ListBuffer
   *
   * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
   */
-class Document extends Iterable[DocElement]  {
+class Document(id: String) extends Iterable[DocElement]  {
+
+  def this() = this(UUID.randomUUID().toString)
+
+  private var source: DocumentSource = _
 
   val bodyElements = new RootContainer
   private val depthFirstElementList = new ListBuffer[DocElement]
-  private var source: DocumentSource = _
 
   override def iterator:Iterator[DocElement] = bodyElements.iterator
 
   def setSource(source: DocumentSource): Unit = this.source = source
   def getSource: DocumentSource = source
+  def getId: String = id
 
   def allElementsInDepthFirstOrder: List[DocElement] = depthFirstElementList.toList
 

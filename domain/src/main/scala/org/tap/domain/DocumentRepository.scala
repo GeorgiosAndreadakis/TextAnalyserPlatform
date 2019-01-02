@@ -23,4 +23,5 @@ package org.tap.domain
 trait DocumentRepository {
 
   def save(document: Document)
+  def allDocs: List[Document]
 }

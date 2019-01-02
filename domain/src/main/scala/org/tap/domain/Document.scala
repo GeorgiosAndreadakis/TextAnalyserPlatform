@@ -31,6 +31,7 @@ class Document extends Iterable[DocElement]  {
   override def iterator:Iterator[DocElement] = bodyElements.iterator
 
   def setSource(source: DocumentSource): Unit = this.source = source
+  def getSource: DocumentSource = source
 
   def allElementsInDepthFirstOrder: List[DocElement] = depthFirstElementList.toList
 

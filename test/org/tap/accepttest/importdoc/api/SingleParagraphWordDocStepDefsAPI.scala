@@ -82,6 +82,8 @@ class DocumentRepositoryMock extends DocumentRepository {
       p.text.contains(text)
     })
   }
+
+  override def allDocs: List[Document] = List() // TODO implementation
 }
 
 class DocumentParserMock extends DocumentParser {

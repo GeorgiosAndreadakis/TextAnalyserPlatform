@@ -1,4 +1,4 @@
-@(filename: String, doc: DocumentViewModel)
+@(filename: String, doc: DocumentViewModel, storedDocs: List[DocumentViewModel])
 
 <!DOCTYPE html>
 <html lang="en">
@@ -22,6 +22,22 @@
                     </p>
                 </div>
             </div>
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <h2>Stored Documents</h2>
+                </div>
+                <div class="col-sm-12">
+                    <ul class="list-group">
+                        @for(sDoc<-storedDocs) {
+                            <li class="list-group-item">
+                                <a href="@routes.HomeController.index">@sDoc.document.getSource.name</a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+
             <div class="row">
                 <div class="col-sm-12">
                     <h2>Upload text file</h2>

@@ -24,7 +24,7 @@ class HomeController @Inject() (val controllerComponents: ControllerComponents)
   extends BaseController {
 
   def index = Action {
-    Ok(views.html.index("", null))
+    Ok(views.html.index("", null, List()))
   }
 
 }

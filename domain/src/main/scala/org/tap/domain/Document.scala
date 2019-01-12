@@ -39,6 +39,14 @@ class Document(id: String) extends Iterable[DocElement]  {
   def getSource: DocumentSource = source
   def getId: String = id
 
+  def firstElement: DocElement = {
+    val elements = bodyElements.children.toList
+    elements match {
+      case Nil => null
+      case List(_) => elements.head
+    }
+  }
+
   def allElementsInDepthFirstOrder: List[DocElement] = depthFirstElementList.toList
 
   def elementCreated(docElement: DocElement): Unit = {

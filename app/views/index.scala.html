@@ -32,6 +32,7 @@
                         @for(sDoc<-storedDocs) {
                             <li class="list-group-item">
                                 <a href="@routes.HomeController.index">@sDoc.document.getSource.name</a>
+                                <p>@sDoc.document.firstElement.asParagraph.text</p>
                             </li>
                         }
                     </ul>

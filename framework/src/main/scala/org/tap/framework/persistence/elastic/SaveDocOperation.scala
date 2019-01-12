@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Georgios Andreadakis
+ * Copyright (c) 2019 Georgios Andreadakis
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,22 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.tap.domain.docimport
+package org.tap.framework.persistence.elastic
 
-import org.tap.domain.{Document, DocumentSource}
+import org.elasticsearch.client.RestHighLevelClient
+import org.tap.domain.Document
 
 /**
-  * A domain service for importing documents using the collaborators given by the import context.
+  * Persisting a document in the ElasticSearch data store.
   *
   * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
   */
-trait DocumentImportService {
-  this: DocumentImportContext =>
+class SaveDocOperation(doc: Document) extends PersistenceOperation {
 
-  def importFromSource(source: DocumentSource): Document = {
-    val doc = parser.parse(source)
-    doc.setSource(source)
-    repository.save(doc)
-    doc
+  override def run(client: RestHighLevelClient): Unit = {
+
+    val mapper = new DocumentMapper(client)
+
+    // Save document
+    mapper.saveDocument(doc)
+
+    // save elements
+    for (elem <- doc) {
+      mapper.saveDocElement(elem, doc)
+    }
   }
 }

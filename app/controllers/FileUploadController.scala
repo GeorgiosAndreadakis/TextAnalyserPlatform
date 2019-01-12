@@ -21,10 +21,10 @@ import com.google.inject.Inject
 import models.DocumentViewModel
 import org.tap.application.importdoc.DocImporter
 import org.tap.domain.{Document, DocumentRepository}
-import org.tap.framework.{DocumentPathSource, DocumentStringSource}
+import org.tap.framework.DocumentPathSource
 import org.tap.framework.parser.tika.DocumentParserTika
 import org.tap.framework.persistence.elastic.DocumentRepositoryForElastic
-import play.api.mvc.{BaseController, ControllerComponents, Result}
+import play.api.mvc._
 
 
 /**
@@ -53,11 +53,7 @@ class FileUploadController @Inject() (val controllerComponents: ControllerCompon
   }
 
   private def storedDocuments:List[DocumentViewModel] = {
-    val docs = docRepository.allDocs
-    docs match {
-      case List() => docRepository.allDocs.map( DocumentViewModel )
-      case _ => docs.map( DocumentViewModel )
-    }
+    docRepository.allDocs.right.get.map(DocumentViewModel)
   }
 
   private def importFile(filename: String, path: Path): Document = {
@@ -75,7 +71,7 @@ class FileUploadController @Inject() (val controllerComponents: ControllerCompon
     Redirect(routes.FileUploadController.error(msg))
   }
 
-  def error(msg: String) = Action {
+  def error(msg: String): Action[AnyContent] = Action {
     Ok(views.html.error(s"TAP error: $msg"))
   }
 

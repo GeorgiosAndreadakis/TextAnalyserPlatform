@@ -15,104 +15,25 @@
  */
 package org.tap.framework.persistence.elastic
 
-import org.apache.http.HttpHost
-import org.elasticsearch.ElasticsearchStatusException
-import org.elasticsearch.action.admin.indices.refresh.RefreshRequest
-import org.elasticsearch.action.index.IndexRequest
-import org.elasticsearch.action.search.SearchRequest
-import org.elasticsearch.client.{RequestOptions, RestClient, RestHighLevelClient}
-import org.elasticsearch.index.query.QueryBuilders
-import org.elasticsearch.search.builder.SearchSourceBuilder
-import org.elasticsearch.search.{SearchHit, SearchHits}
 import org.tap.domain.{Document, DocumentRepository}
-import org.tap.framework.DocumentStringSource
-
-import scala.collection.mutable.ListBuffer
 
 /**
-  * An implementation of the {@link DocumentRepository} running against EleastiSearch.
+  * An implementation of the [[DocumentRepository]] running against EleastiSearch.
   *
   * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
   */
 class DocumentRepositoryForElastic extends DocumentRepository {
 
-  private val docIndex = "documents"
-
   override def save(document: Document): Unit = {
-    saveDoc(document)
+    (new PersistenceContext).execute(new SaveDocOperation(document))
   }
 
-  private def saveDoc(doc: Document): Unit = {
-
-    val client: RestHighLevelClient = new RestHighLevelClient(
-      RestClient.builder(
-        new HttpHost("localhost", 9200, "http"),
-        new HttpHost("localhost", 9201, "http")))
-
-    try {
-
-      // Create index request to read all indices
-      val jsonMap = new java.util.HashMap[String, AnyRef]
-      jsonMap.put("name", doc.getSource.name)
-      val indexRequest = new IndexRequest(docIndex, "doc", doc.getId)
-      indexRequest.source(jsonMap)
-
-      // Run index request
-      client.index(indexRequest, RequestOptions.DEFAULT)
-
-      // refresh
-      val refreshRequest = new RefreshRequest(docIndex)
-      client.indices().refresh(refreshRequest);
-
-    } finally {
-      val some = Option(client)
-      some match {
-        case Some(_) => client.close()
-        case None => println("Error, Elastic client is null")
-      }
-    }
+  override def allDocs: Either[Exception,List[Document]] = {
+    val operation = new ReadAllDocsOperation
+    (new PersistenceContext).execute(operation)
+    operation.getResult
   }
 
-
-  def convert(hits: SearchHits): List[Document] = {
-    val result = new ListBuffer[Document]
-    for (hit <- hits.getHits) {
-      result += convert(hit)
-    }
-    result.toList
-  }
-
-  def convert(hit: SearchHit): Document = {
-    val doc = new Document(hit.getId)
-    val value = hit.getSourceAsMap.get("name").asInstanceOf[String]
-    doc.setSource(new DocumentStringSource(value))
-    doc
-  }
-
-  override def allDocs: List[Document] = {
-
-    val client: RestHighLevelClient = new RestHighLevelClient(
-      RestClient.builder(
-        new HttpHost("localhost", 9200, "http"),
-        new HttpHost("localhost", 9201, "http")))
-
-    try {
-      val searchSourceBuilder = new SearchSourceBuilder
-      searchSourceBuilder.query(QueryBuilders.matchAllQuery())
-
-      val searchRequest = new SearchRequest(docIndex).source(searchSourceBuilder)
-      val searchResponse = client.search(searchRequest, RequestOptions.DEFAULT)
-
-      convert(searchResponse.getHits)
-    } catch {
-      case ex: ElasticsearchStatusException => List()
-
-    } finally {
-      val some = Option(client)
-      some match {
-        case Some(_) => client.close()
-        case None => println("Error, Elastic client is null")
-      }
-    }
-  }
 }
+
+

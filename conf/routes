@@ -1,14 +1,10 @@
 # Routes
 # This file defines all application routes (Higher priority routes first)
-
 # An example controller showing a sample home page
-GET         /                    controllers.HomeController.index
-GET         /index               controllers.HomeController.index
-#GET         /showDoc             controllers.DocViewController.show
-GET         /error               controllers.FileUploadController.error(msg: String)
-POST        /fileupload          controllers.FileUploadController.upload
-
-# GET   /load             controllers.FileDeliveryController.loadImage(id: String)
-
+GET         /               controllers.HomeController.index
+GET         /index          controllers.HomeController.index
+GET         /error          controllers.FileUploadController.error(msg: String)
+POST        /fileupload     controllers.FileUploadController.upload
 # Map static resources from the /public folder to the /assets URL path
-GET         /assets/*file        controllers.Assets.at(file)
+GET         /assets/*file   controllers.Assets.at(path="/public", file)
+GET         /favicon.ico    controllers.Assets.at(path="/public/images", file="favicon.ico")

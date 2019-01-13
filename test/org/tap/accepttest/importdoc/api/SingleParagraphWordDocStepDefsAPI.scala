@@ -83,7 +83,10 @@ class DocumentRepositoryMock extends DocumentRepository {
     })
   }
 
-  override def allDocs: List[Document] = List() // TODO implementation
+  override def allDocs: Either[Exception,List[Document]] = Right(List()) // TODO implementation
+  override def deleteDoc(docId: String): Unit = {
+    // TODO implementation
+  }
 }
 
 class DocumentParserMock extends DocumentParser {

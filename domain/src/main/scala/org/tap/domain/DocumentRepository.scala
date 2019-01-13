@@ -22,6 +22,7 @@ package org.tap.domain
   */
 trait DocumentRepository {
 
-  def save(document: Document)
   def allDocs: Either[Exception,List[Document]]
+  def deleteDoc(docId: String)
+  def save(document: Document)
 }

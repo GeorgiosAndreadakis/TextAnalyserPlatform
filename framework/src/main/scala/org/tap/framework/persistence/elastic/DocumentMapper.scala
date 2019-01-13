@@ -16,11 +16,12 @@
 package org.tap.framework.persistence.elastic
 
 import org.elasticsearch.action.admin.indices.refresh.{RefreshRequest, RefreshResponse}
+import org.elasticsearch.action.delete.DeleteRequest
 import org.elasticsearch.action.index.IndexRequest
 import org.elasticsearch.action.search.{SearchRequest, SearchResponse}
 import org.elasticsearch.client.{RequestOptions, RestHighLevelClient}
 import org.elasticsearch.index.query.QueryBuilders
-import org.elasticsearch.search.SearchHit
+import org.elasticsearch.search.{SearchHit, SearchHits}
 import org.elasticsearch.search.builder.SearchSourceBuilder
 import org.tap.domain.{DocElement, Document, Paragraph}
 import org.tap.framework.DocumentStringSource
@@ -54,15 +55,15 @@ class DocumentMapper(client: RestHighLevelClient) {
     doc
   }
 
-  private def addElements(docHit: SearchHit, doc: Document): Unit = {
-
-    val docId = doc.getId
+  def allElementsForDocId(docId: String): SearchHits = {
     val searchSourceBuilder = (new SearchSourceBuilder).query(QueryBuilders.matchQuery(docIdAttributName, docId))
     val searchRequest = new SearchRequest(elementIndexName).source(searchSourceBuilder)
     val searchResponse = client.search(searchRequest, defaultRequestOptions)
+    searchResponse.getHits
+  }
 
-    val hits = searchResponse.getHits
-    for (hit <- hits.getHits) {
+  private def addElements(docHit: SearchHit, doc: Document): Unit = {
+    for (hit <- allElementsForDocId(doc.getId).getHits) {
       addElement(hit, doc)
     }
   }
@@ -72,6 +73,17 @@ class DocumentMapper(client: RestHighLevelClient) {
     val paragraph = Paragraph(text)
     doc.elementCreated(paragraph)
   }
+
+  def deleteDoc(docId: String): Unit = {
+    val deleteRequest = new DeleteRequest(docIndexName, "doc", docId)
+    client.delete(deleteRequest, defaultRequestOptions)
+  }
+
+  def deleteElement(hit: SearchHit, docId: String): Unit = {
+    val deleteRequest = new DeleteRequest(elementIndexName, "doc", hit.getId)
+    client.delete(deleteRequest, defaultRequestOptions)
+  }
+
 
   def saveDocument(doc: Document): Unit = {
 
@@ -108,13 +120,16 @@ class DocumentMapper(client: RestHighLevelClient) {
   }
 
   def refreshForDocumentIndex: RefreshResponse = {
-    val refreshRequest = new RefreshRequest(docIndexName)
-    client.indices().refresh(refreshRequest, defaultRequestOptions)
+    refreshIndex(docIndexName)
   }
 
   def refreshForDocumentElementIndex: RefreshResponse = {
-    val refreshRequest = new RefreshRequest(elementIndexName)
-    client.indices().refresh(refreshRequest, RequestOptions.DEFAULT)
+    refreshIndex(elementIndexName)
+  }
+
+  private def refreshIndex(index: String): RefreshResponse = {
+    val refreshRequest = new RefreshRequest(index)
+    client.indices().refresh(refreshRequest, defaultRequestOptions)
   }
 
   private def defaultRequestOptions = RequestOptions.DEFAULT

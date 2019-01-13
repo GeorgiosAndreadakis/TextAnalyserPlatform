@@ -14,30 +14,26 @@
  * limitations under the License.
  */
 package org.tap.framework.persistence.elastic
-
-import org.tap.domain.{Document, DocumentRepository}
+import org.elasticsearch.client.RestHighLevelClient
 
 /**
-  * An implementation of the [[DocumentRepository]] running against EleastiSearch.
+  * Deletes a document and its elements.
   *
   * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
   */
-class DocumentRepositoryForElastic extends DocumentRepository {
+class DeleteDocOperation(docId: String) extends PersistenceOperation {
 
-  override def allDocs: Either[Exception,List[Document]] = {
-    val operation = new ReadAllDocsOperation
-    (new PersistenceContext).execute(operation)
-    operation.getResult
+  override def run(client: RestHighLevelClient): Unit = {
+    val mapper = new DocumentMapper(client)
+    // delete doc elements
+    val searchhits = mapper.allElementsForDocId(docId)
+    for (hit <- searchhits.getHits) {
+      mapper.deleteElement(hit, docId)
+    }
+    // delete doc
+    mapper.deleteDoc(docId)
+    // refresh
+    mapper.refreshForDocumentElementIndex
+    mapper.refreshForDocumentIndex
   }
-
-  override def deleteDoc(docId: String): Unit = {
-    (new PersistenceContext).execute(new DeleteDocOperation(docId))
-  }
-
-  override def save(document: Document): Unit = {
-    (new PersistenceContext).execute(new SaveDocOperation(document))
-  }
-
 }
-
-

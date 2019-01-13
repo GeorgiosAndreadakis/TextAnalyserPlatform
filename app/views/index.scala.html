@@ -9,8 +9,26 @@
         <title>The Text Analyzer Platform</title>
         <link rel="stylesheet" href="@routes.Assets.at("/public", "stylesheets/bootstrap.min.css")">
         <link rel="stylesheet" href="@routes.Assets.at("/public", "stylesheets/main.css")">
+        <link rel="stylesheet" href="@routes.Assets.at("/public", "stylesheets/fontawesome-5.6.3/css/all.css")">
     </head>
     <body>
+
+        <script type="application/javascript">
+                function sendDeleteRequest(url) {
+                    $.ajax({
+                        url: url,
+                        method: 'DELETE',
+                        async: false,
+                        success: function(results) {
+                            console.log('Url: ' + url)
+                        },
+                        error : function(results) {
+                            console.error('Error: ' + results);
+                        }
+                    });
+                }
+        </script>
+
         <div class="container-fluid">
             <div class="row">
                 <div class="col-sm-12">
@@ -32,6 +50,9 @@
                         @for(sDoc<-storedDocs) {
                             <li class="list-group-item">
                                 <a href="@routes.HomeController.index">@sDoc.document.getSource.name</a>
+                                &nbsp;
+                                <a href="@routes.DocumentController.deleteDoc(sDoc.document.getId)">
+                                <i class="fas fa-trash-alt"></i></a>
                                 <p>@sDoc.document.firstElement.asParagraph.text</p>
                             </li>
                         }
@@ -72,7 +93,7 @@
             </div>
         </div>
 
-        <script src="@routes.Assets.at("/public", "javascripts/jquery-3.3.1.slim.min.js")"></script>
+        <script src="@routes.Assets.at("/public", "javascripts/jquery-3.3.1.min.js")"></script>
         <script src="@routes.Assets.at("/public", "javascripts/popper.min.js")"></script>
         <script src="@routes.Assets.at("/public", "javascripts/bootstrap.min.js")"></script>
         <script src="@routes.Assets.at("/public", "javascripts/tap-fileupload.js")"></script>

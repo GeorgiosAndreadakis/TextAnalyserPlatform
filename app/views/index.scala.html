@@ -12,23 +12,6 @@
         <link rel="stylesheet" href="@routes.Assets.at("/public", "stylesheets/fontawesome-5.6.3/css/all.css")">
     </head>
     <body>
-
-        <script type="application/javascript">
-                function sendDeleteRequest(url) {
-                    $.ajax({
-                        url: url,
-                        method: 'DELETE',
-                        async: false,
-                        success: function(results) {
-                            console.log('Url: ' + url)
-                        },
-                        error : function(results) {
-                            console.error('Error: ' + results);
-                        }
-                    });
-                }
-        </script>
-
         <div class="container-fluid">
             <div class="row">
                 <div class="col-sm-12">

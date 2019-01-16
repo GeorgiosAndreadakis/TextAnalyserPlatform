@@ -64,7 +64,14 @@ class SingleParagraphWordDocStepDefsUI
   Then("""^after the import the file will be available in the system and the ui shows the document$"""){ () =>
 
     browser.window().title() shouldBe "The Text Analyzer Platform"
-    browser.find(By.className("card-body")).textContent().contains(testreference.expected)
+    //browser.find(By.className("filename")).textContent().contains(testreference.expected)
+    val elements = browser.find(By.id("docOverview"))
+    val textList = elements.find(By.tagName("a")).textContents()
+    println("")
+    println("textList: " +  textList.size)
+    println("textList: " +  textList.get(0))
+    println("textList: " +  textList.get(1))
+    assert(textList.contains(testreference.getFilename))
 
     // cleanup test setup
     server.stop()

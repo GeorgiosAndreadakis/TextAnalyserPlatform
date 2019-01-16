@@ -22,9 +22,10 @@ import org.scalatest.Matchers
 import org.tap.accepttest.testdata.TestFileReference
 import org.tap.application.importdoc.DocImporter
 import org.tap.domain.docimport.DocumentParser
-import org.tap.domain.{Document, DocumentRepository, DocumentSource, Paragraph}
+import org.tap.domain.{Document, DocumentRepository, DocumentSource}
 import org.tap.framework.DocumentPathSource
 import org.tap.framework.parser.tika.DocumentParserTika
+import org.tap.framework.persistence.elastic.DocumentRepositoryForElastic
 
 /**
   * The Cucumber step definitions for the story "import text file with a single passage".
@@ -34,8 +35,9 @@ import org.tap.framework.parser.tika.DocumentParserTika
 class SimpleTextPassageInWordFileStepDefs extends ScalaDsl with EN with Matchers {
 
   private var source: DocumentPathSource = _
+  private var document: Document = _
   private val parser: DocumentParser = new DocumentParserTika
-  private val docRepo: DocumentRepositoryMock = new DocumentRepositoryMock
+  private val docRepo: DocumentRepository = new DocumentRepositoryForElastic
 
   private def testreference = {
     TestFileReference.build.find(TestFileReference.WORD_SINGLE_PARAGRAPH)
@@ -43,49 +45,36 @@ class SimpleTextPassageInWordFileStepDefs extends ScalaDsl with EN with Matchers
 
 
   Given("""^a word file which contains a single text passage$"""){ () =>
+    val filename = testreference.getFilename
     val path = testreference.qualifiedPath
-    source = new DocumentPathSource(Paths.get(path))
+    source = new DocumentPathSource(filename, Paths.get(path))
     withClue(s"Source in path '$path' not found: ") {
       source should not be null
     }
   }
 
   When("""^the user starts the import for the given file$"""){ () =>
-    new DocImporter(docRepo, parser).importFile(source)
+    document = new DocImporter(docRepo, parser).importFile(source)
+  }
+
+  private def findPersistedDoc(document: Document) = {
+    docRepo.allDocs match {
+      case Left(_) => Left(None)
+      case Right(list: List[Document]) => Right(list.filter(_.getId == document.getId).head)
+    }
   }
 
   Then("""^the file will be imported and the text is in the system available$"""){ () =>
-    withClue("Save was called: ") {
-      docRepo.saveCalled shouldBe true
-    }
+
+    val docFromDB = findPersistedDoc(document)
     withClue("Document should not be null") {
-      docRepo.doc should not be null
+      docFromDB.right.get should not be null
     }
 
     withClue("Document misses a paragraph containing defined text") {
-      val text = testreference.expected
-      docRepo.documentContainsParagraphStartingWith(text) shouldBe true
+      val expectedText = testreference.expected
+      docFromDB.right.get.firstElement.asParagraph.text startsWith expectedText
     }
-  }
-}
-
-class DocumentRepositoryMock extends DocumentRepository {
-  var saveCalled = false
-  var doc: Document = _
-  override def save(document: Document): Unit = {
-    saveCalled = true
-    doc = document
-  }
-  def documentContainsParagraphStartingWith(text: String): Boolean = {
-    doc.filter(_.isInstanceOf[Paragraph]).exists(elem => {
-      val p = elem.asInstanceOf[Paragraph]
-      p.text.contains(text)
-    })
-  }
-
-  override def allDocs: Either[Exception,List[Document]] = Right(List()) // TODO implementation
-  override def deleteDoc(docId: String): Unit = {
-    // TODO implementation
   }
 }
 

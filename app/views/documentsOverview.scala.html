@@ -1,0 +1,14 @@
+@(docs: List[DocumentViewModel])
+
+<ul class="list-group" id="docOverview">
+    @for(sDoc <- docs) {
+        <li class="list-group-item">
+            <a href="@routes.HomeController.index" class="filename">@sDoc.document.getSource.name</a>
+            &nbsp;
+            <a href="@routes.DocumentController.deleteDoc(sDoc.document.getId)">
+                <i class="fas fa-trash-alt"></i>
+            </a>
+            <p>@sDoc.document.firstElement.asParagraph.text</p>
+        </li>
+    }
+</ul>

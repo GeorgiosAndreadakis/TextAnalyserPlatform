@@ -47,4 +47,5 @@ class ReferencePair(_filename: String, _expectation: String) {
 
   def qualifiedPath: String = s"test-resources/importdoc/$filename"
   def expected: String = expectation
+  def getFilename: String = _filename
 }

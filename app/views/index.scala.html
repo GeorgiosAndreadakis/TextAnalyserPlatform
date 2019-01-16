@@ -25,35 +25,29 @@
             </div>
 
             <div class="row">
-                <div class="col-sm-12">
-                    <h2>Stored Documents</h2>
+                <div class="col-sm-7">
+                    <!-- Overview of the stored documents -->
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <h2>Stored Documents</h2>
+                            <p>An overview of currently stored documents.</p>
+                        </div>
+                        <div class="col-sm-12">@documentsOverview(storedDocs.sortWith(_.filename < _.filename))</div>
+                    </div>
                 </div>
-                <div class="col-sm-12">
-                    <ul class="list-group">
-                        @for(sDoc<-storedDocs) {
-                            <li class="list-group-item">
-                                <a href="@routes.HomeController.index">@sDoc.document.getSource.name</a>
-                                &nbsp;
-                                <a href="@routes.DocumentController.deleteDoc(sDoc.document.getId)">
-                                <i class="fas fa-trash-alt"></i></a>
-                                <p>@sDoc.document.firstElement.asParagraph.text</p>
-                            </li>
-                        }
-                    </ul>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-sm-12">
-                    <h2>Upload text file</h2>
-                    <p>Please select a text file and press the import button.</p>
-                </div>
-            </div>
-            <div class="row">
-                @helper.form(
-                    action = routes.FileUploadController.upload,
-                    'enctype -> "multipart/form-data",
-                    'class -> "col-sm-9 form-inline form-horizontal") {
+                <div class="col-sm-5">
+                    <!-- Upload form -->
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <h2>Upload text file</h2>
+                            <p>Please select a text file and press the import button.</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                    @helper.form(
+                        action = routes.FileUploadController.upload,
+                        'enctype -> "multipart/form-data",
+                        'class -> "col-sm-9 form-inline form-horizontal") {
                         <div class="form-group">
                             <div class="custom-file col-sm-6">
                                 <input type="file" class="custom-file-input" name="fileToImport" id="fileref" >
@@ -64,14 +58,8 @@
                             </div>
                             <small>Supported formats: only Word files with a single paragraph.</small>
                         </div>
-                }
-            </div>
-            <div class="row">
-                <div class="col-sm-12">
-                    @if(doc != null) {
-                        <h2>Imported FILE: @filename</h2>
-                        @document(doc.bodyElements)
                     }
+                    </div>
                 </div>
             </div>
         </div>

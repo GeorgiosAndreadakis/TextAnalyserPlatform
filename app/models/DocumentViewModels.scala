@@ -25,6 +25,7 @@ import org.tap.domain.{DocElement, Document, ElementContainer, Paragraph}
   */
 case class DocumentViewModel(document: Document) {
   def bodyElements: ElementContainerViewModel = BodyElements(document)
+  def filename: String = document.getSource.name
 }
 
 

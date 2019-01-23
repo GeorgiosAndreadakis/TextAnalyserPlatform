@@ -40,7 +40,7 @@ class SingleParagraphWordDocStepDefsUI
   val server = TestServer(port, application)
 
 
-  Given("""^a started import dialog$"""){ () =>
+  Given("""^the started document overview$"""){ () =>
 
     server.start()
     browser.goTo("http://localhost:" + port)
@@ -49,7 +49,6 @@ class SingleParagraphWordDocStepDefsUI
     browser.window().title() shouldBe "The Text Analyzer Platform"
     browser.find(By.id("fileref")).get(0) should not be null
     browser.find(By.id("uploadSubmit")).get(0) should not be null
-
   }
 
 
@@ -61,16 +60,11 @@ class SingleParagraphWordDocStepDefsUI
   }
 
 
-  Then("""^after the import the file will be available in the system and the ui shows the document$"""){ () =>
+  Then("""^after the import the document is available in the system and the overview contains the document$"""){ () =>
 
     browser.window().title() shouldBe "The Text Analyzer Platform"
-    //browser.find(By.className("filename")).textContent().contains(testreference.expected)
     val elements = browser.find(By.id("docOverview"))
     val textList = elements.find(By.tagName("a")).textContents()
-    println("")
-    println("textList: " +  textList.size)
-    println("textList: " +  textList.get(0))
-    println("textList: " +  textList.get(1))
     assert(textList.contains(testreference.getFilename))
 
     // cleanup test setup

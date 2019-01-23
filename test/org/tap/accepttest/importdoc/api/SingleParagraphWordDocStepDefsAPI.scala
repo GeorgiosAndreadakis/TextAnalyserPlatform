@@ -22,7 +22,7 @@ import org.scalatest.Matchers
 import org.tap.accepttest.testdata.TestFileReference
 import org.tap.application.importdoc.DocImporter
 import org.tap.domain.docimport.DocumentParser
-import org.tap.domain.{Document, DocumentRepository, DocumentSource}
+import org.tap.domain.{Document, DocumentRepository}
 import org.tap.framework.DocumentPathSource
 import org.tap.framework.parser.tika.DocumentParserTika
 import org.tap.framework.persistence.elastic.DocumentRepositoryForElastic
@@ -32,7 +32,7 @@ import org.tap.framework.persistence.elastic.DocumentRepositoryForElastic
   *
   * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
   */
-class SimpleTextPassageInWordFileStepDefs extends ScalaDsl with EN with Matchers {
+class SingleParagraphWordDocStepDefsAPI extends ScalaDsl with EN with Matchers {
 
   private var source: DocumentPathSource = _
   private var document: Document = _
@@ -76,8 +76,4 @@ class SimpleTextPassageInWordFileStepDefs extends ScalaDsl with EN with Matchers
       docFromDB.right.get.firstElement.asParagraph.text startsWith expectedText
     }
   }
-}
-
-class DocumentParserMock extends DocumentParser {
-  override def parse(source: DocumentSource): Document = new Document
 }

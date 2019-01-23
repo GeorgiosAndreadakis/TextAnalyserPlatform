@@ -24,43 +24,38 @@
                 </div>
             </div>
 
+            <!-- Upload form -->
             <div class="row">
-                <div class="col-sm-7">
-                    <!-- Overview of the stored documents -->
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <h2>Stored Documents</h2>
-                            <p>An overview of currently stored documents.</p>
-                        </div>
-                        <div class="col-sm-12">@documentsOverview(storedDocs.sortWith(_.filename < _.filename))</div>
-                    </div>
+                <div class="col-sm-12">
+                    <h2>Upload text file</h2>
+                    <p>Please select a text file and press the import button.</p>
                 </div>
-                <div class="col-sm-5">
-                    <!-- Upload form -->
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <h2>Upload text file</h2>
-                            <p>Please select a text file and press the import button.</p>
-                        </div>
+            </div>
+            <div class="row">
+            @helper.form(
+                action = routes.FileUploadController.upload,
+                'enctype -> "multipart/form-data",
+                'class -> "col-sm-9 form-inline form-horizontal") {
+                <div class="form-group">
+                    <div class="custom-file col-sm-6">
+                        <input type="file" class="custom-file-input" name="fileToImport" id="fileref" >
+                        <label class="custom-file-label" for="fileref">Choose file ...</label>
                     </div>
-                    <div class="row">
-                    @helper.form(
-                        action = routes.FileUploadController.upload,
-                        'enctype -> "multipart/form-data",
-                        'class -> "col-sm-9 form-inline form-horizontal") {
-                        <div class="form-group">
-                            <div class="custom-file col-sm-6">
-                                <input type="file" class="custom-file-input" name="fileToImport" id="fileref" >
-                                <label class="custom-file-label" for="fileref">Choose file ...</label>
-                            </div>
-                            <div class="custom-file col-sm-2">
-                                <button type="submit" id="uploadSubmit" class="btn btn-primary">Start Import</button>
-                            </div>
-                            <small>Supported formats: only Word files with a single paragraph.</small>
-                        </div>
-                    }
+                    <div class="custom-file col-sm-2">
+                        <button type="submit" id="uploadSubmit" class="btn btn-primary">Start Import</button>
                     </div>
+                    <small>Supported formats: only Word files with a single paragraph.</small>
                 </div>
+            }
+            </div>
+
+            <!-- Overview of the stored documents -->
+            <div class="row">
+                <div class="col-sm-12">
+                    <h2>Stored Documents</h2>
+                    <p>An overview of currently stored documents.</p>
+                </div>
+                <div class="col-sm-12">@documentsOverview(storedDocs.sortWith(_.filename < _.filename))</div>
             </div>
         </div>
 

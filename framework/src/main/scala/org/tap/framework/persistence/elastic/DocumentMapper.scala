@@ -27,7 +27,7 @@ import org.tap.domain.{DocElement, Document, Paragraph}
 import org.tap.framework.DocumentStringSource
 
 /**
-  * Responsible for mapping {{Document}} instances to the Index instances (aka documents).
+  * Responsible for mapping {{Document}} instances to the index instances (aka documents).
   *
   * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
   */

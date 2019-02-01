@@ -88,7 +88,7 @@ class DocumentMapper(client: RestHighLevelClient) {
   def saveDocument(doc: Document): Unit = {
 
     val indexRequest = createIndexRequestForDocument(doc)
-    client.index(indexRequest, RequestOptions.DEFAULT)
+    client.index(indexRequest, defaultRequestOptions)
 
     // refresh
     refreshForDocumentIndex
@@ -113,7 +113,7 @@ class DocumentMapper(client: RestHighLevelClient) {
     indexRequest.source(pMap)
 
     // Run index request
-    client.index(indexRequest, RequestOptions.DEFAULT)
+    client.index(indexRequest, defaultRequestOptions)
 
     // refresh
     refreshForDocumentElementIndex

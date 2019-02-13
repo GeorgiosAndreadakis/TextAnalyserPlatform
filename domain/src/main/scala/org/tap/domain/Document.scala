@@ -33,6 +33,17 @@ class Document(id: String) extends Iterable[DocElement]  {
   val bodyElements = new RootContainer
   private val depthFirstElementList = new ListBuffer[DocElement]
 
+  def findParagraphWithText(txt: String): Option[Paragraph] = {
+
+    val f: DocElement => Boolean = (elem: DocElement) => {
+      elem.isInstanceOf[Paragraph] && elem.asInstanceOf[Paragraph].text.contains(txt)
+    }
+    find(f) match {
+      case p: Paragraph => Some(p)
+      case _ => None
+    }
+  }
+
   override def iterator:Iterator[DocElement] = bodyElements.iterator
 
   def setSource(source: DocumentSource): Unit = this.source = source

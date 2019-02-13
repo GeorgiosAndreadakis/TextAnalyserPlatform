@@ -39,13 +39,15 @@ object TestFileReference {
     )
     TestFileReference(map)
   }
+
+  def buildPath(filename: String): String = "test-resources/importdoc/" + filename
 }
 
 class ReferencePair(_filename: String, _expectation: String) {
   private val filename = _filename
   private val expectation = _expectation
 
-  def qualifiedPath: String = s"test-resources/importdoc/$filename"
+  def qualifiedPath: String = TestFileReference.buildPath(filename)
   def expected: String = expectation
   def getFilename: String = _filename
 }

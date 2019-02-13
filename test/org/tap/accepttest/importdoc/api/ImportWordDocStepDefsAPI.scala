@@ -20,24 +20,18 @@ import java.nio.file.Paths
 import cucumber.api.scala.{EN, ScalaDsl}
 import org.scalatest.Matchers
 import org.tap.accepttest.testdata.TestFileReference
-import org.tap.application.importdoc.DocImporter
-import org.tap.domain.docimport.DocumentParser
-import org.tap.domain.{Document, DocumentRepository}
+import org.tap.domain.Document
 import org.tap.framework.DocumentPathSource
-import org.tap.framework.parser.tika.DocumentParserTika
-import org.tap.framework.persistence.elastic.DocumentRepositoryForElastic
 
 /**
   * The Cucumber step definitions for the story "import text file with a single passage".
   *
   * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
   */
-class SingleParagraphWordDocStepDefsAPI extends ScalaDsl with EN with Matchers {
+class ImportWordDocStepDefsAPI extends ScalaDsl with EN with Matchers {
 
-  private var source: DocumentPathSource = _
+  private var testContext: DocImportTestContext = _
   private var document: Document = _
-  private val parser: DocumentParser = new DocumentParserTika
-  private val docRepo: DocumentRepository = new DocumentRepositoryForElastic
 
   private def testreference = {
     TestFileReference.build.find(TestFileReference.WORD_SINGLE_PARAGRAPH)
@@ -47,18 +41,26 @@ class SingleParagraphWordDocStepDefsAPI extends ScalaDsl with EN with Matchers {
   Given("""^a word file which contains a single text passage$"""){ () =>
     val filename = testreference.getFilename
     val path = testreference.qualifiedPath
-    source = new DocumentPathSource(filename, Paths.get(path))
+    testContext = DocImportTestContext(new DocumentPathSource(filename, Paths.get(path)))
     withClue(s"Source in path '$path' not found: ") {
-      source should not be null
+      testContext.source should not be null
+    }
+  }
+
+  Given("^the text document ([^\"]*)$"){ (name: String) =>
+    val path = TestFileReference.buildPath(name)
+    testContext = DocImportTestContext(new DocumentPathSource(name, Paths.get(path)))
+    withClue(s"Source in path '$path' not found: ") {
+      testContext.source should not be null
     }
   }
 
   When("""^the user starts the import for the given file$"""){ () =>
-    document = new DocImporter(docRepo, parser).importFile(source)
+    document = testContext.importFile()
   }
 
   private def findPersistedDoc(document: Document) = {
-    docRepo.allDocs match {
+    testContext.allDocs match {
       case Left(_) => Left(None)
       case Right(list: List[Document]) => Right(list.filter(_.getId == document.getId).head)
     }
@@ -75,5 +77,9 @@ class SingleParagraphWordDocStepDefsAPI extends ScalaDsl with EN with Matchers {
       val expectedText = testreference.expected
       docFromDB.right.get.firstElement.asParagraph.text startsWith expectedText
     }
+  }
+
+  Then("""^there is a text passage in the system with substring '([^"]*)'$"""){ (substr: String) =>
+    document.findParagraphWithText(substr)
   }
 }

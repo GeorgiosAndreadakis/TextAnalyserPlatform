@@ -15,11 +15,9 @@
  */
 package org.tap.accepttest.importdoc.api
 
-import java.nio.file.Paths
-
 import cucumber.api.scala.{EN, ScalaDsl}
 import org.scalatest.Matchers
-import org.tap.accepttest.testdata.TestFileReference
+import org.tap.accepttest.testdata.{TestFileReference}
 import org.tap.domain.Document
 import org.tap.framework.DocumentPathSource
 
@@ -33,23 +31,10 @@ class ImportWordDocStepDefsAPI extends ScalaDsl with EN with Matchers {
   private var testContext: DocImportTestContext = _
   private var document: Document = _
 
-  private def testreference = {
-    TestFileReference.build.find(TestFileReference.WORD_SINGLE_PARAGRAPH)
-  }
 
-
-  Given("""^a word file which contains a single text passage$"""){ () =>
-    val filename = testreference.getFilename
-    val path = testreference.qualifiedPath
-    testContext = DocImportTestContext(new DocumentPathSource(filename, Paths.get(path)))
-    withClue(s"Source in path '$path' not found: ") {
-      testContext.source should not be null
-    }
-  }
-
-  Given("^the text document ([^\"]*)$"){ (name: String) =>
+  Given("^the text document ([^\"]*)$"){ name: String =>
     val path = TestFileReference.buildPath(name)
-    testContext = DocImportTestContext(new DocumentPathSource(name, Paths.get(path)))
+    testContext = DocImportTestContext(new DocumentPathSource(name, path))
     withClue(s"Source in path '$path' not found: ") {
       testContext.source should not be null
     }
@@ -59,27 +44,14 @@ class ImportWordDocStepDefsAPI extends ScalaDsl with EN with Matchers {
     document = testContext.importFile()
   }
 
+  Then("""^there is a text passage in the system with substring '([^"]*)'$"""){ substr: String =>
+    document.findParagraphWithText(substr)
+  }
+
   private def findPersistedDoc(document: Document) = {
     testContext.allDocs match {
       case Left(_) => Left(None)
       case Right(list: List[Document]) => Right(list.filter(_.getId == document.getId).head)
     }
-  }
-
-  Then("""^the file will be imported and the text is in the system available$"""){ () =>
-
-    val docFromDB = findPersistedDoc(document)
-    withClue("Document should not be null") {
-      docFromDB.right.get should not be null
-    }
-
-    withClue("Document misses a paragraph containing defined text") {
-      val expectedText = testreference.expected
-      docFromDB.right.get.firstElement.asParagraph.text startsWith expectedText
-    }
-  }
-
-  Then("""^there is a text passage in the system with substring '([^"]*)'$"""){ (substr: String) =>
-    document.findParagraphWithText(substr)
   }
 }

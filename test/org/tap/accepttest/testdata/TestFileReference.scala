@@ -15,6 +15,8 @@
  */
 package org.tap.accepttest.testdata
 
+import java.nio.file.{Path, Paths}
+
 
 /**
   * Defines references to documents files and expected values to use in the tests.
@@ -40,14 +42,16 @@ object TestFileReference {
     TestFileReference(map)
   }
 
-  def buildPath(filename: String): String = "test-resources/importdoc/" + filename
+  def buildPath(filename: String): Path = {
+    Paths.get("test-resources/importdoc/" + filename)
+  }
 }
 
 class ReferencePair(_filename: String, _expectation: String) {
   private val filename = _filename
   private val expectation = _expectation
 
-  def qualifiedPath: String = TestFileReference.buildPath(filename)
+  def qualifiedPath: String = TestFileReference.buildPath(filename).toString
   def expected: String = expectation
   def getFilename: String = _filename
 }

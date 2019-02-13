@@ -1,9 +1,9 @@
 Feature: Import Word documents
 
   Scenario: A single text passage in a Word document
-    Given a word file which contains a single text passage
+    Given the text document simple-text-passage.docx
     When the user starts the import for the given file
-    Then the file will be imported and the text is in the system available
+    Then there is a text passage in the system with substring 'The central concept of a document store'
 
 
   Scenario: Two text passages in a Word document

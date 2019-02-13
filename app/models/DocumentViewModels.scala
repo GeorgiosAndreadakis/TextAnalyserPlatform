@@ -26,6 +26,11 @@ import org.tap.domain.{DocElement, Document, ElementContainer, Paragraph}
 case class DocumentViewModel(document: Document) {
   def bodyElements: ElementContainerViewModel = BodyElements(document)
   def filename: String = document.getSource.name
+  def excerpt: String = {
+    val firstElem = document.firstElement
+    val viewElem = ElementViewModel.mapDocElement(firstElem)
+    viewElem.excerpt
+  }
 }
 
 
@@ -33,6 +38,18 @@ case class DocumentViewModel(document: Document) {
 abstract class ElementViewModel(val docElement: DocElement) {
   def htmlId(): String = docElement.id
   def id(): String = docElement.id
+  def excerpt: String
+}
+
+object ElementViewModel {
+
+  def mapDocElement(docElem: DocElement): ElementViewModel = {
+    docElem match {
+      case null => DummyViewModel(null)
+      case paragraph: Paragraph => ParagraphViewModel(paragraph)
+      case elem: DocElement => DummyViewModel(elem)
+    }
+  }
 }
 
 abstract class ElementContainerViewModel(override val docElement: DocElement)
@@ -41,25 +58,27 @@ abstract class ElementContainerViewModel(override val docElement: DocElement)
 
   def elementContainer: ElementContainer
 
-  override def iterator:Iterator[ElementViewModel] = elementContainer.iterator.map(docElem => mapDocElement(docElem))
-  def hasChildren: Boolean = elementContainer.hasChildren
-
-  def mapDocElement(docElem: DocElement): ElementViewModel = {
-    docElem match {
-      case paragraph: Paragraph => ParagraphViewModel(paragraph)
-      case elem: DocElement => DummyViewModel(elem)
-    }
+  override def iterator:Iterator[ElementViewModel] = {
+    elementContainer.iterator.map(docElem => ElementViewModel.mapDocElement(docElem))
   }
+  def hasChildren: Boolean = elementContainer.hasChildren
 }
 
 case class BodyElements(document: Document) extends ElementContainerViewModel(document.bodyElements) {
   override def elementContainer: ElementContainer = document.bodyElements
+
+  override def excerpt: String = ""
 }
 
 case class ParagraphViewModel(paragraph: Paragraph) extends ElementContainerViewModel(paragraph) {
   def text(): String = paragraph.text
   override def elementContainer: ElementContainer = paragraph
+
+  override def excerpt: String = text()
 }
 
 case class DummyViewModel(override val docElement: DocElement) extends ElementViewModel(docElement) {
+  override def excerpt: String = ""
 }
+
+

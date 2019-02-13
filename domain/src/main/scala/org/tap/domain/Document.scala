@@ -51,10 +51,10 @@ class Document(id: String) extends Iterable[DocElement]  {
   def getId: String = id
 
   def firstElement: DocElement = {
-    val elements = bodyElements.children.toList
-    elements match {
-      case Nil => null
-      case List(_) => elements.head
+    if (bodyElements.hasChildren) {
+      bodyElements.children.toList.head
+    } else {
+      null
     }
   }
 

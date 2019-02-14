@@ -39,6 +39,8 @@ class SingleParagraphWordDocStepDefsUI
   val application: Application = new GuiceApplicationBuilder().build()
   val server = TestServer(port, application)
 
+  var filename: String = _
+
 
   Given("""^the started document overview$"""){ () =>
 
@@ -52,29 +54,26 @@ class SingleParagraphWordDocStepDefsUI
   }
 
 
-  When("""^the user selects a file with a text passage and starts the import$"""){ () =>
+  When("""^the user selects the file ([^"]*) and starts the import$"""){ filename: String =>
 
-    val keys = testreference.qualifiedPath
+    this.filename = filename
+    val keys = TestFileReference.buildPathString(filename)
     browser.find(By.id("fileref")).get(0).keyboard().sendKeys(keys)
     browser.find(By.id("uploadSubmit")).get(0).click()
   }
 
 
-  Then("""^after the import the document is available in the system and the overview contains the document$"""){ () =>
+  Then("""^after the import the document is available in the system and the overview shows the document$"""){ () =>
 
     browser.window().title() shouldBe "The Text Analyzer Platform"
     val elements = browser.find(By.id("docOverview"))
     val textList = elements.find(By.tagName("a")).textContents()
-    assert(textList.contains(testreference.getFilename))
+    assert(textList.contains(filename))
 
     // cleanup test setup
     server.stop()
     browser.quit()
   }
 
-
-  private def testreference = {
-    TestFileReference.build.find(TestFileReference.WORD_SINGLE_PARAGRAPH)
-  }
 
 }

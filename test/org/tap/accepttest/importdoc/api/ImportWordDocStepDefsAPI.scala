@@ -17,7 +17,7 @@ package org.tap.accepttest.importdoc.api
 
 import cucumber.api.scala.{EN, ScalaDsl}
 import org.scalatest.Matchers
-import org.tap.accepttest.testdata.{TestFileReference}
+import org.tap.accepttest.testdata.TestFileReference
 import org.tap.domain.Document
 import org.tap.framework.DocumentPathSource
 
@@ -32,9 +32,9 @@ class ImportWordDocStepDefsAPI extends ScalaDsl with EN with Matchers {
   private var document: Document = _
 
 
-  Given("^the text document ([^\"]*)$"){ name: String =>
-    val path = TestFileReference.buildPath(name)
-    testContext = DocImportTestContext(new DocumentPathSource(name, path))
+  Given("^the text document ([^\"]*)$"){ filename: String =>
+    val path = TestFileReference.buildPath(filename)
+    testContext = DocImportTestContext(new DocumentPathSource(filename, path))
     withClue(s"Source in path '$path' not found: ") {
       testContext.source should not be null
     }

@@ -19,39 +19,15 @@ import java.nio.file.{Path, Paths}
 
 
 /**
-  * Defines references to documents files and expected values to use in the tests.
+  * Defines references to documents files for test purpose.
   *
   * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
   */
-case class TestFileReference(referenceMap: Map[String,ReferencePair]) {
-  def find(key: String) : ReferencePair = {
-    referenceMap(key)
-  }
-}
-
 object TestFileReference {
 
-  val WORD_SINGLE_PARAGRAPH = "Word, single Paragraph"
-
-  def build: TestFileReference = {
-    val map = Map[String,ReferencePair](
-      WORD_SINGLE_PARAGRAPH -> new ReferencePair(
-        "simple-text-passage.docx",
-        "The central concept of a document store is the notion")
-    )
-    TestFileReference(map)
-  }
-
   def buildPath(filename: String): Path = {
-    Paths.get("test-resources/importdoc/" + filename)
+    Paths.get(buildPathString(filename))
   }
-}
 
-class ReferencePair(_filename: String, _expectation: String) {
-  private val filename = _filename
-  private val expectation = _expectation
-
-  def qualifiedPath: String = TestFileReference.buildPath(filename).toString
-  def expected: String = expectation
-  def getFilename: String = _filename
+  def buildPathString(filename: String): String = "test-resources/importdoc/" + filename
 }

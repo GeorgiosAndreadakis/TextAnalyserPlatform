@@ -30,6 +30,7 @@ lazy val root = (project in file("."))
     libraryDependencies += "org.projectlombok" % "lombok" % "1.16.10" % Test,
     libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % Test,
     libraryDependencies += "info.cukes" %% "cucumber-scala" % "1.2.5" % Test,
+    //libraryDependencies += "info.cukes" % "cucumber-guice" % "1.2.5" % Test,
     libraryDependencies += "info.cukes" % "cucumber-junit" % "1.2.5" % Test,
 
     resourceDirectory in Test := baseDirectory.value / "test-resources"

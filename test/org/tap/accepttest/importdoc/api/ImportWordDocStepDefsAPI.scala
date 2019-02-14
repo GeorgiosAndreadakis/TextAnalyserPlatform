@@ -47,11 +47,4 @@ class ImportWordDocStepDefsAPI extends ScalaDsl with EN with Matchers {
   Then("""^there is a text passage in the system with substring '([^"]*)'$"""){ substr: String =>
     document.findParagraphWithText(substr)
   }
-
-  private def findPersistedDoc(document: Document) = {
-    testContext.allDocs match {
-      case Left(_) => Left(None)
-      case Right(list: List[Document]) => Right(list.filter(_.getId == document.getId).head)
-    }
-  }
 }

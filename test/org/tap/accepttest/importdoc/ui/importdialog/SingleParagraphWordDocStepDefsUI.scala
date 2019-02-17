@@ -15,13 +15,11 @@
  */
 package org.tap.accepttest.importdoc.ui.importdialog
 
+import cucumber.api.Scenario
 import cucumber.api.scala.{EN, ScalaDsl}
-import org.openqa.selenium.By
 import org.scalatest.Matchers
+import org.tap.accepttest.importdoc.ui.UiTestDriver
 import org.tap.accepttest.testdata.TestFileReference
-import play.api.Application
-import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.test.{Helpers, TestBrowser, TestServer}
 
 
 /**
@@ -31,49 +29,41 @@ import play.api.test.{Helpers, TestBrowser, TestServer}
   *
   * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
   */
-class SingleParagraphWordDocStepDefsUI
-  extends ScalaDsl with EN with Matchers {
+class SingleParagraphWordDocStepDefsUI extends ScalaDsl with EN with Matchers {
 
-  val port = 9009
-  val browser: TestBrowser = TestBrowser.of(Helpers.HTMLUNIT)
-  val application: Application = new GuiceApplicationBuilder().build()
-  val server = TestServer(port, application)
+  private val port = 9009
+  val uiTestContext = UiTestDriver(port)
+  val importDialogPage = ImportDialogPage(uiTestContext)
 
   var filename: String = _
 
 
-  Given("""^the started document overview$"""){ () =>
-
-    server.start()
-    browser.goTo("http://localhost:" + port)
-
-    // Check elements
-    browser.window().title() shouldBe "The Text Analyzer Platform"
-    browser.find(By.id("fileref")).get(0) should not be null
-    browser.find(By.id("uploadSubmit")).get(0) should not be null
+  Before(){ scenario : Scenario =>
+    uiTestContext.startup()
   }
 
+  After(){ scenario : Scenario =>
+    uiTestContext.shutdown()
+  }
+
+
+  Given("""^the started document overview$"""){ () =>
+    importDialogPage.open()
+    // Check elements
+    importDialogPage.pageTitle() shouldBe "The Text Analyzer Platform"
+    importDialogPage.fileInput() should not be null
+    importDialogPage.submitButton() should not be null
+  }
 
   When("""^the user selects the file ([^"]*) and starts the import$"""){ filename: String =>
-
     this.filename = filename
     val keys = TestFileReference.buildPathString(filename)
-    browser.find(By.id("fileref")).get(0).keyboard().sendKeys(keys)
-    browser.find(By.id("uploadSubmit")).get(0).click()
+    importDialogPage.fileInput().keyboard().sendKeys(keys)
+    importDialogPage.submitButton().click()
   }
-
 
   Then("""^after the import the document is available in the system and the overview shows the document$"""){ () =>
-
-    browser.window().title() shouldBe "The Text Analyzer Platform"
-    val elements = browser.find(By.id("docOverview"))
-    val textList = elements.find(By.tagName("a")).textContents()
-    assert(textList.contains(filename))
-
-    // cleanup test setup
-    server.stop()
-    browser.quit()
+    assert(importDialogPage.docOverviewContainsFilename(filename))
   }
-
 
 }

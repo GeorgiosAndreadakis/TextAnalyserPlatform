@@ -33,7 +33,7 @@ class ImportWordDocStepDefsAPI extends ScalaDsl with EN with Matchers {
 
 
   Given("^the text document ([^\"]*)$"){ filename: String =>
-    val path = TestFileReference.buildPath(filename)
+    val path = TestFileReference.pathForFile(filename)
     testContext = DocImportTestContext(new DocumentPathSource(filename, path))
     withClue(s"Source in path '$path' not found: ") {
       testContext.source should not be null

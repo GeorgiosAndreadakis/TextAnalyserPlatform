@@ -32,18 +32,18 @@ import org.tap.accepttest.testdata.TestFileReference
 class SingleParagraphWordDocStepDefsUI extends ScalaDsl with EN with Matchers {
 
   private val port = 9009
-  val uiTestContext = UiTestDriver(port)
-  val importDialogPage = ImportDialogPage(uiTestContext)
+  val uiTestDriver = UiTestDriver(port)
+  val importDialogPage = ImportDialogPage(uiTestDriver)
 
   var filename: String = _
 
 
   Before(){ scenario : Scenario =>
-    uiTestContext.startup()
+    uiTestDriver.startup()
   }
 
   After(){ scenario : Scenario =>
-    uiTestContext.shutdown()
+    uiTestDriver.shutdown()
   }
 
 
@@ -57,8 +57,7 @@ class SingleParagraphWordDocStepDefsUI extends ScalaDsl with EN with Matchers {
 
   When("""^the user selects the file ([^"]*) and starts the import$"""){ filename: String =>
     this.filename = filename
-    val keys = TestFileReference.buildPathString(filename)
-    importDialogPage.fileInput().keyboard().sendKeys(keys)
+    importDialogPage.fileInput().keyboard().sendKeys(TestFileReference.pathStringForFile(filename))
     importDialogPage.submitButton().click()
   }
 

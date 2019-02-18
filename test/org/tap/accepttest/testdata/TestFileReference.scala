@@ -25,9 +25,9 @@ import java.nio.file.{Path, Paths}
   */
 object TestFileReference {
 
-  def buildPath(filename: String): Path = {
-    Paths.get(buildPathString(filename))
+  def pathForFile(filename: String): Path = {
+    Paths.get(pathStringForFile(filename))
   }
 
-  def buildPathString(filename: String): String = "test-resources/importdoc/" + filename
+  def pathStringForFile(filename: String): String = "test-resources/importdoc/" + filename
 }

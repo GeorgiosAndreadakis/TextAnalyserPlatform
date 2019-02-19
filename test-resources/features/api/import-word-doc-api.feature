@@ -1,3 +1,4 @@
+@api
 Feature: Import Word documents
 
   Scenario: A single text passage in a Word document

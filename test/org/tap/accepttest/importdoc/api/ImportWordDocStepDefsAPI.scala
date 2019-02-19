@@ -15,9 +15,10 @@
  */
 package org.tap.accepttest.importdoc.api
 
+import cucumber.api.Scenario
 import cucumber.api.scala.{EN, ScalaDsl}
 import org.scalatest.Matchers
-import org.tap.accepttest.testdata.TestFileReference
+import org.tap.accepttest.testdata.{DatabaseTestDriver, TestFileReference}
 import org.tap.domain.Document
 import org.tap.framework.DocumentPathSource
 
@@ -31,6 +32,9 @@ class ImportWordDocStepDefsAPI extends ScalaDsl with EN with Matchers {
   private var testContext: DocImportTestContext = _
   private var document: Document = _
 
+  After("@api"){ _ : Scenario =>
+    DatabaseTestDriver.cleanup
+  }
 
   Given("^the text document ([^\"]*)$"){ filename: String =>
     val path = TestFileReference.pathForFile(filename)

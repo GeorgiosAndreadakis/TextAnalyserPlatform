@@ -32,6 +32,7 @@ lazy val root = (project in file("."))
     libraryDependencies += "info.cukes" %% "cucumber-scala" % "1.2.5" % Test,
     //libraryDependencies += "info.cukes" % "cucumber-guice" % "1.2.5" % Test,
     libraryDependencies += "info.cukes" % "cucumber-junit" % "1.2.5" % Test,
+    libraryDependencies += "com.softwaremill.sttp" %% "core" % "1.5.11" % Test,
 
     resourceDirectory in Test := baseDirectory.value / "test-resources"
   )

@@ -38,11 +38,11 @@ class SingleParagraphWordDocStepDefsUI extends ScalaDsl with EN with Matchers {
   var filename: String = _
 
 
-  Before(){ scenario : Scenario =>
+  Before("@ui"){ scenario : Scenario =>
     uiTestDriver.startup()
   }
 
-  After(){ scenario : Scenario =>
+  After("@ui"){ scenario : Scenario =>
     uiTestDriver.shutdown()
   }
 

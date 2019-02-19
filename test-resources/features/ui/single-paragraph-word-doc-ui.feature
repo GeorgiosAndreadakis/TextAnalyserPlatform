@@ -1,3 +1,4 @@
+@ui
 Feature: Document file with single paragraph using the import dialog
 
   Scenario: A single text passage in a Word document

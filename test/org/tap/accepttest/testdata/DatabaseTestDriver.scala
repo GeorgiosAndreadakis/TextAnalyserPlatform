@@ -26,7 +26,7 @@ object DatabaseTestDriver {
 
   def cleanup(): Unit = {
 
-    implicit val backend = HttpURLConnectionBackend()
+    implicit val backend: SttpBackend[Id, Nothing] = HttpURLConnectionBackend()
 
     var request = sttp.delete(uri"http://localhost:9200/elements")
     var response = request.send()

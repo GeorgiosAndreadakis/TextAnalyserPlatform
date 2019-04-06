@@ -105,3 +105,14 @@ case class Paragraph(text: String) extends ElementContainer() {
   }
   override def print: String = "P[" + (if (text != null) text else "") + "]"
 }
+
+/**
+  * Models a section of an document.
+  * <p>
+  *   The section acts as element container.
+  * </p>
+  * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
+  */
+case class Section(title: String) extends ElementContainer {
+
+}

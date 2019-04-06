@@ -32,7 +32,7 @@ class ImportWordDocStepDefsAPI extends ScalaDsl with EN with Matchers {
   private var testContext: DocImportTestContext = _
   private var document: Document = _
 
-  After("@api"){ _ : Scenario =>
+  After("@api", "@section"){ _ : Scenario =>
     DatabaseTestDriver.cleanup
   }
 
@@ -49,6 +49,12 @@ class ImportWordDocStepDefsAPI extends ScalaDsl with EN with Matchers {
   }
 
   Then("""^there is a text passage in the system with substring '([^"]*)'$"""){ substr: String =>
-    document.findParagraphWithText(substr)
+    val maybeParagraph = document.findParagraphWithText(substr)
+    maybeParagraph should not be empty
+  }
+
+  Then("""^there is a section in the system with title '([^"]*)'$"""){ substr: String =>
+    val maybeSection = document.findSectionWithTitle(substr)
+    maybeSection should not be empty
   }
 }

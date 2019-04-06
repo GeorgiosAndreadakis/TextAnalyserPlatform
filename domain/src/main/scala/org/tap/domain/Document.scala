@@ -38,10 +38,15 @@ class Document(id: String) extends Iterable[DocElement]  {
     val f: DocElement => Boolean = (elem: DocElement) => {
       elem.isInstanceOf[Paragraph] && elem.asInstanceOf[Paragraph].text.contains(txt)
     }
-    find(f) match {
-      case p: Paragraph => Some(p)
-      case _ => None
+    find(f).flatMap(elem => Option(elem.asInstanceOf[Paragraph]))
+  }
+
+  def findSectionWithTitle(title: String): Option[Section] = {
+
+    val f: DocElement => Boolean = (elem: DocElement) => {
+      elem.isInstanceOf[Section] && elem.asInstanceOf[Section].title.equals(title)
     }
+    find(f).flatMap(elem => Option(elem.asInstanceOf[Section]))
   }
 
   override def iterator:Iterator[DocElement] = bodyElements.iterator
@@ -61,12 +66,8 @@ class Document(id: String) extends Iterable[DocElement]  {
   def allElementsInDepthFirstOrder: List[DocElement] = depthFirstElementList.toList
 
   def elementCreated(docElement: DocElement): Unit = {
-    if (docElement.isEmptyDocElement) {
-      bodyElements.removeElement(docElement)
-    } else {
-      bodyElements.addChild(docElement)
-      depthFirstElementList += docElement
-    }
+    bodyElements.addChild(docElement)
+    depthFirstElementList += docElement
   }
 
 }

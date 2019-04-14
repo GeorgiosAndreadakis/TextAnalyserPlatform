@@ -15,6 +15,7 @@
  */
 package org.tap.framework.persistence.elastic
 import org.elasticsearch.client.RestHighLevelClient
+import org.tap.framework.persistence.elastic.mapping.DocumentMapper
 
 /**
   * Deletes a document and its elements.

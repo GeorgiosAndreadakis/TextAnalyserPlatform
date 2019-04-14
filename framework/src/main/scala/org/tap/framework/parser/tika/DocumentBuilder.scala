@@ -38,14 +38,19 @@ case class DocumentBuilder(parseResult: ParseEventCollector) {
     doc
   }
 
-  def startElementMatched(event: StartElementEvent): Unit = event.qName match {
-    case "p" => currentElementBuilder = ParagraphBuilder(event)
-    case _ =>
+  def startElementMatched(event: StartElementEvent): Unit = {
+    event.qName match {
+      case "p" => currentElementBuilder = ParagraphBuilder(event)
+      case "h1" => currentElementBuilder = SectionBuilder(1)
+      case _ =>
+    }
   }
 
   def endElementMatched(event: EndElementEvent): Unit = event.qName match {
     case "p" => doc.elementCreated(currentElementBuilder.endElementEventReceived())
                 currentElementBuilder = DummyBuilder()
+    case "h1" =>  doc.elementCreated(currentElementBuilder.endElementEventReceived())
+                  currentElementBuilder = DummyBuilder()
     case _ =>
   }
 }

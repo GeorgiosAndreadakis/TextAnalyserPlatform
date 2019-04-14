@@ -19,6 +19,7 @@ import org.elasticsearch.ElasticsearchStatusException
 import org.elasticsearch.client.RestHighLevelClient
 import org.elasticsearch.search.SearchHits
 import org.tap.domain.Document
+import org.tap.framework.persistence.elastic.mapping.DocumentMapper
 
 /**
   * Reading all documents.

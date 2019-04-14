@@ -33,7 +33,7 @@ class ImportWordDocStepDefsAPI extends ScalaDsl with EN with Matchers {
   private var document: Document = _
 
   After("@api", "@section"){ _ : Scenario =>
-    DatabaseTestDriver.cleanup
+    DatabaseTestDriver.cleanup()
   }
 
   Given("^the text document ([^\"]*)$"){ filename: String =>

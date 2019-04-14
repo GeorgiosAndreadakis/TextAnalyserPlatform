@@ -90,7 +90,6 @@ class ElementContainer extends DocElement with Iterable[DocElement] {
 
   override def print: String = "ElementContainer[]"
   override def iterator:Iterator[DocElement] = children.iterator
-
   override def toString: String = print
 }
 
@@ -113,6 +112,6 @@ case class Paragraph(text: String) extends ElementContainer() {
   * </p>
   * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
   */
-case class Section(title: String) extends ElementContainer {
+case class Section(level: Int, title: String) extends ElementContainer {
 
 }

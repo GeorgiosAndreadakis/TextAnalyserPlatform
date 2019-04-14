@@ -17,6 +17,7 @@ package org.tap.framework.persistence.elastic
 
 import org.elasticsearch.client.RestHighLevelClient
 import org.tap.domain.Document
+import org.tap.framework.persistence.elastic.mapping.DocumentMapper
 
 /**
   * Persisting a document in the ElasticSearch data store.

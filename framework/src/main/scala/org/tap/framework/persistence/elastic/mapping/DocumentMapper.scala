@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.tap.framework.persistence.elastic
+package org.tap.framework.persistence.elastic.mapping
 
 import org.elasticsearch.action.admin.indices.refresh.{RefreshRequest, RefreshResponse}
 import org.elasticsearch.action.delete.DeleteRequest
@@ -21,9 +21,9 @@ import org.elasticsearch.action.index.IndexRequest
 import org.elasticsearch.action.search.{SearchRequest, SearchResponse}
 import org.elasticsearch.client.{RequestOptions, RestHighLevelClient}
 import org.elasticsearch.index.query.QueryBuilders
-import org.elasticsearch.search.{SearchHit, SearchHits}
 import org.elasticsearch.search.builder.SearchSourceBuilder
-import org.tap.domain.{DocElement, Document, Paragraph}
+import org.elasticsearch.search.{SearchHit, SearchHits}
+import org.tap.domain.{DocElement, Document, Paragraph, Section}
 import org.tap.framework.DocumentStringSource
 
 /**
@@ -36,9 +36,8 @@ class DocumentMapper(client: RestHighLevelClient) {
   private val docIndexName = "documents"
   private val elementIndexName = "elements"
 
-  private val docIdAttributName = "docId"
+  val docIdAttributName = "docId"
   private val filenameAttributName = "filename"
-  private val textAttributeName = "text"
 
 
   def readAllDocuments: SearchResponse = {
@@ -68,10 +67,9 @@ class DocumentMapper(client: RestHighLevelClient) {
     }
   }
 
-  private def addElement(elemHit: SearchHit, doc: Document): Unit = {
-    val text = elemHit.getSourceAsMap.get(textAttributeName).asInstanceOf[String]
-    val paragraph = Paragraph(text)
-    doc.elementCreated(paragraph)
+  private def addElement(searchHit: SearchHit, doc: Document): Unit = {
+    val elemFromSearchHit = mapperFor(searchHit).buildElement(searchHit)
+    doc.elementCreated(elemFromSearchHit)
   }
 
   def deleteDoc(docId: String): Unit = {
@@ -102,15 +100,10 @@ class DocumentMapper(client: RestHighLevelClient) {
     indexRequest
   }
 
-  def saveDocElement(elem:DocElement, doc: Document): Unit = {
-    // Paragraph
-    // Create index request for storing doc
-    val pMap = new java.util.HashMap[String, AnyRef]
-    pMap.put(textAttributeName, elem.asInstanceOf[Paragraph].text)
-    pMap.put(docIdAttributName, doc.getId)
+  def saveDocElement(elem:DocElement, doc:Document): Unit = {
 
-    val indexRequest = new IndexRequest(elementIndexName, "doc", elem.id)
-    indexRequest.source(pMap)
+    // Create index request for storing doc
+    val indexRequest = createIndexRequestFor(elem, doc)
 
     // Run index request
     client.index(indexRequest, defaultRequestOptions)
@@ -125,6 +118,27 @@ class DocumentMapper(client: RestHighLevelClient) {
 
   def refreshForDocumentElementIndex: RefreshResponse = {
     refreshIndex(elementIndexName)
+  }
+
+  private def mapperFor(element: DocElement): DocElementIndexRequestMapper = {
+    element match {
+      case Paragraph(_) => ParagraphMapper()
+      case Section(_,_) => SectionMapper()
+      case _ => throw new IllegalStateException(s"No mapper for element $element defined!")
+    }
+  }
+
+  private def mapperFor(searchHit: SearchHit): DocElementIndexRequestMapper = {
+    val elemType = searchHit.getSourceAsMap.get("type").asInstanceOf[String]
+    elemType match {
+      case "p" => ParagraphMapper()
+      case "h" => SectionMapper()
+      case _ => throw new IllegalStateException(s"No mapper for type $elemType defined!")
+    }
+  }
+
+  private def createIndexRequestFor(elem:DocElement, doc:Document): IndexRequest = {
+    mapperFor(elem).mapTo(elem, doc)
   }
 
   private def refreshIndex(index: String): RefreshResponse = {

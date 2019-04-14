@@ -15,7 +15,7 @@
  */
 package org.tap.framework.parser.tika
 
-import org.tap.domain.{DocElement, Paragraph}
+import org.tap.domain.{DocElement, Paragraph, Section}
 
 /**
   * Builders for the document elements.
@@ -32,10 +32,15 @@ sealed abstract class ElementBuilder {
   def endElementEventReceived(): DocElement
 
 }
+
 case class ParagraphBuilder(event: StartElementEvent) extends ElementBuilder {
   override def endElementEventReceived(): DocElement = {
     Paragraph(textBuilder.build)
   }
+}
+
+case class SectionBuilder(level: Int) extends ElementBuilder {
+  override def endElementEventReceived(): DocElement = Section(level, textBuilder.build)
 }
 
 case class DummyBuilder() extends ElementBuilder {

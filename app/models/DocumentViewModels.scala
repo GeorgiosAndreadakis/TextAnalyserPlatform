@@ -15,7 +15,7 @@
  */
 package models
 
-import org.tap.domain.{DocElement, Document, ElementContainer, Paragraph}
+import org.tap.domain._
 
 
 /**
@@ -47,6 +47,7 @@ object ElementViewModel {
     docElem match {
       case null => DummyViewModel(null)
       case paragraph: Paragraph => ParagraphViewModel(paragraph)
+      case section: Section => SectionViewModel(section)
       case elem: DocElement => DummyViewModel(elem)
     }
   }
@@ -73,8 +74,12 @@ case class BodyElements(document: Document) extends ElementContainerViewModel(do
 case class ParagraphViewModel(paragraph: Paragraph) extends ElementContainerViewModel(paragraph) {
   def text(): String = paragraph.text
   override def elementContainer: ElementContainer = paragraph
-
   override def excerpt: String = text()
+}
+
+case class SectionViewModel(section: Section) extends ElementContainerViewModel(section) {
+  override def elementContainer: ElementContainer = section
+  override def excerpt: String = section.title
 }
 
 case class DummyViewModel(override val docElement: DocElement) extends ElementViewModel(docElement) {

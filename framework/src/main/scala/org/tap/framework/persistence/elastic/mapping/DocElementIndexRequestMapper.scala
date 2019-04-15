@@ -67,10 +67,11 @@ case class SectionMapper() extends DocElementIndexRequestMapper {
 
   override def mapTo(elem: DocElement, doc: Document): IndexRequest = {
     val pMap = new java.util.HashMap[String, AnyRef]
+    val section = elem.asInstanceOf[Section]
     pMap.put(elemTypeAttributName, "h")
     pMap.put(docIdAttributName, doc.getId)
-    pMap.put(levelAttributName, elem.asInstanceOf[Section].level.toString)
-    pMap.put(titleAttributName, elem.asInstanceOf[Section].title)
+    pMap.put(levelAttributName, section.level.toString)
+    pMap.put(titleAttributName, section.title)
 
     val indexRequest = new IndexRequest(elementIndexName, "doc", elem.id)
     indexRequest.source(pMap)

@@ -79,7 +79,7 @@ case class ParagraphViewModel(paragraph: Paragraph) extends ElementContainerView
 
 case class SectionViewModel(section: Section) extends ElementContainerViewModel(section) {
   override def elementContainer: ElementContainer = section
-  override def excerpt: String = section.title
+  override def excerpt: String = s"Section L${section.level}: ${section.title}"
 }
 
 case class DummyViewModel(override val docElement: DocElement) extends ElementViewModel(docElement) {

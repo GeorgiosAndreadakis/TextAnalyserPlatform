@@ -17,7 +17,7 @@ package org.tap.framework.persistence.elastic.mapping
 
 import org.elasticsearch.action.index.IndexRequest
 import org.elasticsearch.search.SearchHit
-import org.tap.domain.{DocElement, Document, Paragraph, Section}
+import org.tap.domain._
 
 /**
   * Defines the mapping of a document element to an index request for accessing ElasticSearch.
@@ -26,13 +26,13 @@ import org.tap.domain.{DocElement, Document, Paragraph, Section}
   */
 sealed trait DocElementIndexRequestMapper {
 
-  val docIdAttributName = "docId"
-  val elemTypeAttributName = "type"
+  val docIdAttributeName = "docId"
+  val parentIdAttributeName = "parentId"
+  val elemTypeAttributeName = "type"
   val elementIndexName = "elements"
 
-  def buildElement(elemHit: SearchHit): DocElement
+  def buildElement(hit: SearchHit): DocElement
   def mapTo(elem:DocElement, doc:Document): IndexRequest
-
 }
 
 case class ParagraphMapper() extends DocElementIndexRequestMapper {
@@ -41,39 +41,50 @@ case class ParagraphMapper() extends DocElementIndexRequestMapper {
 
   override def mapTo(elem: DocElement, doc: Document): IndexRequest = {
     val pMap = new java.util.HashMap[String, AnyRef]
-    pMap.put(elemTypeAttributName, "p")
+    pMap.put(elemTypeAttributeName, "p")
+    pMap.put(parentIdAttributeName, elem.asInstanceOf[Paragraph].parentId)
     pMap.put(textAttributeName, elem.asInstanceOf[Paragraph].text)
-    pMap.put(docIdAttributName, doc.getId)
-    val indexRequest = new IndexRequest(elementIndexName, "doc", elem.id)
+    pMap.put(docIdAttributeName, doc.getId)
+    val indexRequest = new IndexRequest(elementIndexName, "doc", elem.getId)
     indexRequest.source(pMap)
   }
 
-  def buildElement(elemHit: SearchHit): DocElement = {
-    val text = elemHit.getSourceAsMap.get(textAttributeName).asInstanceOf[String]
-    Paragraph(text)
+  override def buildElement(hit: SearchHit): DocElement = {
+    val id = hit.getId
+    val text = hit.getSourceAsMap.get(textAttributeName).asInstanceOf[String]
+    val parentId = hit.getSourceAsMap.get(parentIdAttributeName).asInstanceOf[String]
+    val paragraph = Paragraph(id, text)
+    paragraph.parentId = parentId
+    paragraph
   }
 }
 
 case class SectionMapper() extends DocElementIndexRequestMapper {
 
-  private val levelAttributName = "level"
-  private val titleAttributName = "title"
-
-  override def buildElement(elemHit: SearchHit): DocElement = {
-    val level = elemHit.getSourceAsMap.get(levelAttributName).asInstanceOf[String]
-    val title = elemHit.getSourceAsMap.get(titleAttributName).asInstanceOf[String]
-    Section(level.toInt, title)
-  }
+  private val levelAttributeName = "level"
+  private val titleAttributeName = "title"
 
   override def mapTo(elem: DocElement, doc: Document): IndexRequest = {
     val pMap = new java.util.HashMap[String, AnyRef]
     val section = elem.asInstanceOf[Section]
-    pMap.put(elemTypeAttributName, "h")
-    pMap.put(docIdAttributName, doc.getId)
-    pMap.put(levelAttributName, section.level.toString)
-    pMap.put(titleAttributName, section.title)
+    pMap.put(elemTypeAttributeName, "h")
+    pMap.put(docIdAttributeName, doc.getId)
+    pMap.put(parentIdAttributeName, section.parent.getId)
+    pMap.put(levelAttributeName, section.level.toString)
+    pMap.put(titleAttributeName, section.title)
 
-    val indexRequest = new IndexRequest(elementIndexName, "doc", elem.id)
+    val indexRequest = new IndexRequest(elementIndexName, "doc", elem.getId)
     indexRequest.source(pMap)
   }
+
+  override def buildElement(hit: SearchHit): DocElement = {
+    val id = hit.getId
+    val level = hit.getSourceAsMap.get(levelAttributeName).asInstanceOf[String]
+    val title = hit.getSourceAsMap.get(titleAttributeName).asInstanceOf[String]
+    val parentId = hit.getSourceAsMap.get(parentIdAttributeName).asInstanceOf[String]
+    val section = Section(id, level.toInt, title)
+    section.parentId = parentId
+    section
+  }
 }
+

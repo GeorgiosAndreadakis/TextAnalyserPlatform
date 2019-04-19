@@ -24,21 +24,26 @@ import scala.collection.mutable.ListBuffer
   *
   * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
   */
-sealed abstract class DocElement {
+sealed abstract class DocElement(id: String) {
 
-  val id: String = UUID.randomUUID().toString
+  def this() = this(UUID.randomUUID().toString)
+
+  var parentId: String = _
   var parent: ElementContainer = _
-  def print: String
 
+  def asContainer:ElementContainer = this.asInstanceOf[ElementContainer]
+  def asParagraph: Paragraph = this.asInstanceOf[Paragraph]
+  def getId: String = id
   def hasParent: Boolean = parent != null
   def isEmptyDocElement: Boolean
-
-  def asParagraph: Paragraph = this.asInstanceOf[Paragraph]
+  def print: String
 }
 
 /** A special element container which acts as root container in the document. */
-case class RootContainer() extends ElementContainer() {
+case class RootContainer(id: String) extends ElementContainer(id: String) {
+  def this() = this(UUID.randomUUID().toString)
   parent = null
+  parentId = null
 }
 
 
@@ -46,7 +51,9 @@ case class RootContainer() extends ElementContainer() {
   * An document element which acts as an container for other elements.
   * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
   */
-class ElementContainer extends DocElement with Iterable[DocElement] {
+class ElementContainer(id: String) extends DocElement(id: String) with Iterable[DocElement] {
+
+  def this() = this(UUID.randomUUID().toString)
 
   val children = new ListBuffer[DocElement]
 
@@ -74,13 +81,15 @@ class ElementContainer extends DocElement with Iterable[DocElement] {
     if (elem != null) {
       children += elem
       elem.parent = this
+      elem.parentId = this.getId
     }
   }
 
   def removeElement(docElement: DocElement): Unit = {
     foreach {
-      case paragraph: Paragraph if paragraph.id == docElement.id =>
+      case paragraph: Paragraph if paragraph.getId == docElement.getId =>
         docElement.parent = null
+        docElement.parentId = null
         children -= docElement
       case _ => // nothing to do
     }
@@ -88,8 +97,8 @@ class ElementContainer extends DocElement with Iterable[DocElement] {
 
   def addParagraph(paragraph: Paragraph): Unit = addChild(paragraph)
 
-  override def print: String = "ElementContainer[]"
   override def iterator:Iterator[DocElement] = children.iterator
+  override def print: String = "ElementContainer[]"
   override def toString: String = print
 }
 
@@ -97,7 +106,9 @@ class ElementContainer extends DocElement with Iterable[DocElement] {
   * Models a paragraph of an document.
   * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
   */
-case class Paragraph(text: String) extends ElementContainer() {
+case class Paragraph(id: String, text: String) extends ElementContainer(id: String) {
+
+  def this(text: String) = this(UUID.randomUUID().toString, text)
 
   override def isEmptyDocElement: Boolean = {
     text.isEmpty && children.isEmpty
@@ -112,6 +123,7 @@ case class Paragraph(text: String) extends ElementContainer() {
   * </p>
   * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
   */
-case class Section(level: Int, title: String) extends ElementContainer {
+case class Section(id: String, level: Int, title: String) extends ElementContainer(id: String) {
 
+  def this(level: Int, title: String) = this(UUID.randomUUID().toString, level, title)
 }

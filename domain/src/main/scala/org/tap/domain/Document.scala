@@ -30,8 +30,18 @@ class Document(id: String) extends Iterable[DocElement]  {
 
   private var source: DocumentSource = _
 
-  val bodyElements = new RootContainer
+  val bodyElements = new RootContainer()
   private val depthFirstElementList = new ListBuffer[DocElement]
+
+  def addChild(elem: DocElement): Unit = {
+    bodyElements.addChild(elem)
+    elementCreated(elem)
+  }
+
+  def findElement(parentId: String): Option[DocElement] = {
+    val f: DocElement => Boolean = (elem: DocElement) => elem.getId.equals(parentId)
+    find(f)
+  }
 
   def findParagraphWithText(txt: String): Option[Paragraph] = {
 
@@ -49,7 +59,7 @@ class Document(id: String) extends Iterable[DocElement]  {
     find(f).flatMap(elem => Option(elem.asInstanceOf[Section]))
   }
 
-  override def iterator:Iterator[DocElement] = bodyElements.iterator
+  override def iterator:Iterator[DocElement] = depthFirstElementList.iterator
 
   def setSource(source: DocumentSource): Unit = this.source = source
   def getSource: DocumentSource = source
@@ -57,16 +67,13 @@ class Document(id: String) extends Iterable[DocElement]  {
 
   def firstElement: DocElement = {
     if (bodyElements.hasChildren) {
-      bodyElements.children.toList.head
+      depthFirstElementList.head
     } else {
       null
     }
   }
 
-  def allElementsInDepthFirstOrder: List[DocElement] = depthFirstElementList.toList
-
   def elementCreated(docElement: DocElement): Unit = {
-    bodyElements.addChild(docElement)
     depthFirstElementList += docElement
   }
 

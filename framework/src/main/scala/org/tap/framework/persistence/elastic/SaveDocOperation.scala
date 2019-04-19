@@ -17,7 +17,7 @@ package org.tap.framework.persistence.elastic
 
 import org.elasticsearch.client.RestHighLevelClient
 import org.tap.domain.Document
-import org.tap.framework.persistence.elastic.mapping.DocumentMapper
+import org.tap.framework.persistence.elastic.mapping.DocumentIndexRequestMapper
 
 /**
   * Persisting a document in the ElasticSearch data store.
@@ -28,7 +28,7 @@ class SaveDocOperation(doc: Document) extends PersistenceOperation {
 
   override def run(client: RestHighLevelClient): Unit = {
 
-    val mapper = new DocumentMapper(client)
+    val mapper = new DocumentIndexRequestMapper(client)
 
     // Save document
     mapper.saveDocument(doc)

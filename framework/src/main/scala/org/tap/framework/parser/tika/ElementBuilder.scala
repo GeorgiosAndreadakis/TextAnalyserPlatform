@@ -15,39 +15,78 @@
  */
 package org.tap.framework.parser.tika
 
-import org.tap.domain.{DocElement, Paragraph, Section}
+import java.util.UUID
+
+import org.tap.domain.{DocElement, Document, Paragraph, Section}
 
 /**
   * Builders for the document elements.
   */
 sealed abstract class ElementBuilder {
 
+  var myDocument: Document = _
+  var myElement: DocElement = _
   val textBuilder: TextBuilder = new TextBuilder
+
+  def parentBuilder: ElementBuilder
+  def endElementEventReceived(): Unit
 
   def charactersEventReceived(event: CharactersEvent): ElementBuilder = {
     textBuilder.append(event.ch)
     this
   }
 
-  def endElementEventReceived(): DocElement
+  def findDocument: Document = {
+    if (myDocument != null) {
+      myDocument
+    } else {
+      parentBuilder.findDocument
+    }
+  }
+
+  def newChild(docElement: DocElement): Unit = {
+    //if (parentBuilder == null) throw new IllegalStateException("#parentBuilder is missing!")
+    myElement.asContainer.addChild(docElement)
+    findDocument.elementCreated(docElement)
+  }
 
 }
 
-case class ParagraphBuilder(event: StartElementEvent) extends ElementBuilder {
-  override def endElementEventReceived(): DocElement = {
-    Paragraph(textBuilder.build)
+
+////
+
+case class ParagraphBuilder(parentBuilder: ElementBuilder) extends ElementBuilder {
+  override def endElementEventReceived(): Unit = {
+    val text = textBuilder.build
+    if (!text.isEmpty) {
+      val paragraph = Paragraph(UUID.randomUUID().toString, text)
+      parentBuilder.newChild(paragraph)
+      myElement = paragraph
+    }
   }
 }
 
-case class SectionBuilder(level: Int) extends ElementBuilder {
-  override def endElementEventReceived(): DocElement = Section(level, textBuilder.build)
-}
 
-case class DummyBuilder() extends ElementBuilder {
-  override def endElementEventReceived(): DocElement = {
-    null
+////
+
+case class SectionBuilder(level: Int, parentBuilder: ElementBuilder) extends ElementBuilder {
+  override def endElementEventReceived(): Unit = {
+    val section = Section(UUID.randomUUID().toString, level, textBuilder.build)
+    parentBuilder.newChild(section)
+    myElement = section
   }
 }
+
+
+////
+
+case class DummyBuilder(parentBuilder: ElementBuilder) extends ElementBuilder {
+  override def endElementEventReceived(): Unit = {
+  }
+}
+
+
+////
 
 class TextBuilder {
   var stringBuilder: StringBuilder = new StringBuilder
@@ -58,3 +97,22 @@ class TextBuilder {
     text
   }
 }
+
+
+////
+
+case class RootContainerBuilder(document: Document) extends ElementBuilder() {
+
+  myDocument = document
+  myElement = myDocument.bodyElements
+  override def parentBuilder: Null = null
+
+  override def newChild(docElement: DocElement): Unit = {
+    myElement.asContainer.addChild(docElement)
+    myDocument.elementCreated(docElement)
+  }
+
+  override def endElementEventReceived(): Unit = {
+  }
+}
+

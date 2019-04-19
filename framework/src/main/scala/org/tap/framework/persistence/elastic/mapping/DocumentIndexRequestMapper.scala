@@ -23,20 +23,22 @@ import org.elasticsearch.client.{RequestOptions, RestHighLevelClient}
 import org.elasticsearch.index.query.QueryBuilders
 import org.elasticsearch.search.builder.SearchSourceBuilder
 import org.elasticsearch.search.{SearchHit, SearchHits}
-import org.tap.domain.{DocElement, Document, Paragraph, Section}
+import org.tap.domain._
 import org.tap.framework.DocumentStringSource
+
+import scala.collection.mutable
 
 /**
   * Responsible for mapping {{Document}} instances to the index instances (aka documents).
   *
   * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
   */
-class DocumentMapper(client: RestHighLevelClient) {
+class DocumentIndexRequestMapper(client: RestHighLevelClient) {
 
   private val docIndexName = "documents"
   private val elementIndexName = "elements"
 
-  val docIdAttributName = "docId"
+  private val docIdAttributName = "docId"
   private val filenameAttributName = "filename"
 
 
@@ -49,7 +51,7 @@ class DocumentMapper(client: RestHighLevelClient) {
   def convert(hit: SearchHit): Document = {
     val doc = new Document(hit.getId)
     val value = hit.getSourceAsMap.get(filenameAttributName).asInstanceOf[String]
-    doc.setSource(new DocumentStringSource(value))
+    doc.setSource(new DocumentStringSource(value)) // TODO derive the correct document source type
     addElements(hit, doc)
     doc
   }
@@ -62,14 +64,26 @@ class DocumentMapper(client: RestHighLevelClient) {
   }
 
   private def addElements(docHit: SearchHit, doc: Document): Unit = {
-    for (hit <- allElementsForDocId(doc.getId).getHits) {
-      addElement(hit, doc)
-    }
-  }
 
-  private def addElement(searchHit: SearchHit, doc: Document): Unit = {
-    val elemFromSearchHit = mapperFor(searchHit).buildElement(searchHit)
-    doc.elementCreated(elemFromSearchHit)
+    val idElementMap = mutable.Map[String,DocElement]()
+
+    // Fill the elements map
+    for (hit <- allElementsForDocId(doc.getId).getHits) {
+      val elemFromSearchHit = mapperFor(hit).buildElement(hit)
+      idElementMap += (elemFromSearchHit.getId -> elemFromSearchHit)
+    }
+
+    // Add the children to their parents
+    for ((id, elem) <- idElementMap) {
+      val parentOpt = idElementMap.get(elem.parentId)
+      parentOpt match {
+        case Some(parent: ElementContainer) => {
+          parent.addChild(elem)
+          doc.elementCreated(elem)
+        }
+        case None => doc.addChild(elem)
+      }
+    }
   }
 
   def deleteDoc(docId: String): Unit = {
@@ -81,7 +95,6 @@ class DocumentMapper(client: RestHighLevelClient) {
     val deleteRequest = new DeleteRequest(elementIndexName, "doc", hit.getId)
     client.delete(deleteRequest, defaultRequestOptions)
   }
-
 
   def saveDocument(doc: Document): Unit = {
 
@@ -122,8 +135,8 @@ class DocumentMapper(client: RestHighLevelClient) {
 
   private def mapperFor(element: DocElement): DocElementIndexRequestMapper = {
     element match {
-      case Paragraph(_) => ParagraphMapper()
-      case Section(_,_) => SectionMapper()
+      case Paragraph(_,_) => ParagraphMapper()
+      case Section(_,_,_) => SectionMapper()
       case _ => throw new IllegalStateException(s"No mapper for element $element defined!")
     }
   }

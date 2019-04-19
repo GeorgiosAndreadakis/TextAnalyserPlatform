@@ -36,8 +36,8 @@ case class DocumentViewModel(document: Document) {
 
 /* View Model Classes. */
 abstract class ElementViewModel(val docElement: DocElement) {
-  def htmlId(): String = docElement.id
-  def id(): String = docElement.id
+  def htmlId(): String = docElement.getId
+  def id(): String = docElement.getId
   def excerpt: String
 }
 

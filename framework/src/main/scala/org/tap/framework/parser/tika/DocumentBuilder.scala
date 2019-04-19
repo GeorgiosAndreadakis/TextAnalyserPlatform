@@ -18,7 +18,7 @@ package org.tap.framework.parser.tika
 import org.tap.domain.Document
 
 /**
-  * Builds a document instance for a given {@link ParseResult}.
+  * Builds a document instance for a given [[ParseEventCollector]].
   */
 case class DocumentBuilder(parseResult: ParseEventCollector) {
 
@@ -28,7 +28,7 @@ case class DocumentBuilder(parseResult: ParseEventCollector) {
   def buildDocument: Document = {
 
     doc = new Document
-    currentElementBuilder = DummyBuilder()
+    currentElementBuilder = RootContainerBuilder(doc)
     parseResult.events.foreach {
       case charactersEvent  : CharactersEvent   => currentElementBuilder.charactersEventReceived(charactersEvent)
       case startElementEvent: StartElementEvent => startElementMatched(startElementEvent)
@@ -39,18 +39,27 @@ case class DocumentBuilder(parseResult: ParseEventCollector) {
   }
 
   def startElementMatched(event: StartElementEvent): Unit = {
+    val parentBuilder = currentElementBuilder
     event.qName match {
-      case "p" => currentElementBuilder = ParagraphBuilder(event)
-      case "h1" => currentElementBuilder = SectionBuilder(1)
+      case "p" => currentElementBuilder = ParagraphBuilder(parentBuilder)
+      case "h1" => currentElementBuilder = SectionBuilder(1, parentBuilder)
       case _ =>
     }
   }
 
   def endElementMatched(event: EndElementEvent): Unit = event.qName match {
-    case "p" => doc.elementCreated(currentElementBuilder.endElementEventReceived())
-                currentElementBuilder = DummyBuilder()
-    case "h1" =>  doc.elementCreated(currentElementBuilder.endElementEventReceived())
-                  currentElementBuilder = DummyBuilder()
+    case "p" => endElementEventReceivedWithBuilderChange()
+    case "h1" => {
+      currentElementBuilder.endElementEventReceived()
+    }
     case _ =>
+  }
+
+
+  ////
+
+  private def endElementEventReceivedWithBuilderChange(): Unit = {
+    currentElementBuilder.endElementEventReceived()
+    currentElementBuilder = currentElementBuilder.parentBuilder
   }
 }

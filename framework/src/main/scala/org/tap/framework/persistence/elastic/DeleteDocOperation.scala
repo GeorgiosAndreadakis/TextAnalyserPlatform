@@ -15,7 +15,7 @@
  */
 package org.tap.framework.persistence.elastic
 import org.elasticsearch.client.RestHighLevelClient
-import org.tap.framework.persistence.elastic.mapping.DocumentMapper
+import org.tap.framework.persistence.elastic.mapping.DocumentIndexRequestMapper
 
 /**
   * Deletes a document and its elements.
@@ -25,7 +25,7 @@ import org.tap.framework.persistence.elastic.mapping.DocumentMapper
 class DeleteDocOperation(docId: String) extends PersistenceOperation {
 
   override def run(client: RestHighLevelClient): Unit = {
-    val mapper = new DocumentMapper(client)
+    val mapper = new DocumentIndexRequestMapper(client)
     // delete doc elements
     val searchhits = mapper.allElementsForDocId(docId)
     for (hit <- searchhits.getHits) {

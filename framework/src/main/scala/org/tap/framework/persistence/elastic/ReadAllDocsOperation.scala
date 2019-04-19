@@ -19,7 +19,7 @@ import org.elasticsearch.ElasticsearchStatusException
 import org.elasticsearch.client.RestHighLevelClient
 import org.elasticsearch.search.SearchHits
 import org.tap.domain.Document
-import org.tap.framework.persistence.elastic.mapping.DocumentMapper
+import org.tap.framework.persistence.elastic.mapping.DocumentIndexRequestMapper
 
 /**
   * Reading all documents.
@@ -33,7 +33,7 @@ class ReadAllDocsOperation extends PersistenceOperation {
   def getResult: Either[Exception,List[Document]] = Right(result)
 
   override def run(client: RestHighLevelClient): Unit = {
-    val mapper = new DocumentMapper(client)
+    val mapper = new DocumentIndexRequestMapper(client)
     try {
       val searchResponse = mapper.readAllDocuments
       result = convert(searchResponse.getHits, mapper)
@@ -42,7 +42,7 @@ class ReadAllDocsOperation extends PersistenceOperation {
     }
   }
 
-  private def convert(hits: SearchHits, mapper: DocumentMapper): List[Document] = {
+  private def convert(hits: SearchHits, mapper: DocumentIndexRequestMapper): List[Document] = {
     hits.getHits.map(mapper.convert).toList
   }
 }

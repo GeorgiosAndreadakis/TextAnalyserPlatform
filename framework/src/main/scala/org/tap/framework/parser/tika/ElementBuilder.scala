@@ -17,7 +17,7 @@ package org.tap.framework.parser.tika
 
 import java.util.UUID
 
-import org.tap.domain.{DocElement, Document, Paragraph, Section}
+import org.tap.domain._
 
 /**
   * Builders for the document elements.
@@ -45,9 +45,10 @@ sealed abstract class ElementBuilder {
   }
 
   def newChild(docElement: DocElement): Unit = {
-    //if (parentBuilder == null) throw new IllegalStateException("#parentBuilder is missing!")
+    if (!myElement.isInstanceOf[ElementContainer]) {
+      throw new IllegalStateException(s"Element $myElement is not a container!")
+    }
     myElement.asContainer.addChild(docElement)
-    findDocument.elementCreated(docElement)
   }
 
 }
@@ -107,9 +108,8 @@ case class RootContainerBuilder(document: Document) extends ElementBuilder() {
   myElement = myDocument.bodyElements
   override def parentBuilder: Null = null
 
-  override def newChild(docElement: DocElement): Unit = {
-    myElement.asContainer.addChild(docElement)
-    myDocument.elementCreated(docElement)
+  override def newChild(elem: DocElement): Unit = {
+    myDocument.newChild(elem)
   }
 
   override def endElementEventReceived(): Unit = {

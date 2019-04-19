@@ -77,11 +77,8 @@ class DocumentIndexRequestMapper(client: RestHighLevelClient) {
     for ((id, elem) <- idElementMap) {
       val parentOpt = idElementMap.get(elem.parentId)
       parentOpt match {
-        case Some(parent: ElementContainer) => {
-          parent.addChild(elem)
-          doc.elementCreated(elem)
-        }
-        case None => doc.addChild(elem)
+        case Some(parent: ElementContainer) => parent.addChild(elem)
+        case None => doc.newChild(elem)
       }
     }
   }

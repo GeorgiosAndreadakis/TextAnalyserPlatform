@@ -17,8 +17,6 @@ package org.tap.domain
 
 import java.util.UUID
 
-import scala.collection.mutable.ListBuffer
-
 /**
   * Models a document.
   *
@@ -29,14 +27,7 @@ class Document(id: String) extends Iterable[DocElement]  {
   def this() = this(UUID.randomUUID().toString)
 
   private var source: DocumentSource = _
-
   val bodyElements = new RootContainer()
-  private val depthFirstElementList = new ListBuffer[DocElement]
-
-  def addChild(elem: DocElement): Unit = {
-    bodyElements.addChild(elem)
-    elementCreated(elem)
-  }
 
   def findElement(parentId: String): Option[DocElement] = {
     val f: DocElement => Boolean = (elem: DocElement) => elem.getId.equals(parentId)
@@ -59,7 +50,7 @@ class Document(id: String) extends Iterable[DocElement]  {
     find(f).flatMap(elem => Option(elem.asInstanceOf[Section]))
   }
 
-  override def iterator:Iterator[DocElement] = depthFirstElementList.iterator
+  override def iterator:Iterator[DocElement] = bodyElements.iterator
 
   def setSource(source: DocumentSource): Unit = this.source = source
   def getSource: DocumentSource = source
@@ -67,14 +58,14 @@ class Document(id: String) extends Iterable[DocElement]  {
 
   def firstElement: DocElement = {
     if (bodyElements.hasChildren) {
-      depthFirstElementList.head
+      bodyElements.head
     } else {
       null
     }
   }
 
-  def elementCreated(docElement: DocElement): Unit = {
-    depthFirstElementList += docElement
+  def newChild(elem: DocElement): Unit = {
+    bodyElements.addChild(elem)
   }
 
 }

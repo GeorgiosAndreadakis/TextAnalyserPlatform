@@ -35,11 +35,11 @@ class DocumentParserTika extends DocumentParser {
     val inputStream = source.inputStream
     parser.parse(inputStream, handler, metadata)
     writeToFile(handler.csvContent)
-    buildDocument(handler.parseResult)
+    buildDocument(handler.parseResult, source)
   }
 
-  private def buildDocument(parseResult: ParseEventCollector): Document = {
-    DocumentBuilder(parseResult).buildDocument
+  private def buildDocument(parseResult: ParseEventCollector, source: DocumentSource): Document = {
+    DocumentBuilder(parseResult, source).buildDocument
   }
 
   private def writeToFile(content: String): Unit = {

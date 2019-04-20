@@ -37,13 +37,25 @@ sealed abstract class DocElement(id: String) {
   def hasParent: Boolean = parent != null
   def isEmptyDocElement: Boolean
   def print: String
+  override def toString:String = print
 }
 
 /** A special element container which acts as root container in the document. */
-case class RootContainer(id: String) extends ElementContainer(id: String) {
-  def this() = this(UUID.randomUUID().toString)
+case class RootContainer(id: String, doc: Document) extends ElementContainer(id: String) {
+  def this(doc: Document) = this(UUID.randomUUID().toString, doc)
+
+  private var elementsInDepthFirstOrder: List[DocElement] = List()
   parent = null
   parentId = null
+
+  override def iterator:Iterator[DocElement] = elementsInDepthFirstOrder.iterator
+  def allElementsAsList():List[DocElement] = elementsInDepthFirstOrder
+  override def print: String = "RootContainer"
+
+  def documentCompleted(): Unit = {
+    elementsInDepthFirstOrder = new DepthFirstElementsOrder(this).buildElementList()
+    System.out.println(s"Document ${doc.getSource.name} has ${elementsInDepthFirstOrder.size} elements")
+  }
 }
 
 
@@ -72,9 +84,7 @@ class ElementContainer(id: String) extends DocElement(id: String) with Iterable[
   def calculateOrder: Int = 1 + orderRecursive(this)
 
   def addAll(elements: List[DocElement]): Unit = {
-    for (elem <- elements) {
-      addChild(elem)
-    }
+    for (elem <- elements) addChild(elem)
   }
 
   def addChild(elem: DocElement): Unit = {
@@ -95,11 +105,8 @@ class ElementContainer(id: String) extends DocElement(id: String) with Iterable[
     }
   }
 
-  def addParagraph(paragraph: Paragraph): Unit = addChild(paragraph)
-
   override def iterator:Iterator[DocElement] = children.iterator
-  override def print: String = "ElementContainer[]"
-  override def toString: String = print
+  override def print:String = "ElementContainer"
 }
 
 /**
@@ -126,4 +133,6 @@ case class Paragraph(id: String, text: String) extends ElementContainer(id: Stri
 case class Section(id: String, level: Int, title: String) extends ElementContainer(id: String) {
 
   def this(level: Int, title: String) = this(UUID.randomUUID().toString, level, title)
+
+  override def print: String = s"Sec$level: $title"
 }

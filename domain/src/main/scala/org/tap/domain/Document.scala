@@ -22,12 +22,17 @@ import java.util.UUID
   *
   * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
   */
-class Document(id: String) extends Iterable[DocElement]  {
+class Document(id: String, source: DocumentSource) extends Iterable[DocElement]  {
 
-  def this() = this(UUID.randomUUID().toString)
+  def this(source: DocumentSource) = this(UUID.randomUUID().toString, source)
 
-  private var source: DocumentSource = _
-  val bodyElements = new RootContainer()
+  var isDocumentComplete = false
+  val bodyElements = new RootContainer(this)
+
+  def documentCompleted(): Unit = {
+    bodyElements.documentCompleted()
+    isDocumentComplete = true
+  }
 
   def findElement(parentId: String): Option[DocElement] = {
     val f: DocElement => Boolean = (elem: DocElement) => elem.getId.equals(parentId)
@@ -50,9 +55,21 @@ class Document(id: String) extends Iterable[DocElement]  {
     find(f).flatMap(elem => Option(elem.asInstanceOf[Section]))
   }
 
-  override def iterator:Iterator[DocElement] = bodyElements.iterator
 
-  def setSource(source: DocumentSource): Unit = this.source = source
+  override def find(p: DocElement => Boolean): Option[DocElement] = {
+    isDocumentComplete match {
+      case true => super.find(p)
+      case false => throw new IllegalStateException("Document was not completed!")
+    }
+  }
+
+  override def iterator:Iterator[DocElement] = {
+    isDocumentComplete match {
+      case true => bodyElements.iterator
+      case false => throw new IllegalStateException("Document was not completed!")
+    }
+  }
+
   def getSource: DocumentSource = source
   def getId: String = id
 
@@ -61,6 +78,14 @@ class Document(id: String) extends Iterable[DocElement]  {
       bodyElements.head
     } else {
       null
+    }
+  }
+
+  def secondElement: Option[DocElement] = {
+    if (bodyElements.size > 1) {
+      Some(bodyElements.allElementsAsList()(1))
+    } else {
+      None
     }
   }
 

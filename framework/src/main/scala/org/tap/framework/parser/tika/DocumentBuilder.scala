@@ -15,19 +15,19 @@
  */
 package org.tap.framework.parser.tika
 
-import org.tap.domain.Document
+import org.tap.domain.{Document, DocumentSource}
 
 /**
   * Builds a document instance for a given [[ParseEventCollector]].
   */
-case class DocumentBuilder(parseResult: ParseEventCollector) {
+case class DocumentBuilder(parseResult: ParseEventCollector, source: DocumentSource) {
 
   var doc: Document = _
   private var currentElementBuilder: ElementBuilder = _
 
   def buildDocument: Document = {
 
-    doc = new Document
+    doc = new Document(source)
     currentElementBuilder = RootContainerBuilder(doc)
     parseResult.events.foreach {
       case charactersEvent  : CharactersEvent   => currentElementBuilder.charactersEventReceived(charactersEvent)
@@ -35,6 +35,7 @@ case class DocumentBuilder(parseResult: ParseEventCollector) {
       case endElementEvent  : EndElementEvent   => endElementMatched(endElementEvent)
       case _: ParseEvent => // ignore other events
     }
+    doc.documentCompleted()
     doc
   }
 
@@ -49,9 +50,7 @@ case class DocumentBuilder(parseResult: ParseEventCollector) {
 
   def endElementMatched(event: EndElementEvent): Unit = event.qName match {
     case "p" => endElementEventReceivedWithBuilderChange()
-    case "h1" => {
-      currentElementBuilder.endElementEventReceived()
-    }
+    case "h1" => currentElementBuilder.endElementEventReceived()
     case _ =>
   }
 

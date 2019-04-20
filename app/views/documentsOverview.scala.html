@@ -8,7 +8,10 @@
             <a href="@routes.DocumentController.deleteDoc(sDoc.document.getId)">
                 <i class="fas fa-trash-alt"></i>
             </a>
-            <p>@sDoc.excerpt</p>
+            <p>
+                @sDoc.excerptFirstElement<br/>
+                @sDoc.excerptSecondElement
+            </p>
         </li>
     }
 </ul>

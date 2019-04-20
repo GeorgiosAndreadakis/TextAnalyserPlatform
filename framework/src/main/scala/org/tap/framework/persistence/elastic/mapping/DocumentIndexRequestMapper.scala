@@ -49,10 +49,10 @@ class DocumentIndexRequestMapper(client: RestHighLevelClient) {
   }
 
   def convert(hit: SearchHit): Document = {
-    val doc = new Document(hit.getId)
     val value = hit.getSourceAsMap.get(filenameAttributName).asInstanceOf[String]
-    doc.setSource(new DocumentStringSource(value)) // TODO derive the correct document source type
+    val doc = new Document(hit.getId, new DocumentStringSource(value)) // TODO derive the correct document source type
     addElements(hit, doc)
+    doc.documentCompleted()
     doc
   }
 

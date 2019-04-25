@@ -26,6 +26,7 @@ sealed abstract class ElementBuilder {
 
   var myDocument: Document = _
   var myElement: DocElement = _
+  var lastChildId: Option[String] = None
   val textBuilder: TextBuilder = new TextBuilder
 
   def parentBuilder: ElementBuilder
@@ -49,6 +50,7 @@ sealed abstract class ElementBuilder {
       throw new IllegalStateException(s"Element $myElement is not a container!")
     }
     myElement.asContainer.addChild(docElement)
+    lastChildId = Some(docElement.getId)
   }
 
 }
@@ -110,6 +112,7 @@ case class RootContainerBuilder(document: Document) extends ElementBuilder() {
 
   override def newChild(elem: DocElement): Unit = {
     myDocument.newChild(elem)
+    lastChildId = Some(elem.getId)
   }
 
   override def endElementEventReceived(): Unit = {

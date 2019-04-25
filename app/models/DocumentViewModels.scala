@@ -79,9 +79,8 @@ case class BodyElements(document: Document) extends ElementContainerViewModel(do
   override def excerpt: String = ""
 }
 
-case class ParagraphViewModel(paragraph: Paragraph) extends ElementContainerViewModel(paragraph) {
+case class ParagraphViewModel(paragraph: Paragraph) extends ElementViewModel(paragraph) {
   def text(): String = paragraph.text
-  override def elementContainer: ElementContainer = paragraph
   override def excerpt: String = text()
 }
 

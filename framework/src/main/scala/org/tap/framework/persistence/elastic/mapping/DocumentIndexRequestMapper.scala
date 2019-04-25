@@ -15,6 +15,8 @@
  */
 package org.tap.framework.persistence.elastic.mapping
 
+import java.util
+
 import org.elasticsearch.action.admin.indices.refresh.{RefreshRequest, RefreshResponse}
 import org.elasticsearch.action.delete.DeleteRequest
 import org.elasticsearch.action.index.IndexRequest
@@ -50,8 +52,12 @@ class DocumentIndexRequestMapper(client: RestHighLevelClient) {
 
   def convert(hit: SearchHit): Document = {
     val value = hit.getSourceAsMap.get(filenameAttributName).asInstanceOf[String]
+    val order = hit.getSourceAsMap.get("elementOrder").asInstanceOf[util.ArrayList[String]]
+    val elementsInOrder = order.toArray.toList.map(_.toString)
+    System.out.println(order)
+
     val doc = new Document(hit.getId, new DocumentStringSource(value)) // TODO derive the correct document source type
-    addElements(hit, doc)
+    addElements(hit, doc, elementsInOrder)
     doc.documentCompleted()
     doc
   }
@@ -63,24 +69,42 @@ class DocumentIndexRequestMapper(client: RestHighLevelClient) {
     searchResponse.getHits
   }
 
-  private def addElements(docHit: SearchHit, doc: Document): Unit = {
+  private def addElements(docHit: SearchHit, doc: Document, elementsInOrder: List[String]): Unit = {
 
     val idElementMap = mutable.Map[String,DocElement]()
 
-    // Fill the elements map
+    // Fill the elements map with id mapped to the element
     for (hit <- allElementsForDocId(doc.getId).getHits) {
-      val elemFromSearchHit = mapperFor(hit).buildElement(hit)
+      val elemFromSearchHit = mapperFor(hit).buildElement(hit, doc)
       idElementMap += (elemFromSearchHit.getId -> elemFromSearchHit)
     }
 
-    // Add the children to their parents
-    for ((id, elem) <- idElementMap) {
-      val parentOpt = idElementMap.get(elem.parentId)
-      parentOpt match {
-        case Some(parent: ElementContainer) => parent.addChild(elem)
-        case None => doc.newChild(elem)
+    // Add the elements to the document
+    for (id <- elementsInOrder) {
+
+      // Find the element
+      val elemOpt = idElementMap.get(id)
+      elemOpt match {
+        case None => throw new IllegalStateException(s"Id '$id' in ordered list for which no element wss found!")
+        case Some(elem:DocElement) =>
+
+          // Add it to the parent
+          val parentId = elem.parentId
+          if (parentId == null) {
+            doc.newChild(elem)
+          } else {
+            val parentOpt = idElementMap.get(parentId)
+            parentOpt match {
+              case None => throw new IllegalStateException(s"Id '$id' in ordered list for which no element was found!")
+              case Some(parent:ElementContainer) => parent.addChild(elem)
+              case Some(_) => throw new IllegalStateException(s"Element $elem references a parent with id '$parentId' which is not a container!")
+            }
+          }
       }
     }
+
+    // Document completed
+    doc.documentCompleted()
   }
 
   def deleteDoc(docId: String): Unit = {
@@ -105,6 +129,7 @@ class DocumentIndexRequestMapper(client: RestHighLevelClient) {
   private def createIndexRequestForDocument(doc: Document): IndexRequest = {
     val jsonMap = new java.util.HashMap[String, AnyRef]
     jsonMap.put(filenameAttributName, doc.getSource.name)
+    jsonMap.put("elementOrder", doc.bodyElements.allElementsAsList().map(elem => elem.getId).toArray)
     val indexRequest = new IndexRequest(docIndexName, "doc", doc.getId)
     indexRequest.source(jsonMap)
     indexRequest

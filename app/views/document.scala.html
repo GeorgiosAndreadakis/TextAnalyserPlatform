@@ -1,12 +1,10 @@
-@(elementContainerViewModel: ElementContainerViewModel)
+@(elem: ElementViewModel)
 
 <div>
-    @for(elem <- elementContainerViewModel) {
-        @{
-            elem match {
-                case paragraphViewModel: ParagraphViewModel => paragraph(elem.asInstanceOf[ParagraphViewModel])
-                case _ : ElementViewModel =>
-            }
+    @{
+        elem match {
+            case paragraphViewModel: ParagraphViewModel => paragraph(elem.asInstanceOf[ParagraphViewModel])
+            case _ : ElementViewModel =>
         }
     }
 </div>

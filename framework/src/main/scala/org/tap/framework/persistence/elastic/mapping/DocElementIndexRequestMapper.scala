@@ -31,7 +31,7 @@ sealed trait DocElementIndexRequestMapper {
   val elemTypeAttributeName = "type"
   val elementIndexName = "elements"
 
-  def buildElement(hit: SearchHit): DocElement
+  def buildElement(hit: SearchHit, doc: Document): DocElement
   def mapTo(elem:DocElement, doc:Document): IndexRequest
 }
 
@@ -49,7 +49,7 @@ case class ParagraphMapper() extends DocElementIndexRequestMapper {
     indexRequest.source(pMap)
   }
 
-  override def buildElement(hit: SearchHit): DocElement = {
+  override def buildElement(hit: SearchHit, doc: Document): DocElement = {
     val id = hit.getId
     val text = hit.getSourceAsMap.get(textAttributeName).asInstanceOf[String]
     val parentId = hit.getSourceAsMap.get(parentIdAttributeName).asInstanceOf[String]
@@ -69,7 +69,7 @@ case class SectionMapper() extends DocElementIndexRequestMapper {
     val section = elem.asInstanceOf[Section]
     pMap.put(elemTypeAttributeName, "h")
     pMap.put(docIdAttributeName, doc.getId)
-    pMap.put(parentIdAttributeName, section.parent.getId)
+    pMap.put(parentIdAttributeName, section.parentId)
     pMap.put(levelAttributeName, section.level.toString)
     pMap.put(titleAttributeName, section.title)
 
@@ -77,7 +77,7 @@ case class SectionMapper() extends DocElementIndexRequestMapper {
     indexRequest.source(pMap)
   }
 
-  override def buildElement(hit: SearchHit): DocElement = {
+  override def buildElement(hit: SearchHit, doc: Document): DocElement = {
     val id = hit.getId
     val level = hit.getSourceAsMap.get(levelAttributeName).asInstanceOf[String]
     val title = hit.getSourceAsMap.get(titleAttributeName).asInstanceOf[String]
@@ -86,5 +86,6 @@ case class SectionMapper() extends DocElementIndexRequestMapper {
     section.parentId = parentId
     section
   }
+
 }
 

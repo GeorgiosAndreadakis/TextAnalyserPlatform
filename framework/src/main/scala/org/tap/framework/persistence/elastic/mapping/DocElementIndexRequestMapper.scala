@@ -82,7 +82,7 @@ case class SectionMapper() extends DocElementIndexRequestMapper {
     val level = hit.getSourceAsMap.get(levelAttributeName).asInstanceOf[String]
     val title = hit.getSourceAsMap.get(titleAttributeName).asInstanceOf[String]
     val parentId = hit.getSourceAsMap.get(parentIdAttributeName).asInstanceOf[String]
-    val section = Section(id, level.toInt, title)
+    val section = Section(id, SectionLevel(level), title)
     section.parentId = parentId
     section
   }

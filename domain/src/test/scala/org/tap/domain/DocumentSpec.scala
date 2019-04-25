@@ -21,11 +21,11 @@ class DocumentSpec extends FlatSpec with Matchers{
   "Given a document with a section that" should "be found if it contains a text" in {
     // Given
     val doc = new Document(createDummySource)
-    doc.newChild(new Section(1, "Mapping the Product Story"))
+    doc.newChild(new Section(SectionLevel1, "Mapping the Product Story"))
     doc.newChild(new Paragraph("How can someone create a successful product based on a very vague idea?"))
     doc.newChild(new Paragraph("The second paragraph is here."))
     doc.newChild(new Paragraph("The third paragraph is here."))
-    doc.newChild(new Section(1, "A User Story Map"))
+    doc.newChild(new Section(SectionLevel1, "A User Story Map"))
     doc.newChild(new Paragraph("To get a first impression of the big picture"))
     doc.documentCompleted()
     // When

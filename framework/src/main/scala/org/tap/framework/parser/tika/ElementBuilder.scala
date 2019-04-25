@@ -72,9 +72,9 @@ case class ParagraphBuilder(parentBuilder: ElementBuilder) extends ElementBuilde
 
 ////
 
-case class SectionBuilder(level: Int, parentBuilder: ElementBuilder) extends ElementBuilder {
+case class SectionBuilder(level: String, parentBuilder: ElementBuilder) extends ElementBuilder {
   override def endElementEventReceived(): Unit = {
-    val section = Section(UUID.randomUUID().toString, level, textBuilder.build)
+    val section = Section(UUID.randomUUID().toString, SectionLevel(level), textBuilder.build)
     parentBuilder.newChild(section)
     myElement = section
   }

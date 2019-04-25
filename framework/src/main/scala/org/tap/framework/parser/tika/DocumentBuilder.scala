@@ -43,7 +43,7 @@ case class DocumentBuilder(parseResult: ParseEventCollector, source: DocumentSou
     val parentBuilder = currentElementBuilder
     event.qName match {
       case "p" => currentElementBuilder = ParagraphBuilder(parentBuilder)
-      case "h1" => currentElementBuilder = SectionBuilder(1, parentBuilder)
+      case "h1" => currentElementBuilder = SectionBuilder("h1", parentBuilder)
       case _ =>
     }
   }

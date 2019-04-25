@@ -113,7 +113,18 @@ case class Paragraph(id: String, text: String) extends DocElement(id: String) {
 }
 
 /** Models a section of a document which is also a parent for other elements. */
-case class Section(id: String, level: Int, title: String) extends ElementContainer(id: String) {
-  def this(level: Int, title: String) = this(UUID.randomUUID().toString, level, title)
-  override def print: String = s"Sec$level: $title"
+case class Section(id: String, level: SectionLevel, title: String) extends ElementContainer(id: String) {
+  def this(level: SectionLevel, title: String) = this(UUID.randomUUID().toString, level, title)
+  override def toString: String = s"Section (${level.toString}): $title"
+}
+
+case class SectionLevel(level: String) {
+  override def toString: String = {
+    level
+  }
+}
+object SectionLevel1 extends SectionLevel("h1") {
+  override def toString: String = {
+    "xyz4711"
+  }
 }

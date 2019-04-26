@@ -22,6 +22,7 @@ import models.DocumentViewModel
 import org.tap.application.importdoc.DocImporter
 import org.tap.domain.{Document, DocumentRepository}
 import org.tap.framework.DocumentPathSource
+import org.tap.framework.idgeneration.UuidBasedIdGeneration
 import org.tap.framework.parser.tika.DocumentParserTika
 import org.tap.framework.persistence.elastic.DocumentRepositoryForElastic
 import play.api.mvc._
@@ -60,7 +61,8 @@ class FileUploadController @Inject() (val controllerComponents: ControllerCompon
     val repository = docRepository
     val parser = new DocumentParserTika
     val source = new DocumentPathSource(filename, path)
-    new DocImporter(repository, parser).importFile(source)
+    val idGenerator = new UuidBasedIdGeneration
+    new DocImporter(repository, parser, idGenerator).importFile(source)
   }
 
   private def docRepository: DocumentRepository = {

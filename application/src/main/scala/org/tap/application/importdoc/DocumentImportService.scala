@@ -26,7 +26,7 @@ trait DocumentImportService {
   this: DocumentImportContext =>
 
   def importFromSource(source: DocumentSource): Document = {
-    val doc = parser.parse(source)
+    val doc = parser.parse(source, idGenerator)
     repository.save(doc)
     doc
   }

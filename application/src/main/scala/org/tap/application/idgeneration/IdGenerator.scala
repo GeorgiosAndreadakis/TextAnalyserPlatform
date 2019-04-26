@@ -13,18 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.tap.application.importdoc
-
-import org.tap.application.idgeneration.IdGenerator
-import org.tap.domain.DocumentRepository
+package org.tap.application.idgeneration
 
 /**
-  * Defines the document import collaborators, a repository, a parser and an id generator.
+  * Defines the concept of id generation.
   *
   * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
   */
-trait DocumentImportContext {
-  def repository: DocumentRepository
-  def parser: DocumentParser
-  def idGenerator: IdGenerator
+trait IdGenerator {
+  def create: String
 }

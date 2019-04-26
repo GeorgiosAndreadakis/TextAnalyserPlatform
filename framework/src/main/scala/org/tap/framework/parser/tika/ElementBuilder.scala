@@ -17,12 +17,15 @@ package org.tap.framework.parser.tika
 
 import java.util.UUID
 
+import org.tap.application.idgeneration.IdGenerator
 import org.tap.domain._
 
 /**
   * Builders for the document elements.
   */
-sealed abstract class ElementBuilder {
+sealed abstract class ElementBuilder(idGenerator: IdGenerator) {
+
+  def this() = this(null) // for builders which do not need an id generator
 
   var myDocument: Document = _
   var myElement: DocElement = _
@@ -58,7 +61,7 @@ sealed abstract class ElementBuilder {
 
 ////
 
-case class ParagraphBuilder(parentBuilder: ElementBuilder) extends ElementBuilder {
+case class ParagraphBuilder(parentBuilder: ElementBuilder, idGenerator: IdGenerator) extends ElementBuilder(idGenerator) {
   override def endElementEventReceived(): Unit = {
     val text = textBuilder.build
     if (!text.isEmpty) {
@@ -72,7 +75,7 @@ case class ParagraphBuilder(parentBuilder: ElementBuilder) extends ElementBuilde
 
 ////
 
-case class SectionBuilder(level: String, parentBuilder: ElementBuilder) extends ElementBuilder {
+case class SectionBuilder(level: String, parentBuilder: ElementBuilder, idGenerator: IdGenerator) extends ElementBuilder(idGenerator) {
   override def endElementEventReceived(): Unit = {
     val section = Section(UUID.randomUUID().toString, SectionLevel(level), textBuilder.build)
     parentBuilder.newChild(section)
@@ -83,7 +86,7 @@ case class SectionBuilder(level: String, parentBuilder: ElementBuilder) extends 
 
 ////
 
-case class DummyBuilder(parentBuilder: ElementBuilder) extends ElementBuilder {
+case class DummyBuilder(parentBuilder: ElementBuilder) extends ElementBuilder() {
   override def endElementEventReceived(): Unit = {
   }
 }

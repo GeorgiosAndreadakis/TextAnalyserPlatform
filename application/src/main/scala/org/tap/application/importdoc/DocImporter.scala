@@ -15,6 +15,7 @@
  */
 package org.tap.application.importdoc
 
+import org.tap.application.idgeneration.IdGenerator
 import org.tap.domain.{Document, DocumentRepository, DocumentSource}
 
 /**
@@ -22,12 +23,16 @@ import org.tap.domain.{Document, DocumentRepository, DocumentSource}
   *
   * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
   */
-class DocImporter(val docuRepo: DocumentRepository, val docuParser: DocumentParser) {
+class DocImporter(
+       val docuRepo: DocumentRepository,
+       val docuParser: DocumentParser,
+       val idGenerator: IdGenerator) {
 
   def importFile(source: DocumentSource): Document = {
     val service = new DocumentImportService with DocumentImportContext {
       override def repository: DocumentRepository = docuRepo
       override def parser: DocumentParser = docuParser
+      override def idGenerator: IdGenerator = idGenerator
     }
     service.importFromSource(source)
   }

@@ -19,6 +19,7 @@ import java.io.PrintWriter
 
 import org.apache.tika.metadata.Metadata
 import org.apache.tika.parser.AutoDetectParser
+import org.tap.application.idgeneration.IdGenerator
 import org.tap.application.importdoc.DocumentParser
 import org.tap.domain.{Document, DocumentSource}
 
@@ -27,7 +28,7 @@ import org.tap.domain.{Document, DocumentSource}
   */
 class DocumentParserTika extends DocumentParser {
 
-  override def parse(source: DocumentSource): Document = {
+  override def parse(source: DocumentSource, idGenerator: IdGenerator): Document = {
 
     val parser = new AutoDetectParser
     val handler = TapContentHandler(new ParseEventCollector)
@@ -35,11 +36,11 @@ class DocumentParserTika extends DocumentParser {
     val inputStream = source.inputStream
     parser.parse(inputStream, handler, metadata)
     writeToFile(handler.csvContent)
-    buildDocument(handler.parseResult, source)
+    buildDocument(handler.parseResult, source, idGenerator)
   }
 
-  private def buildDocument(parseResult: ParseEventCollector, source: DocumentSource): Document = {
-    DocumentBuilder(parseResult, source).buildDocument
+  private def buildDocument(parseResult: ParseEventCollector, source: DocumentSource, idGenerator: IdGenerator): Document = {
+    DocumentBuilder(parseResult, source, idGenerator).buildDocument
   }
 
   private def writeToFile(content: String): Unit = {

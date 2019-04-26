@@ -13,18 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.tap.application.importdoc
+package org.tap.framework.idgeneration
+
+import java.util.UUID
 
 import org.tap.application.idgeneration.IdGenerator
-import org.tap.domain.DocumentRepository
 
 /**
-  * Defines the document import collaborators, a repository, a parser and an id generator.
+  * Implements id generation based on UUID.
   *
   * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
   */
-trait DocumentImportContext {
-  def repository: DocumentRepository
-  def parser: DocumentParser
-  def idGenerator: IdGenerator
+class UuidBasedIdGeneration extends IdGenerator {
+  override def create: String = UUID.randomUUID().toString
 }

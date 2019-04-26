@@ -15,8 +15,10 @@
  */
 package org.tap.accepttest.importdoc.api
 
+import org.tap.application.idgeneration.IdGenerator
 import org.tap.application.importdoc.{DocImporter, DocumentParser}
 import org.tap.domain.{Document, DocumentRepository, DocumentSource}
+import org.tap.framework.idgeneration.UuidBasedIdGeneration
 import org.tap.framework.parser.tika.DocumentParserTika
 import org.tap.framework.persistence.elastic.DocumentRepositoryForElastic
 
@@ -28,9 +30,10 @@ import org.tap.framework.persistence.elastic.DocumentRepositoryForElastic
 case class DocImportTestContext(source: DocumentSource) {
   private val parser: DocumentParser = new DocumentParserTika
   private val docRepo: DocumentRepository = new DocumentRepositoryForElastic
+  private val idGenerator: IdGenerator = new UuidBasedIdGeneration
 
   def importFile(): Document = {
-    new DocImporter(docRepo, parser).importFile(source)
+    new DocImporter(docRepo, parser, idGenerator).importFile(source)
   }
 
   def allDocs: Either[Exception,List[Document]] = docRepo.allDocs

@@ -15,6 +15,7 @@
  */
 package org.tap.application.importdoc
 
+import org.tap.application.idgeneration.IdGenerator
 import org.tap.domain.{Document, DocumentSource}
 
 /**
@@ -23,5 +24,5 @@ import org.tap.domain.{Document, DocumentSource}
   * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
   */
 trait DocumentParser {
-  def parse(source: DocumentSource): Document
+  def parse(source: DocumentSource, idGenerator: IdGenerator): Document
 }

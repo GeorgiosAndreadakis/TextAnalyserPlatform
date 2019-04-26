@@ -19,7 +19,7 @@ import java.io.PrintWriter
 
 import org.apache.tika.metadata.Metadata
 import org.apache.tika.parser.AutoDetectParser
-import org.tap.domain.docimport.DocumentParser
+import org.tap.application.importdoc.DocumentParser
 import org.tap.domain.{Document, DocumentSource}
 
 /**

@@ -15,7 +15,6 @@
  */
 package org.tap.application.importdoc
 
-import org.tap.domain.docimport.{DocumentImportContext, DocumentImportService, DocumentParser}
 import org.tap.domain.{Document, DocumentRepository, DocumentSource}
 
 /**

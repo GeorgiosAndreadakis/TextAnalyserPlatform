@@ -15,8 +15,7 @@
  */
 package org.tap.accepttest.importdoc.api
 
-import org.tap.application.importdoc.DocImporter
-import org.tap.domain.docimport.DocumentParser
+import org.tap.application.importdoc.{DocImporter, DocumentParser}
 import org.tap.domain.{Document, DocumentRepository, DocumentSource}
 import org.tap.framework.parser.tika.DocumentParserTika
 import org.tap.framework.persistence.elastic.DocumentRepositoryForElastic

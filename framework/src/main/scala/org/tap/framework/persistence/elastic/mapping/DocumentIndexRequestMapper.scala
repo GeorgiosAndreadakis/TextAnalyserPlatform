@@ -22,11 +22,11 @@ import org.elasticsearch.action.delete.DeleteRequest
 import org.elasticsearch.action.index.IndexRequest
 import org.elasticsearch.action.search.{SearchRequest, SearchResponse}
 import org.elasticsearch.client.{RequestOptions, RestHighLevelClient}
+import org.elasticsearch.common.xcontent.{XContentBuilder, XContentFactory}
 import org.elasticsearch.index.query.QueryBuilders
 import org.elasticsearch.search.builder.SearchSourceBuilder
 import org.elasticsearch.search.{SearchHit, SearchHits}
 import org.tap.domain._
-import org.tap.framework.DocumentStringSource
 
 import scala.collection.mutable
 
@@ -40,8 +40,11 @@ class DocumentIndexRequestMapper(client: RestHighLevelClient) {
   private val docIndexName = "documents"
   private val elementIndexName = "elements"
 
-  private val docIdAttributName = "docId"
-  private val filenameAttributName = "filename"
+  private val docIdAttribute = "docId"
+  private val elementOrderAttribute = "elementOrder"
+  private val docSourceAttribute = "docSource"
+  private val docSourceTypeAttribute = "sourceType"
+  private val docSourceNameAttribute = "sourceName"
 
 
   def readAllDocuments: SearchResponse = {
@@ -50,19 +53,29 @@ class DocumentIndexRequestMapper(client: RestHighLevelClient) {
     client.search(searchRequest, defaultRequestOptions)
   }
 
+  private def buildDocumentSource(hit: SearchHit): DocumentSource = {
+    val docSourceMap = hit.getSourceAsMap.get(docSourceAttribute).asInstanceOf[util.HashMap[String,Object]]
+    val sourceName = docSourceMap.get(docSourceNameAttribute).asInstanceOf[String]
+    val sourceType = docSourceMap.get(docSourceTypeAttribute).asInstanceOf[String]
+    new DocumentSourceInfo(sourceName, sourceType)
+  }
+
   def convert(hit: SearchHit): Document = {
-    val value = hit.getSourceAsMap.get(filenameAttributName).asInstanceOf[String]
-    val order = hit.getSourceAsMap.get("elementOrder").asInstanceOf[util.ArrayList[String]]
+    // Document source
+    val docSource = buildDocumentSource(hit)
+
+    val order = hit.getSourceAsMap.get(elementOrderAttribute).asInstanceOf[util.ArrayList[String]]
     val elementsInOrder = order.toArray.toList.map(_.toString)
 
-    val doc = new Document(hit.getId, new DocumentStringSource(value)) // TODO derive the correct document source type
+    // Build doc
+    val doc = new Document(hit.getId, docSource) // TODO derive the correct document source type
     addElements(hit, doc, elementsInOrder)
     doc.documentCompleted()
     doc
   }
 
   def allElementsForDocId(docId: String): SearchHits = {
-    val searchSourceBuilder = (new SearchSourceBuilder).query(QueryBuilders.matchQuery(docIdAttributName, docId))
+    val searchSourceBuilder = (new SearchSourceBuilder).query(QueryBuilders.matchQuery(docIdAttribute, docId))
     val searchRequest = new SearchRequest(elementIndexName).source(searchSourceBuilder)
     val searchResponse = client.search(searchRequest, defaultRequestOptions)
     searchResponse.getHits
@@ -127,11 +140,26 @@ class DocumentIndexRequestMapper(client: RestHighLevelClient) {
 
   private def createIndexRequestForDocument(doc: Document): IndexRequest = {
     val jsonMap = new java.util.HashMap[String, AnyRef]
-    jsonMap.put(filenameAttributName, doc.getSource.name)
-    jsonMap.put("elementOrder", doc.bodyElements.allElementsAsList().map(elem => elem.getId).toArray)
+    jsonMap.put(docSourceNameAttribute, doc.getSource.name)
+    jsonMap.put(elementOrderAttribute, doc.bodyElements.allElementsAsList().map(elem => elem.getId).toArray)
+    jsonMap.put("source", doc.getSource)
     val indexRequest = new IndexRequest(docIndexName, "doc", doc.getId)
-    indexRequest.source(jsonMap)
+    //indexRequest.source(jsonMap)
+    indexRequest.source(createJson(doc))
     indexRequest
+  }
+
+  private def createJson(doc: Document): XContentBuilder = {
+    val contentBuilder =
+      XContentFactory.jsonBuilder()
+        .startObject()
+          .field(elementOrderAttribute, doc.bodyElements.allElementsAsList().map(elem => elem.getId).toArray)
+          .startObject(docSourceAttribute)
+            .field(docSourceTypeAttribute, doc.getSource.sourceType)
+            .field(docSourceNameAttribute, doc.getSource.name)
+          .endObject()
+        .endObject()
+    contentBuilder
   }
 
   def saveDocElement(elem:DocElement, doc:Document): Unit = {

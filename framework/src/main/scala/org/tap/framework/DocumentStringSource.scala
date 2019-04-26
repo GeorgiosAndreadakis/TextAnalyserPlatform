@@ -9,5 +9,5 @@ class DocumentStringSource(text: String) extends DocumentSource {
 
   override def inputStream: InputStream = new ByteArrayInputStream(text.getBytes)
   override def name: String = text
-
+  override def sourceType: String = "string"
 }

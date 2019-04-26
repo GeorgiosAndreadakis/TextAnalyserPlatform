@@ -26,4 +26,5 @@ class DocumentPathSource(filename: String, path: Path) extends DocumentSource {
 
   override def inputStream: InputStream = FileAccess.newInputStream(path)
   override def name: String = filename
+  override def sourceType: String = "file"
 }

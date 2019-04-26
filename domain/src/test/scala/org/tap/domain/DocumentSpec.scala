@@ -38,6 +38,7 @@ class DocumentSpec extends FlatSpec with Matchers{
     new DocumentSource() {
       override def inputStream: InputStream = new ByteArrayInputStream("".getBytes)
       override def name: String = "dummy"
+      override def sourceType: String = "dummy"
     }
   }
 }

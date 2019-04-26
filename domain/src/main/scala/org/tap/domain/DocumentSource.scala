@@ -25,4 +25,11 @@ import java.io.InputStream
 trait DocumentSource {
   def inputStream: InputStream
   def name: String
+  def sourceType: String
+}
+
+class DocumentSourceInfo(nameInfo: String, typeInfo:String) extends DocumentSource {
+  override def inputStream: InputStream = null
+  override def name: String = nameInfo
+  override def sourceType: String = typeInfo
 }

@@ -44,6 +44,6 @@ class DocumentParserTika extends DocumentParser {
   }
 
   private def writeToFile(content: String): Unit = {
-    new PrintWriter("target/csvprotocol.csv") { write(content); close }
+    new PrintWriter("target/csvprotocol.csv") { write(content); close() }
   }
 }

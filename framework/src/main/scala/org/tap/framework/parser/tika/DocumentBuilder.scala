@@ -28,7 +28,7 @@ case class DocumentBuilder(parseResult: ParseEventCollector, source: DocumentSou
 
   def buildDocument: Document = {
 
-    doc = new Document(source)
+    doc = new Document(idGenerator.create, source)
     currentElementBuilder = RootContainerBuilder(doc)
     parseResult.events.foreach {
       case charactersEvent  : CharactersEvent   => currentElementBuilder.charactersEventReceived(charactersEvent)

@@ -15,8 +15,6 @@
  */
 package org.tap.domain
 
-import java.util.UUID
-
 import scala.collection.mutable.ListBuffer
 
 /**
@@ -25,8 +23,6 @@ import scala.collection.mutable.ListBuffer
   * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
   */
 sealed abstract class DocElement(id: String) {
-
-  def this() = this(UUID.randomUUID().toString)
 
   var parentId: String = _
   var parent: ElementContainer = _
@@ -44,7 +40,7 @@ sealed abstract class DocElement(id: String) {
 
 /** A special element container which acts as root container in the document. */
 case class RootContainer(id: String, doc: Document) extends ElementContainer(id: String) {
-  def this(doc: Document) = this(UUID.randomUUID().toString, doc)
+  def this(doc: Document) = this(doc.getId, doc)
 
   private var elementsInDepthFirstOrder: List[DocElement] = List()
   parent = null
@@ -64,15 +60,12 @@ case class RootContainer(id: String, doc: Document) extends ElementContainer(id:
 
   def documentCompleted(): Unit = {
     elementsInDepthFirstOrder = new DepthFirstElementsOrder(this).buildElementList()
-    System.out.println(s"Document ${doc.getSource.name} has ${elementsInDepthFirstOrder.size} elements")
   }
 }
 
 
 /** An document element which acts as an container for other elements. */
 class ElementContainer(id: String) extends DocElement(id: String) with Iterable[DocElement] {
-
-  def this() = this(UUID.randomUUID().toString)
 
   val children = new ListBuffer[DocElement]
 
@@ -107,14 +100,13 @@ class ElementContainer(id: String) extends DocElement(id: String) with Iterable[
 
 /** Models a paragraph of an document. */
 case class Paragraph(id: String, text: String) extends DocElement(id: String) {
-  def this(text: String) = this(UUID.randomUUID().toString, text)
+
   override def isEmptyDocElement: Boolean = text.isEmpty //&& children.isEmpty
   override def print: String = "P[" + (if (text != null) text else "") + "]"
 }
 
 /** Models a section of a document which is also a parent for other elements. */
 case class Section(id: String, level: SectionLevel, title: String) extends ElementContainer(id: String) {
-  def this(level: SectionLevel, title: String) = this(UUID.randomUUID().toString, level, title)
   override def toString: String = s"Section (${level.toString}): $title"
 }
 
@@ -123,8 +115,4 @@ case class SectionLevel(level: String) {
     level
   }
 }
-object SectionLevel1 extends SectionLevel("h1") {
-  override def toString: String = {
-    "xyz4711"
-  }
-}
+object SectionLevel1 extends SectionLevel("h1")

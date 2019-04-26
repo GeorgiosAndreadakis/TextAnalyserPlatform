@@ -29,11 +29,11 @@ object DatabaseTestDriver {
     implicit val backend: SttpBackend[Id, Nothing] = HttpURLConnectionBackend()
 
     var request = sttp.delete(uri"http://localhost:9200/elements")
-    var response = request.send()
-    println("HTTP Status: " + response.code)
+    request.send()
 
     request = sttp.delete(uri"http://localhost:9200/documents")
-    response = request.send()
-    println("HTTP Status: " + response.code)
+    request.send()
+    /*response = request.send()
+    println("HTTP Status: " + response.code)*/
   }
 }

@@ -15,8 +15,6 @@
  */
 package org.tap.framework.parser.tika
 
-import java.util.UUID
-
 import org.tap.application.idgeneration.IdGenerator
 import org.tap.domain._
 
@@ -65,7 +63,7 @@ case class ParagraphBuilder(parentBuilder: ElementBuilder, idGenerator: IdGenera
   override def endElementEventReceived(): Unit = {
     val text = textBuilder.build
     if (!text.isEmpty) {
-      val paragraph = Paragraph(UUID.randomUUID().toString, text)
+      val paragraph = Paragraph(idGenerator.create, text)
       parentBuilder.newChild(paragraph)
       myElement = paragraph
     }
@@ -77,7 +75,7 @@ case class ParagraphBuilder(parentBuilder: ElementBuilder, idGenerator: IdGenera
 
 case class SectionBuilder(level: String, parentBuilder: ElementBuilder, idGenerator: IdGenerator) extends ElementBuilder(idGenerator) {
   override def endElementEventReceived(): Unit = {
-    val section = Section(UUID.randomUUID().toString, SectionLevel(level), textBuilder.build)
+    val section = Section(idGenerator.create, SectionLevel(level), textBuilder.build)
     parentBuilder.newChild(section)
     myElement = section
   }

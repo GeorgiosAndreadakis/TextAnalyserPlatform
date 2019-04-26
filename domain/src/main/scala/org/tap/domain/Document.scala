@@ -15,16 +15,12 @@
  */
 package org.tap.domain
 
-import java.util.UUID
-
 /**
   * Models a document.
   *
   * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
   */
 class Document(id: String, source: DocumentSource) extends Iterable[DocElement]  {
-
-  def this(source: DocumentSource) = this(UUID.randomUUID().toString, source)
 
   var isDocumentComplete = false
   val bodyElements = new RootContainer(this)

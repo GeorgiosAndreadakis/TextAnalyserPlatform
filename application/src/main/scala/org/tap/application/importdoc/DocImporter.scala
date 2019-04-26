@@ -24,15 +24,16 @@ import org.tap.domain.{Document, DocumentRepository, DocumentSource}
   * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
   */
 class DocImporter(
+       // the parameter names has to be different from the import context method names to prevent infinite recursion
        val docuRepo: DocumentRepository,
        val docuParser: DocumentParser,
-       val idGenerator: IdGenerator) {
+       val docuIdGenerator: IdGenerator) {
 
   def importFile(source: DocumentSource): Document = {
     val service = new DocumentImportService with DocumentImportContext {
       override def repository: DocumentRepository = docuRepo
       override def parser: DocumentParser = docuParser
-      override def idGenerator: IdGenerator = idGenerator
+      override def idGenerator: IdGenerator = docuIdGenerator
     }
     service.importFromSource(source)
   }

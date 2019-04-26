@@ -54,7 +54,6 @@ class DocumentIndexRequestMapper(client: RestHighLevelClient) {
     val value = hit.getSourceAsMap.get(filenameAttributName).asInstanceOf[String]
     val order = hit.getSourceAsMap.get("elementOrder").asInstanceOf[util.ArrayList[String]]
     val elementsInOrder = order.toArray.toList.map(_.toString)
-    System.out.println(order)
 
     val doc = new Document(hit.getId, new DocumentStringSource(value)) // TODO derive the correct document source type
     addElements(hit, doc, elementsInOrder)

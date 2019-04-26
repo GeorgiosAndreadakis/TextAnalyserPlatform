@@ -101,7 +101,7 @@ class ElementContainer(id: String) extends DocElement(id: String) with Iterable[
 /** Models a paragraph of an document. */
 case class Paragraph(id: String, text: String) extends DocElement(id: String) {
 
-  override def isEmptyDocElement: Boolean = text.isEmpty //&& children.isEmpty
+  override def isEmptyDocElement: Boolean = text.isEmpty
   override def print: String = "P[" + (if (text != null) text else "") + "]"
 }
 
@@ -110,9 +110,10 @@ case class Section(id: String, level: SectionLevel, title: String) extends Eleme
   override def toString: String = s"Section (${level.toString}): $title"
 }
 
+/** Value object to model a section level. */
 case class SectionLevel(level: String) {
-  override def toString: String = {
-    level
-  }
+  override def toString: String = level
 }
+
 object SectionLevel1 extends SectionLevel("h1")
+object SectionLevel2 extends SectionLevel("h2")

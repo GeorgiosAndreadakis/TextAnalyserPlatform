@@ -18,7 +18,7 @@ class DocumentSpec extends FlatSpec with Matchers{
     doc.findParagraphWithText("the form of") should not be None
   }
 
-  "Given a document with a section that" should "be found if it contains a text" in {
+  "Given a document with a section that" should "be found if the title matches" in {
     // Given
     val doc = new Document("doc1", createDummySource)
     doc.newChild(Section("1", SectionLevel1, "Mapping the Product Story"))
@@ -30,6 +30,19 @@ class DocumentSpec extends FlatSpec with Matchers{
     doc.documentCompleted()
     // When
     val maybeSection = doc.findSectionWithTitle("A User Story Map")
+    // Then
+    maybeSection should not be None
+  }
+
+  "Given a document with a 2nd level section that" should "be found if the title matches" in {
+    // Given
+    val doc = new Document("doc3", createDummySource)
+    val section = Section("sec1L2", SectionLevel2, "Mapping the Product Story")
+    doc.newChild(section)
+    section.addChild(Paragraph("p1", "lorem ipsum"))
+    doc.documentCompleted()
+    // When
+    val maybeSection = doc.findSectionWithTitle("Mapping the Product Story")
     // Then
     maybeSection should not be None
   }

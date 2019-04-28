@@ -16,7 +16,7 @@
 package org.tap.framework.parser.tika
 
 import org.tap.application.idgeneration.IdGenerator
-import org.tap.domain.{Document, DocumentSource}
+import org.tap.domain.{Document, DocumentSource, SectionLevel1, SectionLevel2}
 
 /**
   * Builds a document instance for a given [[ParseEventCollector]].
@@ -44,7 +44,8 @@ case class DocumentBuilder(parseResult: ParseEventCollector, source: DocumentSou
     val parentBuilder = currentElementBuilder
     event.qName match {
       case "p" => currentElementBuilder = ParagraphBuilder(parentBuilder, idGenerator)
-      case "h1" => currentElementBuilder = SectionBuilder("h1", parentBuilder, idGenerator)
+      case "h1" => currentElementBuilder = SectionBuilder(SectionLevel1, parentBuilder, idGenerator)
+      case "h2" => currentElementBuilder = SectionBuilder(SectionLevel2, parentBuilder, idGenerator)
       case _ =>
     }
   }
@@ -52,6 +53,7 @@ case class DocumentBuilder(parseResult: ParseEventCollector, source: DocumentSou
   def endElementMatched(event: EndElementEvent): Unit = event.qName match {
     case "p" => endElementEventReceivedWithBuilderChange()
     case "h1" => currentElementBuilder.endElementEventReceived()
+    case "h2" => currentElementBuilder.endElementEventReceived()
     case _ =>
   }
 

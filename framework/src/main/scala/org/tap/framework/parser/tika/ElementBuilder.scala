@@ -73,9 +73,9 @@ case class ParagraphBuilder(parentBuilder: ElementBuilder, idGenerator: IdGenera
 
 ////
 
-case class SectionBuilder(level: String, parentBuilder: ElementBuilder, idGenerator: IdGenerator) extends ElementBuilder(idGenerator) {
+case class SectionBuilder(level: SectionLevel, parentBuilder: ElementBuilder, idGenerator: IdGenerator) extends ElementBuilder(idGenerator) {
   override def endElementEventReceived(): Unit = {
-    val section = Section(idGenerator.create, SectionLevel(level), textBuilder.build)
+    val section = Section(idGenerator.create, level, textBuilder.build)
     parentBuilder.newChild(section)
     myElement = section
   }

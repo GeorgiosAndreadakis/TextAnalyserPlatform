@@ -17,3 +17,16 @@ Feature: Import Word documents
     Given the text document h1_p.docx
     When the user starts the import for the given file
     Then there is a section in the system with title 'About the Text Analyzer Platform'
+
+  @section
+  Scenario: A section in a Word document
+    Given the text document h1_p_h2_p.docx
+    When the user starts the import for the given file
+    Then there is a section in the system with title 'A Meaningless Second Level Heading'
+
+  @section
+  Scenario: A section in a Word document
+    Given the text document h1_p_h1_p_h2_p_h3_p_h1_p.docx
+    When the user starts the import for the given file
+    Then there is a section in the system with title 'Third-Order Section of Second-Order Section of 2nd First-Order Section'
+    Then there is a section in the system with title '3rd First-Order Section'

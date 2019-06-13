@@ -117,3 +117,4 @@ case class SectionLevel(level: String) {
 
 object SectionLevel1 extends SectionLevel("h1")
 object SectionLevel2 extends SectionLevel("h2")
+object SectionLevel3 extends SectionLevel("h3")

@@ -1,0 +1,51 @@
+
+.stepList {
+    margin-top: 0.5em;
+}
+.stepList > row {
+    margin: 0px !important;
+}
+
+.stepDef {
+    background-color: silver;
+    border: 1px solid darkgray;
+    border-radius: 10px 12px;
+    margin-left: 15px;
+    margin-bottom: 5px;
+    padding: 15px;
+}
+
+.editableStepDef {
+    background-color: #dedede;
+    border: 1px solid darkgray;
+    border-radius: 10px 12px;
+    margin-left: 100px;
+    margin-bottom: 5px;
+    padding: 15px;
+}
+
+.stepTitle {
+    margin-left: 5px;
+}
+.stepDetails {
+    background-color: #cdcdcd;
+    margin-left: 5px;
+    padding: 0;
+}
+.stepDetails > .card-header{
+    background-color: #cdcdcd;
+}
+.stepDetails > .card-body{
+    background-color: #dedede;
+}
+
+.strategydescription {
+    background-color: #d3d3d3;
+    border: 1px solid black;
+    padding: 0.1em;
+}
+
+.strategydescription p {
+    margin-block-end: 0;
+    padding: 0;
+}

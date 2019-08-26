@@ -49,3 +49,12 @@
     margin-block-end: 0;
     padding: 0;
 }
+
+
+/* Upload */
+.uploadhint {
+    padding-left: 0px;
+}
+.uploadform {
+    margin-bottom: 5px;
+}

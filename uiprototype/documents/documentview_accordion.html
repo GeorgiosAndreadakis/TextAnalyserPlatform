@@ -17,8 +17,8 @@
     </span>
     <div class="navbar-collapse collapse" id="collapsingNavbar">
         <ul class="navbar-nav ml-auto">
-            <li class="nav-item"><a class="nav-link active" href="#">Documents</a></li>
-            <li class="nav-item"><a class="nav-link" href="#">Topics</a></li>
+            <li class="nav-item"><a class="nav-link active" href="documentoverview.html">Documents</a></li>
+            <li class="nav-item"><a class="nav-link" href="topic_view.html">Topics</a></li>
             <li class="nav-item"><a class="nav-link" href="#" style="padding-right: 10px;">Help</a></li>
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
@@ -45,7 +45,7 @@
         <div class="row">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item" aria-current="page"><a href="#">Documents</a></li>
+                    <li class="breadcrumb-item" aria-current="page"><a href="documentoverview.html">Documents</a></li>
                     <li class="breadcrumb-item active" aria-current="page">View</li>
                 </ol>
             </nav>
@@ -58,7 +58,7 @@
         </div>
 
         <div class="row">
-            <div class="accordion" id="accordionExample">
+            <div class="accordion col-6" id="accordionExample">
                 <div class="card">
                     <div class="card-header" id="headingOne">
                         <h2 class="mb-0">
@@ -67,7 +67,7 @@
                             </button>
                         </h2>
                     </div>
-                    <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                    <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
                         <div class="card-body">
                             This is blog is about my project called Text Analyzer Platform (TAP).
                             I am trying to head down the path of a product development and I would like to share
@@ -82,11 +82,12 @@
                                         </button>
                                     </h2>
                                 </div>
-                                <div id="collapseOneTwo" class="collapse" aria-labelledby="headingOneOne" data-parent="#collapseOne">
+                                <div id="collapseOneTwo" class="collapse show" aria-labelledby="headingOneOne" data-parent="#collapseOne">
                                     <div class="card-body">
                                         Hi, my name is Georgios Andreadakis, I am a freelancer based in Munich. After studying computer science
                                         at the University of Ulm, I started as a Smalltalk-80 developer, working in projects, which focussed on
-                                        fat client applications. Around 2000, I switched to Java, building web applications,
+                                        fat client applications. Around 2000, I switched to
+                                        <span class="text-white bg-dark">Java, building web applications</span> <span class="badge badge-secondary">Topic</span>,
                                         backend functionality and smart clients. Currently, I am taking my first steps in Scala and
                                         related technologies like Sbt, Play and Akka.
                                     </div>

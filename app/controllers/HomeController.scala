@@ -33,5 +33,4 @@ class HomeController @Inject() (val controllerComponents: ControllerComponents)
     val repo = new DocumentRepositoryForElastic
     repo.allDocs.right.get.map( DocumentViewModel )
   }
-
 }

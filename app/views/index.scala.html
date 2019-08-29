@@ -55,7 +55,7 @@
                     <h2>Stored Documents</h2>
                     <p>An overview of currently stored documents.</p>
                 </div>
-                <div class="col-sm-12">@documentsOverview(storedDocs.sortWith(_.filename < _.filename))</div>
+                <div class="col-sm-12">@documents_compact_overview(storedDocs.sortWith(_.filename < _.filename))</div>
             </div>
         </div>
 

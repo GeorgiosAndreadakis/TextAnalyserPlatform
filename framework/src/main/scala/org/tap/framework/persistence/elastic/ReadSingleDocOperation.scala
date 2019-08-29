@@ -15,37 +15,35 @@
  */
 package org.tap.framework.persistence.elastic
 
+import java.util
+
 import org.elasticsearch.ElasticsearchStatusException
 import org.elasticsearch.client.RestHighLevelClient
-import org.elasticsearch.search.SearchHits
 import org.tap.domain.Document
 import org.tap.framework.persistence.elastic.mapping.DocumentIndexRequestMapper
 
 /**
-  * Reading all documents.
+  * Reading a single document.
   *
   * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
   */
-class ReadAllDocsOperation extends PersistenceOperation {
+class ReadSingleDocOperation(docId: String) extends PersistenceOperation {
 
-  private var result: List[Document] = _
+  private var result: Document = _
 
-  def getResult: Either[Exception,List[Document]] = Right(result)
+  def getResult: Either[Exception,Document] = Right(result)
 
   override def run(client: RestHighLevelClient): Unit = {
     val mapper = new DocumentIndexRequestMapper(client)
     try {
-      val searchResponse = mapper.readAllDocuments
-      result = convert(searchResponse.getHits, mapper)
+      val getResponse = mapper.readDoc(docId)
+      result = convert(getResponse.getSourceAsMap, mapper)
     } catch {
-      case ex: ElasticsearchStatusException => {
-        ex.printStackTrace()
-        result = List()
-      }
+      case e: ElasticsearchStatusException => throw e
     }
   }
 
-  private def convert(hits: SearchHits, mapper: DocumentIndexRequestMapper): List[Document] = {
-    hits.getHits.map(mapper.convert).toList
+  private def convert(sourceMap: util.Map[String,AnyRef], mapper: DocumentIndexRequestMapper): Document = {
+    mapper.convert(sourceMap, docId)
   }
 }

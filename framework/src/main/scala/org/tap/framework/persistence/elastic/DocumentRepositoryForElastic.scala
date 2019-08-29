@@ -23,6 +23,12 @@ import org.tap.domain.{Document, DocumentRepository}
   * @author Georgios Andreadakis (georgios@andreadakis-consulting.de)
   */
 class DocumentRepositoryForElastic extends DocumentRepository {
+  def findDoc(docId: String): Either[Exception,Document] = {
+    val operation = new ReadSingleDocOperation(docId)
+    (new PersistenceContext).execute(operation)
+    operation.getResult
+  }
+
 
   override def allDocs: Either[Exception,List[Document]] = {
     val operation = new ReadAllDocsOperation

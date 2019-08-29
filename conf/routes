@@ -4,7 +4,10 @@
 GET         /                           controllers.HomeController.index
 GET         /index                      controllers.HomeController.index
 GET         /error                      controllers.FileUploadController.error(msg: String)
+
 GET         /documents/delete/:docId    controllers.DocumentController.deleteDoc(docId: String)
+GET         /documentList               controllers.DocumentController.documentList
+
 POST        /fileupload                 controllers.FileUploadController.upload
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file               controllers.Assets.at(path="/public", file)

@@ -19,6 +19,7 @@ import java.util
 
 import org.elasticsearch.action.admin.indices.refresh.{RefreshRequest, RefreshResponse}
 import org.elasticsearch.action.delete.DeleteRequest
+import org.elasticsearch.action.get.{GetRequest, GetResponse}
 import org.elasticsearch.action.index.IndexRequest
 import org.elasticsearch.action.search.{SearchRequest, SearchResponse}
 import org.elasticsearch.client.{RequestOptions, RestHighLevelClient}
@@ -53,25 +54,40 @@ class DocumentIndexRequestMapper(client: RestHighLevelClient) {
     client.search(searchRequest, defaultRequestOptions)
   }
 
+
+  def readDoc(docId: String): GetResponse = {
+    val req: GetRequest = new GetRequest(docIndexName, docId)
+    val response = client.get(req, RequestOptions.DEFAULT)
+    response
+  }
+
   private def buildDocumentSource(hit: SearchHit): DocumentSource = {
-    val docSourceMap = hit.getSourceAsMap.get(docSourceAttribute).asInstanceOf[util.HashMap[String,Object]]
+    buildDocumentSource(hit.getSourceAsMap)
+  }
+
+  private def buildDocumentSource(sourceMap: util.Map[String,Object]): DocumentSource = {
+    val docSourceMap = sourceMap.get(docSourceAttribute).asInstanceOf[util.HashMap[String,Object]]
     val sourceName = docSourceMap.get(docSourceNameAttribute).asInstanceOf[String]
     val sourceType = docSourceMap.get(docSourceTypeAttribute).asInstanceOf[String]
     new DocumentSourceInfo(sourceName, sourceType)
   }
 
-  def convert(hit: SearchHit): Document = {
+  def convert(sourceMap: util.Map[String,AnyRef], docId: String): Document = {
     // Document source
-    val docSource = buildDocumentSource(hit)
+    val docSource = buildDocumentSource(sourceMap)
 
-    val order = hit.getSourceAsMap.get(elementOrderAttribute).asInstanceOf[util.ArrayList[String]]
+    val order = sourceMap.get(elementOrderAttribute).asInstanceOf[util.ArrayList[String]]
     val elementsInOrder = order.toArray.toList.map(_.toString)
 
     // Build doc
-    val doc = new Document(hit.getId, docSource) // TODO derive the correct document source type
-    addElements(hit, doc, elementsInOrder)
+    val doc = new Document(docId, docSource) // TODO derive the correct document source type
+    addElements(doc, elementsInOrder)
     doc.documentCompleted()
     doc
+  }
+
+  def convert(hit: SearchHit): Document = {
+    convert(hit.getSourceAsMap, hit.getId)
   }
 
   def allElementsForDocId(docId: String): SearchHits = {
@@ -81,7 +97,7 @@ class DocumentIndexRequestMapper(client: RestHighLevelClient) {
     searchResponse.getHits
   }
 
-  private def addElements(docHit: SearchHit, doc: Document, elementsInOrder: List[String]): Unit = {
+  private def addElements(doc: Document, elementsInOrder: List[String]): Unit = {
 
     val idElementMap = mutable.Map[String,DocElement]()
 

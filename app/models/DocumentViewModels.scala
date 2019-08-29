@@ -26,6 +26,7 @@ import org.tap.domain._
 case class DocumentViewModel(document: Document) {
   def bodyElements: ElementContainerViewModel = BodyElements(document)
   def filename: String = document.getSource.name
+  def docId: String = document.getId
   def excerptFirstElement: String = {
     val firstElem = document.firstElement
     val viewElem = ElementViewModel.mapDocElement(firstElem)

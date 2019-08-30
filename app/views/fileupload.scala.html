@@ -1,0 +1,116 @@
+@(filename: String, doc: DocumentViewModel)
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="../css/uiprototype.css">
+    <title>File Upload</title>
+</head><body>
+
+<!-- Navbar HEADER -->
+<nav class="navbar navbar-expand-md navbar-dark bg-dark" id="appmenuNav">
+    <span class="navbar-brand">
+        <img src="../images/logo-wordpress.png" height="32" width="32"/>&nbsp;The Text Analyzer Platform
+    </span>
+    <div class="navbar-collapse collapse" id="collapsingNavbar">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item"><a class="nav-link active" href="documentoverview.html">Documents</a></li>
+            <li class="nav-item"><a class="nav-link" href="topic_view.html">Topics</a></li>
+            <li class="nav-item"><a class="nav-link" href="#" style="padding-right: 10px;">Help</a></li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
+                   aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-user"></i>&nbsp;
+                    <span class="mr-2 d-none d-lg-inline text-gray-600 small">Georgios Andreadakis</span>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="#">Settings</a>
+                    <a class="dropdown-item" href="#">Account</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="#">Logout</a>
+                </div>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<!-- CONTENT -->
+<main role="main">
+    <div class="container-fluid">
+
+        <!-- Breadcrumbs -->
+        <div class="row">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item" aria-current="page"><a href="documentoverview.html">Documents</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Upload</li>
+                </ol>
+            </nav>
+        </div>
+
+        <!-- Import -->
+        <p>Please select a text file and press the import button.</p>
+        @helper.form(
+            action = routes.FileUploadController.upload,
+            'enctype -> "multipart/form-data",
+            'class -> "col-sm-9 form-inline form-horizontal") {
+            <div class="form-group uploadform">
+                <div class="custom-file col-sm-6">
+                    <input type="file" class="custom-file-input" name="fileToImport" id="fileref" >
+                    <label class="custom-file-label" for="fileref">Choose file ...</label>
+                </div>
+                <div class="custom-file col-sm-2">
+                    <button type="submit" id="uploadSubmit" class="btn btn-primary">Start Import</button>
+                </div>
+            </div>
+            <small class="col-sm-11 uploadhint">Supported formats: only Word files with a single paragraph.</small>
+        }
+
+        <!-- old -->
+        <!-- form class="form" style="margin-top: 20px">
+            <div class="form-group uploadform">
+                <div class="custom-file col-sm-6">
+                    <input type="file" class="custom-file-input" name="fileToImport" id="fileref" >
+                    <label class="custom-file-label" for="fileref">Choose file ...</label>
+                </div>
+                <div class="custom-file col-sm-2">
+                    <button type="submit" id="uploadSubmit" class="btn btn-primary">Start Import</button>
+                </div>
+            </div>
+            <small class="col-sm-11 uploadhint">Supported formats: only Word files with a single paragraph.</small>
+        </form -->
+
+        <!-- Result -->
+        <h5 style="margin-top: 30px; margin-bottom: 10px;">Upload successful</h5>
+        <div class="card col-5" style="padding: 0;">
+            <div class="card-header">
+                <h6><b>File:</b>&nbsp;&nbsp;9_c1_7_start_atdd_with_cucumber.docx</h6>
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">Writing a Failing Acceptance Test with Cucumber</h5>
+                <p class="card-text">
+                    This is the seventh post in the first Build-Measure-Learn cycle.
+                    In the last post I introduced the Hexagonal Architecture as regulative power
+                    driving the application towards a domain centric design.
+                    In this blog post, I describe the first implementation step.
+                    It covers the implementation of an acceptance test with Cucumber
+                    guided by the Hexagonal Architecture style.
+                    I will pick up the first scenario for a puncture of the automated tests.
+                    As a result, there will be a failing acceptance test.
+                </p>
+            </div>
+        </div>
+
+    </div>
+</main>
+
+<!-- Optional JavaScript -->
+<script src="../js/jquery-3.0.0.min.js"></script>
+<script src="../js/popper.min.js"></script>
+<script src="../js/tooltip.min.js"></script>
+<script src="../js/bootstrap.bundle.min.js"></script>
+</body></html>

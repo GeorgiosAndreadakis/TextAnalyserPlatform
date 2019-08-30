@@ -37,6 +37,10 @@ class DocumentController @Inject()(val controllerComponents: ControllerComponent
     result
   }
 
+  def fileUpload() = Action {
+    Ok(views.html.fileupload("", null))
+  }
+
   def documentList() = Action {
     Ok(views.html.documents_list(storedDocuments))
   }

@@ -54,9 +54,7 @@
                     <a href="@routes.DocumentController.fileUpload" role="button" class="btn btn-primary col-2">Go to file upload</a>
                 </div>
 
-                    <!-- Document overview -->
-
-                    <!-- Search -->
+                <!-- Search -->
                 <form style="margin-top: 20px">
                     <div class="form-group row">
                         <label for="filename" class="col-form-label col-1">Filename:</label>
@@ -64,8 +62,7 @@
                     </div>
                 </form>
 
-
-                    <!-- Resulting documents -->
+                <!-- Resulting documents -->
                 <table class="table">
                     <thead class="thead-dark">
                         <tr>
@@ -79,7 +76,7 @@
                         @for(sDoc <- docs) {
                             <tr>
                                 <td>
-                                    <a href="@routes.HomeController.index" class="filename">
+                                    <a href="@routes.DocumentController.showDocument(sDoc.docId)" class="filename">
                                         @sDoc.filename
                                     </a>
                                 </td>

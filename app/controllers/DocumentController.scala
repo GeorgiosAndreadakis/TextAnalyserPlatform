@@ -28,7 +28,7 @@ class DocumentController @Inject()(val controllerComponents: ControllerComponent
   def deleteDoc(docId: String) = Action {
     val repo = new DocumentRepositoryForElastic
     repo.deleteDoc(docId)
-    Ok(views.html.index("", null, storedDocuments))
+    Ok(views.html.documents_list(storedDocuments))
   }
 
   private def storedDocuments:List[DocumentViewModel] = {
@@ -38,7 +38,7 @@ class DocumentController @Inject()(val controllerComponents: ControllerComponent
   }
 
   def fileUpload() = Action {
-    Ok(views.html.fileupload("", null))
+    Ok(views.html.fileupload(null))
   }
 
   def documentList() = Action {

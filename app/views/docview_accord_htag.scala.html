@@ -1,0 +1,36 @@
+@(doc: DocumentViewModel)
+
+    <div class="card">
+        <div class="card-header" id="headingOne">
+            <h2><button
+                class="btn btn-link"
+                type="button"
+                data-toggle="collapse"
+                data-target="#collapseOne"
+                aria-expanded="false"
+                aria-controls="collapseOne">
+                    What’s this blog about?
+            </button></h2>
+        </div>
+        <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+            <div class="card-body">
+                <div class="card">
+                    <div class="card-header" id="headingOneOne">
+                        <h2><button
+                            class="btn btn-link collapsed"
+                            type="button"
+                            data-toggle="collapse"
+                            data-target="#collapseOneTwo"
+                            aria-expanded="true"
+                            aria-controls="collapseTwo">
+                                Me and My Motivation
+                        </button></h2>
+                    </div>
+                    <div id="collapseOneTwo" class="collapse show" aria-labelledby="headingOneOne" data-parent="#collapseOne">
+                        <div class="card-body">
+                        </div>
+                    </div>
+                </div>
+            </div><!--.card-body-->
+        </div><!--collapse-->
+    </div><!--.card-->

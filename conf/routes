@@ -6,6 +6,7 @@ GET         /index                      controllers.HomeController.index
 GET         /error                      controllers.FileUploadController.error(msg: String)
 
 GET         /documents/delete/:docId    controllers.DocumentController.deleteDoc(docId: String)
+GET         /documents/:docId           controllers.DocumentController.showDocument(docId: String)
 GET         /documentList               controllers.DocumentController.documentList
 
 POST        /fileupload                 controllers.FileUploadController.upload

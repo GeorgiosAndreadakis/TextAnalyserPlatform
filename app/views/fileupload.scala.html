@@ -1,20 +1,20 @@
-@(filename: String, doc: DocumentViewModel)
+@(doc: DocumentViewModel)
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="../css/bootstrap.min.css">
-    <link rel="stylesheet" href="../fontawesome/css/all.min.css">
-    <link rel="stylesheet" href="../css/uiprototype.css">
+    <link rel="stylesheet" href="@routes.Assets.at("/public", "stylesheets/bootstrap.min.css")">
+    <link rel="stylesheet" href="@routes.Assets.at("/public", "stylesheets/main.css")">
+    <link rel="stylesheet" href="@routes.Assets.at("/public", "stylesheets/fontawesome-5.6.3/css/all.css")">
     <title>File Upload</title>
 </head><body>
 
 <!-- Navbar HEADER -->
 <nav class="navbar navbar-expand-md navbar-dark bg-dark" id="appmenuNav">
     <span class="navbar-brand">
-        <img src="../images/logo-wordpress.png" height="32" width="32"/>&nbsp;The Text Analyzer Platform
+        <img src="@routes.Assets.at("/public", "images/tap-logo.png")" height="32" width="32"/>&nbsp;The Text Analyzer Platform
     </span>
     <div class="navbar-collapse collapse" id="collapsingNavbar">
         <ul class="navbar-nav ml-auto">
@@ -43,13 +43,14 @@
     <div class="container-fluid">
 
         <!-- Breadcrumbs -->
-        <div class="row">
+        <div class="d-flex justify-content-between">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item" aria-current="page"><a href="documentoverview.html">Documents</a></li>
                     <li class="breadcrumb-item active" aria-current="page">Upload</li>
                 </ol>
             </nav>
+            <a href="@routes.DocumentController.documentList()" role="button" class="btn btn-primary col-2">Go to document list</a>
         </div>
 
         <!-- Import -->
@@ -70,47 +71,24 @@
             <small class="col-sm-11 uploadhint">Supported formats: only Word files with a single paragraph.</small>
         }
 
-        <!-- old -->
-        <!-- form class="form" style="margin-top: 20px">
-            <div class="form-group uploadform">
-                <div class="custom-file col-sm-6">
-                    <input type="file" class="custom-file-input" name="fileToImport" id="fileref" >
-                    <label class="custom-file-label" for="fileref">Choose file ...</label>
-                </div>
-                <div class="custom-file col-sm-2">
-                    <button type="submit" id="uploadSubmit" class="btn btn-primary">Start Import</button>
-                </div>
-            </div>
-            <small class="col-sm-11 uploadhint">Supported formats: only Word files with a single paragraph.</small>
-        </form -->
-
         <!-- Result -->
-        <h5 style="margin-top: 30px; margin-bottom: 10px;">Upload successful</h5>
-        <div class="card col-5" style="padding: 0;">
-            <div class="card-header">
-                <h6><b>File:</b>&nbsp;&nbsp;9_c1_7_start_atdd_with_cucumber.docx</h6>
+        @if(doc != null) {
+            <h5 style="margin-top: 30px;
+                margin-bottom: 10px;">Upload successful</h5>
+            <div class="card col-5" style="padding: 0;">
+                <div class="card-header"><h6><b>File:</b>&nbsp;&nbsp;@doc.filename</h6></div>
+                <div class="card-body">
+                    <p class="card-text">
+                        @doc.excerptFirstElement<br/>@doc.excerptSecondElement
+                    </p>
+                </div>
             </div>
-            <div class="card-body">
-                <h5 class="card-title">Writing a Failing Acceptance Test with Cucumber</h5>
-                <p class="card-text">
-                    This is the seventh post in the first Build-Measure-Learn cycle.
-                    In the last post I introduced the Hexagonal Architecture as regulative power
-                    driving the application towards a domain centric design.
-                    In this blog post, I describe the first implementation step.
-                    It covers the implementation of an acceptance test with Cucumber
-                    guided by the Hexagonal Architecture style.
-                    I will pick up the first scenario for a puncture of the automated tests.
-                    As a result, there will be a failing acceptance test.
-                </p>
-            </div>
-        </div>
-
+        }
     </div>
 </main>
-
-<!-- Optional JavaScript -->
-<script src="../js/jquery-3.0.0.min.js"></script>
-<script src="../js/popper.min.js"></script>
-<script src="../js/tooltip.min.js"></script>
-<script src="../js/bootstrap.bundle.min.js"></script>
+    <!-- Optional JavaScript -->
+    <script src="@routes.Assets.at("/public", "javascripts/jquery-3.3.1.min.js")"></script>
+    <script src="@routes.Assets.at("/public", "javascripts/popper.min.js")"></script>
+    <script src="@routes.Assets.at("/public", "javascripts/bootstrap.min.js")"></script>
+    <script src="@routes.Assets.at("/public", "javascripts/tap-fileupload.js")"></script>
 </body></html>

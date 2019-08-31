@@ -48,7 +48,7 @@ class FileUploadController @Inject() (val controllerComponents: ControllerCompon
           val path = fileToImport.ref.path
           val doc = importFile(filename, path)
           Files.deleteIfExists(path)
-          Ok(views.html.index(filename, DocumentViewModel(doc), storedDocuments))
+          Ok(views.html.fileupload(DocumentViewModel(doc)))
       }
     }.get
   }

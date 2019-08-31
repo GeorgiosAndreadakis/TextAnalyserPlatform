@@ -1,8 +1,6 @@
+@import org.tap.domain._
 @(paragraph: ParagraphViewModel)
 
-<div class="card rounded mb-0">
-    <div class="card-body">
-        <p>@paragraph.text</p>
-        @document(paragraph)
-    </div>
+<div class="col-12">
+    <p>@paragraph.text</p>
 </div>

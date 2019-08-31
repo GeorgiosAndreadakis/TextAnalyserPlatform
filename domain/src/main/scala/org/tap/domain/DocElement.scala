@@ -69,6 +69,13 @@ class ElementContainer(id: String) extends DocElement(id: String) with Iterable[
 
   val children = new ListBuffer[DocElement]
 
+  def firstElement: Option[DocElement] = {
+    if (children.isEmpty) {
+      None
+    } else {
+      Option(children.head)
+    }
+  }
   def hasChildren: Boolean = children.nonEmpty
   def isEmptyDocElement: Boolean = !hasChildren
 

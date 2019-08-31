@@ -17,7 +17,6 @@ package models
 
 import org.tap.domain._
 
-
 /**
   * The model for a document view.
   *
@@ -27,6 +26,7 @@ case class DocumentViewModel(document: Document) {
   def bodyElements: ElementContainerViewModel = BodyElements(document)
   def filename: String = document.getSource.name
   def docId: String = document.getId
+  def htmlId(): String = "doc" + asHtmlId(docId)
   def excerptFirstElement: String = {
     val firstElem = document.firstElement
     val viewElem = ElementViewModel.mapDocElement(firstElem)
@@ -38,16 +38,23 @@ case class DocumentViewModel(document: Document) {
       case Some(secElem) => ElementViewModel.mapDocElement(secElem).excerpt
       case None => ""
     }
+  }
 
+  def asHtmlId(id: String): String = {
+    id.hashCode.abs.toString
   }
 }
 
 
 /* View Model Classes. */
 abstract class ElementViewModel(val docElement: DocElement) {
-  def htmlId(): String = docElement.getId
+  def htmlId(): String = asHtmlId(id())
   def id(): String = docElement.getId
   def excerpt: String
+
+  def asHtmlId(id: String): String = {
+    "elem" + id.hashCode.abs.toString
+  }
 }
 
 object ElementViewModel {
@@ -67,6 +74,12 @@ abstract class ElementContainerViewModel(override val docElement: DocElement)
     with Iterable[ElementViewModel] {
 
   def elementContainer: ElementContainer
+  def firstElement: Option[ElementViewModel] = {
+    elementContainer.firstElement match {
+      case Some(x) => Option(ElementViewModel.mapDocElement(x))
+      case None => None
+    }
+  }
 
   override def iterator:Iterator[ElementViewModel] = {
     elementContainer.iterator.map(docElem => ElementViewModel.mapDocElement(docElem))
@@ -88,10 +101,9 @@ case class ParagraphViewModel(paragraph: Paragraph) extends ElementViewModel(par
 case class SectionViewModel(section: Section) extends ElementContainerViewModel(section) {
   override def elementContainer: ElementContainer = section
   override def excerpt: String = s"Section (Level ${section.level.toString}): ${section.title}"
+  def title: String = section.title
 }
 
 case class DummyViewModel(override val docElement: DocElement) extends ElementViewModel(docElement) {
   override def excerpt: String = ""
 }
-
-

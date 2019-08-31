@@ -44,6 +44,14 @@ p {
   font-weight: bold;
 }
 
+.docview {
+  border-style: solid !important;
+  border-color: rgba(0,0,0,0.125) !important;
+  border-width: 1px !important;
+  margin-left: 15px;
+  padding-left: 0px;
+}
+
 .docview .card-header {
   padding-top: 0.25rem;
   padding-bottom: 0.25rem;
@@ -57,4 +65,18 @@ p {
 .docview h2 {
   padding: 0rem;
   margin: 0rem;
+}
+
+.docview .card {
+  padding: 1rem;
+  border-bottom-width: 1px !important;
+}
+
+.accordion .card {
+  border-style: None !important;
+  padding: 0px;
+}
+
+.docview .card-body {
+  padding: 1rem 1rem 0.9rem;
 }

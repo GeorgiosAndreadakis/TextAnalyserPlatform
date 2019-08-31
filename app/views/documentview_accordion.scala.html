@@ -1,4 +1,5 @@
 @(doc: DocumentViewModel)
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -45,7 +46,7 @@
         <div class="row">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item" aria-current="page"><a href="documentoverview.html">Documents</a></li>
+                    <li class="breadcrumb-item" aria-current="page"><a href="@routes.DocumentController.documentList()">Documents</a></li>
                     <li class="breadcrumb-item active" aria-current="page">View</li>
                 </ol>
             </nav>
@@ -55,67 +56,20 @@
         <div class="row"><h3 class="col-8">@doc.filename</h3></div>
 
         <!-- Document view -->
-        <div class="row docview">
-            <div class="accordion col-6" id="accordionExample">
-                <div class="card">
-                    <div class="card-header" id="headingOne">
-                        <h2>
-                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                                What’s this blog about?
-                            </button>
-                        </h2>
-                    </div>
-                    <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
-                        <div class="card-body">
-                            This is blog is about my project called Text Analyzer Platform (TAP).
-                            I am trying to head down the path of a product development and I would like to share
-                            my future experiences with you. It is focussed on my project to build an application,
-                            which handles text files, and processes contained information.
-
-                            <div class="card">
-                                <div class="card-header" id="headingOneOne">
-                                    <h2><button
-                                        class="btn btn-link collapsed"
-                                        type="button"
-                                        data-toggle="collapse"
-                                        data-target="#collapseOneTwo"
-                                        aria-expanded="true"
-                                        aria-controls="collapseTwo">
-                                            Me and My Motivation
-                                    </button></h2>
-                                </div>
-                                <div id="collapseOneTwo" class="collapse show" aria-labelledby="headingOneOne" data-parent="#collapseOne">
-                                    <div class="card-body">
-                                        Hi, my name is Georgios Andreadakis, I am a freelancer based in Munich. After studying computer science
-                                        at the University of Ulm, I started as a Smalltalk-80 developer, working in projects, which focussed on
-                                        fat client applications. Around 2000, I switched to
-                                        <span class="text-white bg-dark">Java, building web applications</span> <span class="badge badge-secondary">Topic</span>,
-                                        backend functionality and smart clients. Currently, I am taking my first steps in Scala and
-                                        related technologies like Sbt, Play and Akka.
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-header" id="headingTwo">
-                        <h2>
-                            <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                Me and My Motivation
-                            </button>
-                        </h2>
-                    </div>
-                    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
-                        <div class="card-body">
-                            Hi, my name is Georgios Andreadakis, I am a freelancer based in Munich. After studying computer science
-                            at the University of Ulm, I started as a Smalltalk-80 developer, working in projects, which focussed on
-                            fat client applications. Around 2000, I switched to Java, building web applications,
-                            backend functionality and smart clients. Currently, I am taking my first steps in Scala and
-                            related technologies like Sbt, Play and Akka. As a freelancer, I only have a little influence on
-                            project processes, UI/UX design and the technical design of the target applications.
-                        </div>
-                    </div>
+        <div class="row">
+            <div class="col-7 docview">
+                <div class="accordion" id="@doc.htmlId">
+                @{
+                    doc.bodyElements.firstElement match {
+                        case None => noContent()
+                        case Some(x) =>
+                            x match {
+                                case p: ParagraphViewModel => paragraph(p)
+                                case p: SectionViewModel => section(p, doc.htmlId)
+                                case _ => dummy("TODO - more snippets")
+                            }
+                    }
+                }
                 </div>
             </div>
         </div><!-- .row .docview -->

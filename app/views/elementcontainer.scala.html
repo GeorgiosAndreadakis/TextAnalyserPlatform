@@ -1,0 +1,13 @@
+@(elemContainer: ElementContainerViewModel, parentId: String)
+
+@for(elem <- elemContainer) {
+    <div>
+        @{
+        elem match {
+            case p: ParagraphViewModel => paragraph(p)
+            case p: SectionViewModel => section(p, parentId)
+            case _ => dummy("TODO - more snippets")
+        }
+    }
+    </div>
+}

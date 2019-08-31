@@ -113,7 +113,7 @@ class DocumentIndexRequestMapper(client: RestHighLevelClient) {
       // Find the element
       val elemOpt = idElementMap.get(id)
       elemOpt match {
-        case None => throw new IllegalStateException(s"Id '$id' in ordered list for which no element wss found!")
+        case None => throw new IllegalStateException(s"Id '$id' in ordered list for which no element was found!")
         case Some(elem:DocElement) =>
 
           // Add it to the parent

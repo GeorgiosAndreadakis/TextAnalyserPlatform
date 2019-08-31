@@ -59,17 +59,7 @@
         <div class="row">
             <div class="col-7 docview">
                 <div class="accordion" id="@doc.htmlId">
-                @{
-                    doc.bodyElements.firstElement match {
-                        case None => noContent()
-                        case Some(x) =>
-                            x match {
-                                case p: ParagraphViewModel => paragraph(p)
-                                case p: SectionViewModel => section(p, doc.htmlId)
-                                case _ => dummy("TODO - more snippets")
-                            }
-                    }
-                }
+                    @elementcontainer(doc.bodyElements, doc.htmlId)
                 </div>
             </div>
         </div><!-- .row .docview -->

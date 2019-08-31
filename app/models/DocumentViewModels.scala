@@ -73,6 +73,7 @@ abstract class ElementContainerViewModel(override val docElement: DocElement)
   extends ElementViewModel(docElement)
     with Iterable[ElementViewModel] {
 
+  def children = elementContainer.children.map(docElem => ElementViewModel.mapDocElement(docElem))
   def elementContainer: ElementContainer
   def firstElement: Option[ElementViewModel] = {
     elementContainer.firstElement match {
@@ -102,6 +103,7 @@ case class SectionViewModel(section: Section) extends ElementContainerViewModel(
   override def elementContainer: ElementContainer = section
   override def excerpt: String = s"Section (Level ${section.level.toString}): ${section.title}"
   def title: String = section.title
+  def level: String = section.level.level
 }
 
 case class DummyViewModel(override val docElement: DocElement) extends ElementViewModel(docElement) {

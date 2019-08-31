@@ -2,16 +2,14 @@
 
 <div class="card">
     <div class="card-header" id="@section.htmlId">
-        <h2>
-            <button
-                class="btn btn-link collapsed"
-                type="button" data-toggle="collapse"
-                data-target="#collapse@section.htmlId"
-                aria-expanded="false"
-                aria-controls="collapse@section.htmlId">
-                @section.title
-            </button>
-        </h2>
+        <a
+        class="btn btn-link collapsed"
+        type="button" data-toggle="collapse"
+        data-target="#collapse@section.htmlId"
+        aria-expanded="false"
+        aria-controls="collapse@section.htmlId">
+            <@section.level class="text-primary">@section.title</@section.level>
+        </a>
     </div>
     <div id="collapse@section.htmlId" class="collapse" aria-labelledby="@section.htmlId" data-parent="#@parentId">
         <div class="card-body">

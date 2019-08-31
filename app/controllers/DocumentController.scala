@@ -47,8 +47,9 @@ class DocumentController @Inject()(val controllerComponents: ControllerComponent
 
   def showDocument(docId: String) = Action {
     val repo = new DocumentRepositoryForElastic
-    val doc = DocumentViewModel(repo.findDoc(docId).right.get)
-    Ok(views.html.documentview_accordion(doc))
+    val doc = repo.findDoc(docId).right.get
+    val vm = DocumentViewModel(doc)
+    Ok(views.html.documentview_accordion(vm))
   }
 
 }

@@ -1,6 +1,6 @@
 @(elemContainer: ElementContainerViewModel, parentId: String)
 
-@for(elem <- elemContainer) {
+@for(elem <- elemContainer.children) {
     <div>
         @{
         elem match {

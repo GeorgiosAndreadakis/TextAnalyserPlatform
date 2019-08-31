@@ -29,12 +29,6 @@ body {
   padding-top: 0px;
 }
 
-h1 {
-}
-
-h2 {
-}
-
 p {
   font-size: 1.1em;
 }
@@ -62,7 +56,18 @@ p {
   padding-bottom: 0rem;
 }
 
+.docview h1 {
+  font-size: 24px;
+  padding: 0rem;
+  margin: 0rem;
+}
 .docview h2 {
+  font-size: 20px;
+  padding: 0rem;
+  margin: 0rem;
+}
+.docview h3 {
+  font-size: 16px;
   padding: 0rem;
   margin: 0rem;
 }
@@ -78,5 +83,16 @@ p {
 }
 
 .docview .card-body {
-  padding: 1rem 1rem 0.9rem;
+  padding: 0px;
+  margin: 0px;
+}
+
+.docview .card-header {
+  padding: 1px 0px 0px 2px !important;
+  margin: 0px !important;
+  border-style: None;
+}
+
+.docview .card-header a {
+  margin: 0px !important;
 }
